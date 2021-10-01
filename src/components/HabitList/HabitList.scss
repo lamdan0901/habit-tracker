@@ -1,0 +1,28 @@
+.habits-view {
+  width: 100%;
+}
+.habits-list {
+  max-width: 1200px;
+  li {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+    margin: 5px;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: rgb(196, 196, 196);
+      span {
+        color: #000;
+      }
+    }
+
+    .time,
+    .menu-icon {
+      cursor: pointer;
+      &:hover {
+        color: cadetblue;
+      }
+    }
+  }
+}
