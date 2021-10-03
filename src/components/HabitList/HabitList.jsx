@@ -13,7 +13,7 @@ export default function HabitList({ habits }) {
               {habit.name}
             </Checkbox>
 
-            <span className="time">{habit.time}</span>
+            <span className="habit-time">{habit.time}</span>
 
             <ProgressBar
               completed={Math.floor((8 / 30) * 100)}
@@ -22,6 +22,7 @@ export default function HabitList({ habits }) {
               labelAlignment="outside"
               labelColor="#6a1b9a"
             />
+
             <span className="menu-icon">
               <MiniMenu />
             </span>

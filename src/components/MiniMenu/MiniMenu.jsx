@@ -1,14 +1,14 @@
-import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu'
+import { Menu, MenuItem } from '@szhsin/react-menu'
 import '@szhsin/react-menu/dist/index.css'
 import '@szhsin/react-menu/dist/transitions/slide.css'
 import * as HiIcons from 'react-icons/hi'
-//
+import './MiniMenu.scss'
 
 export default function MiniMenu() {
   return (
     <Menu
       menuButton={
-        <button className="mini-menu">
+        <button>
           <HiIcons.HiDotsVertical />
         </button>
       }

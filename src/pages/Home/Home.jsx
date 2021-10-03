@@ -6,6 +6,7 @@ import MainLayout from 'layouts/MainLayout'
 import * as actions from 'actions/habitsActions'
 
 import './Home.scss'
+import AddHabit from 'components/Add Habit/AddHabit'
 
 export default function Home() {
   document.title = 'Home | Habit App'
@@ -23,8 +24,13 @@ export default function Home() {
   return (
     <MainLayout>
       <div className="home">
-        <h3>Welcome + user name!</h3>
-        <h2>{today}</h2>
+        <div className="header">
+          <span>
+            <h3>Welcome + user name!</h3>
+            <h2>{today}</h2>
+          </span>
+          <AddHabit />
+        </div>
         <HabitList habits={habits} />
       </div>
     </MainLayout>
