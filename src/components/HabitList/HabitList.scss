@@ -2,6 +2,7 @@
   width: 100%;
 }
 .habits-list {
+  position: relative;
   max-width: 1200px;
   li {
     display: flex;
@@ -26,3 +27,7 @@
     }
   }
 }
+
+// @media (max-width: 768px) {
+
+// }
