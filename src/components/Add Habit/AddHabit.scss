@@ -1,14 +1,76 @@
 @import '../../scss/variables';
 
-.add-habit-btn {
+.btn {
   border-radius: 5px;
-  background-color: #eee;
   padding: 10px;
-  color: #000;
   font-size: 16px;
-  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
 
-  &:hover {
-    background-color: #f5f5f5;
+  &.add-btn {
+    background-color: $primary-color;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+    color: #fff;
+
+    &:hover {
+      background-color: #ff5911;
+    }
   }
+}
+h2 {
+  margin: 10px 0 10px 20px;
+}
+.divider {
+  border-bottom: 1px solid $grey-color;
+  margin: 10px 0;
+}
+input {
+  outline: none;
+  // cursor: not-allowed;
+}
+textarea {
+  outline: none;
+  resize: none;
+  overflow: auto;
+}
+
+.Modal {
+  position: absolute;
+  z-index: 5;
+  top: 50px;
+  left: 50px;
+  right: 50px;
+  bottom: 50px;
+  outline: none;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 6px 6px 5px rgba(0, 0, 0, 0.3);
+  background-color: $light-yellow-color;
+}
+
+.Overlay {
+  z-index: 2;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.ReactModal__Body--open {
+  overflow-y: hidden;
+  padding-right: 17px;
+}
+
+// Animation:
+.ReactModal__Overlay {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s ease-in-out;
+}
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+  transform: translateY(0px);
+}
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+  transform: translateY(-20px);
 }

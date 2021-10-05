@@ -1,5 +1,11 @@
 .main-layout {
   display: flex;
+  filter: blur(0px);
+  transition: filter 0.2s;
+
+  &.blur-active {
+    filter: blur(3px);
+  }
   .content {
     width: 100vw;
   }

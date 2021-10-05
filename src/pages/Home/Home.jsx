@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import HabitList from 'components/HabitList/HabitList'
@@ -14,6 +14,12 @@ export default function Home() {
   let today = new Date(Date.now()).toDateString()
   today = today.slice(0, 3) + ', ' + today.slice(3)
 
+  const [isBlur, setIsBlur] = useState(false)
+
+  function setBlurBg(value) {
+    setIsBlur(value)
+  }
+
   const dispatch = useDispatch()
   const habits = useSelector((state) => state.habits)
 
@@ -22,14 +28,14 @@ export default function Home() {
   }, [dispatch])
 
   return (
-    <MainLayout>
+    <MainLayout isBlur={isBlur}>
       <div className="home">
         <div className="header">
           <span>
             <h3>Welcome + user name!</h3>
             <h2>{today}</h2>
           </span>
-          <AddHabit />
+          <AddHabit setBlurBg={setBlurBg} />
         </div>
         <HabitList habits={habits} />
       </div>

@@ -3,14 +3,14 @@ import SideNav from 'components/SideNav/SideNav'
 import NavBar from 'components/NavBar/NavBar'
 import './MainLayout.scss'
 
-export default function MainLayout({ children }) {
+export default function MainLayout(props) {
   return (
     <main>
-      <div className="main-layout">
+      <div className={props.isBlur ? 'main-layout blur-active' : 'main-layout'}>
         <SideNav />
         <div className="content">
           <NavBar></NavBar>
-          <div className="children">{children}</div>
+          <div className="children">{props.children}</div>
         </div>
       </div>
     </main>
