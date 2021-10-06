@@ -28,11 +28,16 @@
     }
 
     .habit-time {
-      transform: translateY(7px);
+      transform: translateY(2px);
+      left: 50%;
+      position: absolute;
     }
   }
 }
 
+span.jsx-1463224140.text.line-through {
+  font-size: 18px;
+}
 // @media (max-width: 768px) {
 
 // }

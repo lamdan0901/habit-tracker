@@ -4,6 +4,10 @@
   border-radius: 5px;
   padding: 10px;
   font-size: 16px;
+  cursor: pointer;
+  letter-spacing: 0.16px;
+  font-weight: 500;
+  line-height: 24px;
 
   &.add-btn {
     background-color: $primary-color;
@@ -14,22 +18,63 @@
       background-color: #ff5911;
     }
   }
+
+  &.confirm-btn {
+    background: $light-yellow-color;
+    color: $confirm-btn-color;
+    transform: translateY(5px);
+
+    &:hover {
+      background-color: #b8d8e06e;
+    }
+  }
+
+  &.cancel-btn {
+    background: $light-yellow-color;
+    color: $cancel-btn-color;
+    transform: translateY(5px);
+
+    &:hover {
+      background-color: #ff7a7a3a;
+    }
+  }
 }
-h2 {
-  margin: 10px 0 10px 20px;
-}
-.divider {
-  border-bottom: 1px solid $grey-color;
-  margin: 10px 0;
-}
-input {
-  outline: none;
-  // cursor: not-allowed;
-}
-textarea {
-  outline: none;
-  resize: none;
-  overflow: auto;
+
+.modal-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .title {
+    margin: 10px 0 20px 0px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    font-weight: 400;
+    border-bottom: 1px solid $grey-color;
+  }
+
+  .data-input {
+    display: flex;
+    flex-direction: column;
+
+    input {
+      outline: none;
+    }
+
+    textarea {
+      outline: none;
+      resize: none;
+      overflow: auto;
+    }
+  }
+
+  .footer {
+    border-top: 1px solid $grey-color;
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 
 .Modal {
@@ -39,11 +84,16 @@ textarea {
   left: 50px;
   right: 50px;
   bottom: 50px;
+  max-width: 500px;
+  max-height: 400px;
+
+  margin: auto;
   outline: none;
-  border-radius: 10px;
   padding: 10px;
-  box-shadow: 6px 6px 5px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  border: 1px solid $grey-color;
   background-color: $light-yellow-color;
+  box-shadow: 6px 6px 5px rgba(0, 0, 0, 0.3);
 }
 
 .Overlay {
@@ -53,18 +103,19 @@ textarea {
   left: 0;
   right: 0;
   bottom: 0;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
-.ReactModal__Body--open {
-  overflow-y: hidden;
-  padding-right: 17px;
-}
+// .ReactModal__Body--open {
+//   overflow-y: hidden;
+//   padding-right: 17px;
+// }
 
 // Animation:
 .ReactModal__Overlay {
   opacity: 0;
-  transform: translateY(-20px);
-  transition: all 0.3s ease-in-out;
+  transform: translateY(-30px);
+  transition: all 0.2s ease-in-out;
 }
 .ReactModal__Overlay--after-open {
   opacity: 1;
@@ -72,5 +123,5 @@ textarea {
 }
 .ReactModal__Overlay--before-close {
   opacity: 0;
-  transform: translateY(-20px);
+  transform: translateY(-30px);
 }
