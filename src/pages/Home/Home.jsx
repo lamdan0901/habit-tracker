@@ -9,7 +9,7 @@ import './Home.scss'
 import AddHabit from 'components/Add Habit/AddHabit'
 
 export default function Home() {
-  document.title = 'Home | Habit App'
+  document.title = 'Home - Habit Tracker'
 
   let today = new Date(Date.now()).toDateString()
   today = today.slice(0, 3) + ', ' + today.slice(3)
@@ -23,6 +23,11 @@ export default function Home() {
   const dispatch = useDispatch()
   const habits = useSelector((state) => state.habits)
 
+  function handleAddHabit(value) {
+    dispatch(actions.postHabit(value))
+    // console.log(value)
+  }
+
   useEffect(() => {
     dispatch(actions.getAllHabits())
   }, [dispatch])
@@ -35,7 +40,7 @@ export default function Home() {
             <h3>Welcome + user name!</h3>
             <h2>{today}</h2>
           </span>
-          <AddHabit setBlurBg={setBlurBg} />
+          <AddHabit setBlurBg={setBlurBg} addHabit={handleAddHabit} />
         </div>
         <HabitList habits={habits} />
       </div>

@@ -16,6 +16,7 @@ export const getAllHabits = () => async (dispatch) => {
 export const postHabit = (data) => async (dispatch) => {
   try {
     const res = await usersApi.postHabit(data)
+    console.log(res)
     dispatch({
       type: types.CREATE_HABIT,
       payload: res,

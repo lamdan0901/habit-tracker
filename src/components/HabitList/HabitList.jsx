@@ -9,7 +9,7 @@ export default function HabitList({ habits }) {
         {habits.map((habit, index) => (
           <li key={index}>
             <Checkbox color="success" line>
-              {habit.name}
+              {habit.habitName}
             </Checkbox>
 
             <span className="habit-time">{habit.time}</span>
