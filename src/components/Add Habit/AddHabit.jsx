@@ -112,10 +112,6 @@ export default function AddHabit(props) {
             endDate={endDate}
             minDate={startDate}
             showPopperArrow={false}
-            // withPortal
-            // portalId="root-portal"
-            // calendarClassName="date-picker-inside"
-            // wrapperClassName="date-picker"
           />
 
           {/* Pick ending date (this is not picked by default)*/}

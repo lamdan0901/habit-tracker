@@ -1,11 +1,24 @@
 import { Link } from 'react-router-dom'
 import * as Bs from 'react-icons/bs'
+import { useState } from 'react'
+import { AiOutlineMenuFold, AiOutlineMenuUnfold } from 'react-icons/ai'
 import './SideNav.scss'
 
 export default function SideNav() {
+  const [sidebarOpened, setSidebarOpened] = useState(true)
+
   return (
-    <ul className="menu">
-      <li className="menu-item">avatar</li>
+    <ul className={sidebarOpened ? 'menu' : 'menu minimized'}>
+      <li className="add-btn">
+        <p>+</p>
+        <span
+          className="sidebar-icon"
+          onClick={() => {
+            setSidebarOpened(!sidebarOpened)
+          }}>
+          {sidebarOpened ? <AiOutlineMenuFold /> : <AiOutlineMenuUnfold />}
+        </span>
+      </li>
       <li className="menu-item active">
         <Link to="/">
           <Bs.BsFillHouseDoorFill />

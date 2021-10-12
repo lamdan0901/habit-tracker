@@ -9,9 +9,61 @@ a {
   padding: 50px 0 50px 15px;
   min-height: 100vh;
   min-width: 200px;
+  max-width: 200px;
+  overflow: hidden;
+  transition: all 0.5s ease;
+  position: relative;
+
+  .menu-item .menu-text {
+    opacity: 1;
+    position: absolute;
+    transition: opacity 0.5s ease;
+  }
+
+  &.minimized {
+    min-width: 80px;
+    max-width: 80px;
+
+    .menu-item .menu-text {
+      opacity: 0;
+    }
+  }
 }
 
-.menu .menu-item {
+.add-btn {
+  color: #fff;
+  padding: 15px 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  p {
+    font-size: 25px;
+  }
+
+  .sidebar-icon {
+    position: relative;
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    border-radius: 50%;
+    align-items: center;
+    font-size: 1.5rem;
+    z-index: 2;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      box-shadow: 5px 5px 5px rgba($color: #fff, $alpha: 0.2),
+        -5px -5px 5px rgba($color: #fff, $alpha: 0.2), -5px 5px 5px rgba($color: #fff, $alpha: 0.2),
+        5px -5px 5px rgba($color: #fff, $alpha: 0.2);
+    }
+  }
+}
+
+.menu-item {
   color: #fff;
   padding: 15px;
   border-radius: 10px 0 0 10px;
@@ -21,50 +73,58 @@ a {
   display: flex;
   align-items: center;
   position: relative;
-}
 
-.menu .menu-item:hover {
-  font-weight: 600;
-  & svg {
-    font-size: 18px;
+  &:hover {
+    padding: 14px;
+
+    .menu-text {
+      font-size: 17px;
+      transform: translateY(-1px);
+      margin-left: 9px;
+    }
+
+    & svg {
+      font-size: 18px;
+    }
   }
-}
 
-.menu .menu-item.active {
-  background-color: #fff;
-  font-weight: 600;
+  &.active {
+    background-color: #fff;
+    font-weight: 600;
 
-  a {
-    color: $primary-color;
+    &::before {
+      content: '';
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      background-color: $primary-color;
+      top: 0;
+      right: 0;
+      border-radius: 50%;
+      transform: translateY(-100%);
+      box-shadow: 10px 10px 0 0 #fff;
+    }
+
+    &::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      background-color: $primary-color;
+      border-radius: 50%;
+      bottom: 0;
+      right: 0;
+      transform: translateY(100%);
+      box-shadow: 10px -10px 0 0 #fff;
+    }
+
+    a {
+      color: $primary-color;
+    }
   }
-}
 
-.menu .menu-item.active::before {
-  content: '';
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  background-color: $primary-color;
-  top: 0;
-  right: 0;
-  border-radius: 50%;
-  transform: translateY(-100%);
-  box-shadow: 10px 10px 0 0 #fff;
-}
-.menu .menu-item.active::after {
-  content: '';
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  background-color: $primary-color;
-  border-radius: 50%;
-  bottom: 0;
-  right: 0;
-  transform: translateY(100%);
-  box-shadow: 10px -10px 0 0 #fff;
-}
-
-.menu .menu-item span {
-  display: inline-block;
-  margin-left: 10px;
+  span {
+    display: inline-block;
+    margin-left: 10px;
+  }
 }
