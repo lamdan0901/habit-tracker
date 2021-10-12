@@ -19,9 +19,9 @@ export default function SideNav() {
         </Link>
       </li>
       <li className="menu-item">
-        <Link to="/settings">
+        <Link to="/">
           <Bs.BsFillPeopleFill />
-          <span className="menu-text">Settings</span>
+          <span className="menu-text">Statistics</span>
         </Link>
       </li>
     </ul>

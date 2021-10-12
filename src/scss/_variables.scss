@@ -10,9 +10,9 @@ $confirm-btn-color: #2c98f0;
 $cancel-btn-color: #ff4040;
 
 /* *** Mixin *** */
-@mixin button {
-  border-radius: 5px;
-}
+// @mixin button {
+//   border-radius: 5px;
+// }
 
 /* *** Screen size for responsiveness *** */
 $tablet: 768px;

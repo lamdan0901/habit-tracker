@@ -6,7 +6,7 @@ import './MainLayout.scss'
 export default function MainLayout(props) {
   return (
     <main>
-      <div className={props.isBlur ? 'main-layout blur-active' : 'main-layout'}>
+      <div className="main-layout">
         <SideNav />
         <div className="content">
           <NavBar></NavBar>

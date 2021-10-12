@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import HabitList from 'components/HabitList/HabitList'
 import MainLayout from 'layouts/MainLayout'
+import AddHabit from 'components/Add Habit/AddHabit'
 import * as actions from 'actions/habitsActions'
 
 import './Home.scss'
-import AddHabit from 'components/Add Habit/AddHabit'
 
 export default function Home() {
   document.title = 'Home - Habit Tracker'
@@ -14,33 +14,34 @@ export default function Home() {
   let today = new Date(Date.now()).toDateString()
   today = today.slice(0, 3) + ', ' + today.slice(3)
 
-  const [isBlur, setIsBlur] = useState(false)
-
-  function setBlurBg(value) {
-    setIsBlur(value)
-  }
-
   const dispatch = useDispatch()
   const habits = useSelector((state) => state.habits)
-
-  function handleAddHabit(value) {
-    dispatch(actions.postHabit(value))
-    // console.log(value)
-  }
 
   useEffect(() => {
     dispatch(actions.getAllHabits())
   }, [dispatch])
 
+  function handleAddHabit(habit) {
+    dispatch(actions.postHabit(habit))
+  }
+
+  // function handleEditHabit(habit) {
+  //   dispatch(actions.putHabit(habit))
+  // }
+
+  // function handleDeleteHabit(habit) {
+  //   dispatch(actions.deleteHabit(habit))
+  // }
+
   return (
-    <MainLayout isBlur={isBlur}>
+    <MainLayout>
       <div className="home">
         <div className="header">
           <span>
-            <h3>Welcome + user name!</h3>
+            <h3>Welcome username!</h3>
             <h2>{today}</h2>
           </span>
-          <AddHabit setBlurBg={setBlurBg} addHabit={handleAddHabit} />
+          <AddHabit addHabit={handleAddHabit} />
         </div>
         <HabitList habits={habits} />
       </div>

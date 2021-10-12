@@ -11,6 +11,7 @@ export default function AddHabit(props) {
   registerLocale('vi', vi)
 
   const [modalOpened, setModalOpened] = useState(false)
+  const [error, setError] = useState('')
 
   const [habitName, setHabitName] = useState('')
   const [description, setDescription] = useState('')
@@ -18,22 +19,28 @@ export default function AddHabit(props) {
   const [startDate, setStartDate] = useState(new Date())
   const [endDate, setEndDate] = useState('')
 
-  function handleAddHabit() {
-    props.addHabit({
-      habitName,
-      description,
-      startDate: startDate.toString().slice(4, 15),
-      endDate: endDate.toString().slice(4, 15),
-      time: startDate.toString().slice(16, 21),
-      //and more :
-      // totalDay = endDate - startDate
-      // checkedTimes = 0 1 ...
-      //-> bar = checkedTimes/totalDay
-      //and remember to update the API's keys before moving on to editing and deleting habit
-      //if no endDate -> no progressBar
-    })
+  const StartDate = startDate.toString().slice(4, 15)
+  let EndDate = endDate.toString().slice(4, 15)
+  const totalDay = EndDate.slice(4, 6) - StartDate.slice(4, 6)
 
-    handleCloseModal()
+  function handleAddHabit() {
+    if (EndDate === StartDate) EndDate = null
+    if (!habitName) setError("Habit's name is not left blank!")
+    else {
+      props.addHabit({
+        habitName,
+        description,
+        StartDate,
+        EndDate,
+        time: startDate.toString().slice(16, 21),
+        checkedTimes: 0,
+        totalDay,
+        //remember to add data validation, notification
+        //and update the API's keys before moving on to editing and deleting habit
+      })
+
+      handleCloseModal()
+    }
   }
 
   function handleNameChange(e) {
@@ -45,11 +52,10 @@ export default function AddHabit(props) {
 
   function handleOpenModal() {
     setModalOpened(true)
-    props.setBlurBg(true)
   }
   function handleCloseModal() {
     setModalOpened(false)
-    props.setBlurBg(false)
+    setError('')
   }
 
   return (
@@ -71,7 +77,13 @@ export default function AddHabit(props) {
 
           <form className="data-fields">
             <div className="name-input">
-              <input type="text" placeholder=" " onChange={handleNameChange} value={props.name} />
+              <input
+                type="text"
+                placeholder=" "
+                className={error !== '' ? 'red-border' : ''}
+                onChange={handleNameChange}
+                value={props.name}
+              />
               <label>Habit's Name</label>
             </div>
 
@@ -87,7 +99,7 @@ export default function AddHabit(props) {
           </form>
 
           {/* Pick starting date */}
-          <label className="starting-label">Start Date and Time:</label>
+          <label className="starting-label">Start Date and Remind Time:</label>
           <DatePicker
             selected={startDate}
             onChange={(date) => setStartDate(date)}
@@ -125,12 +137,15 @@ export default function AddHabit(props) {
           />
 
           <div className="footer">
-            <button className="btn confirm-btn" onClick={handleAddHabit}>
-              ADD
-            </button>
-            <button className="btn cancel-btn" onClick={handleCloseModal}>
-              CANCEL
-            </button>
+            <div className="error-message">{error !== '' && error}</div>
+            <div>
+              <button className="btn confirm-btn" onClick={handleAddHabit}>
+                ADD
+              </button>
+              <button className="btn cancel-btn" onClick={handleCloseModal}>
+                CANCEL
+              </button>
+            </div>
           </div>
         </div>
       </Modal>

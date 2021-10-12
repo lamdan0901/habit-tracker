@@ -72,6 +72,11 @@ textarea {
     .description-input {
       position: relative;
 
+      .red-border {
+        border: 2px solid red;
+        padding-bottom: 18px;
+      }
+
       input,
       textarea {
         box-sizing: border-box;
@@ -126,8 +131,14 @@ textarea {
   .footer {
     display: flex;
     margin-top: 20px;
-    justify-content: flex-end;
+    justify-content: space-between;
     border-top: 1px solid $grey-color;
+
+    .error-message {
+      color: red;
+      font-weight: 500;
+      transform: translateY(16px);
+    }
   }
 }
 
@@ -160,16 +171,13 @@ textarea {
   background-color: rgba(0, 0, 0, 0.2);
 }
 
-// .ReactModal__Body--open {
-//   overflow-y: hidden;
-//   padding-right: 17px;
-// }
+// .ReactModal__Body--open {}
 
 // Animation:
 .ReactModal__Overlay {
   opacity: 0;
   transform: translateY(-30px);
-  transition: all 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
 }
 .ReactModal__Overlay--after-open {
   opacity: 1;
@@ -199,7 +207,7 @@ textarea {
   padding: 12px;
   font-size: 18px;
   transition: 0.25s ease;
-  transform: translateX(220px);
+  transform: translateX(225px);
 }
 
 .react-datepicker-popper {

@@ -1,0 +1,44 @@
+@import '../../scss/variables';
+
+.page_404 {
+  padding: 40px 0;
+  background: #fff;
+
+  .container {
+    max-width: 1300px;
+    margin: auto;
+  }
+}
+
+.four_zero_four_bg {
+  background-image: url(https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif);
+  height: 450px;
+  background-position: center;
+
+  h1 {
+    transform: translateY(-20px);
+    font-size: 80px;
+    text-align: center;
+  }
+}
+
+.box_404 {
+  margin-top: -50px;
+  text-align: center;
+
+  h3 {
+    font-size: 25px;
+  }
+
+  .link_404 {
+    color: #fff;
+    padding: 10px 20px;
+    background: $primary-color;
+    margin: 20px 0;
+    display: inline-block;
+
+    &:hover {
+      background: #f55613;
+    }
+  }
+}

@@ -1,9 +1,10 @@
+import store from 'redux/store'
 import { Provider } from 'react-redux'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 
 import Home from 'pages/Home/Home'
 import Schedule from 'pages/Schedule/Schedule'
-import store from 'redux/store'
+import NotFound from 'components/NotFound/NotFound'
 import './App.scss'
 
 export default function App() {
@@ -13,6 +14,7 @@ export default function App() {
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path="/schedule" component={Schedule} />
+          <Route component={NotFound} />
         </Switch>
       </BrowserRouter>
     </Provider>
