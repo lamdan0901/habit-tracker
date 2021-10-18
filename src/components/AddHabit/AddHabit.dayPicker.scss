@@ -1,0 +1,71 @@
+@import '../../scss/variables';
+
+.day-picker {
+  display: flex;
+  flex-direction: column;
+  & > label {
+    transform: translateY(7px);
+  }
+
+  .day-checkboxes {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.day-checkbox {
+  position: relative;
+
+  & > input[type='checkbox'] {
+    margin-left: 3px;
+    height: 50px;
+    width: 50px;
+    outline: none;
+    cursor: pointer;
+    border-radius: 50%;
+
+    border: 5px solid #e0e0e0;
+    -webkit-appearance: none;
+    box-shadow: -10px -10px 10px rgba(255, 255, 255, 0.5), 10px 10px 10px rgba(70, 70, 70, 0.12);
+
+    &:checked {
+      background-color: rgba($color: $primary-color, $alpha: 0.2);
+      border-color: $primary-color;
+      & + label {
+        color: #000;
+      }
+    }
+  }
+
+  & > label {
+    position: absolute;
+    color: #111111;
+    width: 10px;
+    cursor: pointer;
+    margin-left: 3px;
+
+    position: absolute;
+    top: 17px;
+    pointer-events: none;
+    transform: translateX(-40px);
+  }
+
+  &:nth-child(3) {
+    & > label {
+      transform: translateX(-43px);
+    }
+  }
+  &:nth-child(2),
+  &:nth-child(4),
+  &:nth-child(7) {
+    & > label {
+      transform: translateX(-42px);
+    }
+  }
+  &:nth-child(5) {
+    & > label {
+      transform: translateX(-38px);
+    }
+  }
+}

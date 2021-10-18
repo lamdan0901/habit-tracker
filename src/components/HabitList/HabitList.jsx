@@ -1,38 +1,49 @@
+import { useState } from 'react'
 import { Checkbox } from '@nextui-org/react'
-import ProgressBar from '@ramonak/react-progress-bar'
+import AddHabit from 'components/AddHabit/AddHabit'
 import './HabitList.scss'
 
-export default function HabitList({ habits }) {
+export default function HabitList(props) {
+  const [modalOpened, setModalOpened] = useState(false)
+
   return (
     <div className="habits-view">
       <ul className="habits-list">
-        {habits.map((habit, index) => (
-          <li
-            title="Click to view details"
-            key={index}
-            onClick={() => {
-              console.log('object')
-            }}>
-            <Checkbox color="success" line>
-              {habit.habitName}
+        {props.habits.map((habit, index) => (
+          <div key={index}>
+            {modalOpened && (
+              <AddHabit
+                editModalOpened={modalOpened}
+                editHabit={props.editHabit}
+                editMode={true}
+                habit={habit}
+              />
+            )}
+
+            <Checkbox
+              color="success"
+              title="Click to check this habit"
+              onClick={() => {
+                console.log('Checkbox clicked')
+              }}
+              className="checkbox">
+              {habit.name}
             </Checkbox>
 
-            <span className="habit-time">{habit.time}</span>
+            <li
+              title="Click to view details"
+              onClick={() => {
+                setModalOpened(true)
+              }}>
+              <div></div>
 
-            {habit.endDate !== null ? (
-              <ProgressBar
-                completed={Math.floor((habit.checkedTimes / habit.totalDay) * 100)}
-                width="100px"
-                height="15px"
-                labelAlignment="outside"
-                labelColor="#6a1b9a"
-              />
-            ) : (
+              <span className="habit-time">{habit.time}</span>
+
               <span>
                 Checked <strong>{habit.checkedTimes}</strong> times
               </span>
-            )}
-          </li>
+            </li>
+          </div>
         ))}
       </ul>
     </div>

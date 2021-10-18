@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import HabitList from 'components/HabitList/HabitList'
 import MainLayout from 'layouts/MainLayout'
-import AddHabit from 'components/Add Habit/AddHabit'
+import AddHabit from 'components/AddHabit/AddHabit'
 import * as actions from 'actions/habitsActions'
 
 import './Home.scss'
@@ -25,9 +25,9 @@ export default function Home() {
     dispatch(actions.postHabit(habit))
   }
 
-  // function handleEditHabit(habit) {
-  //   dispatch(actions.putHabit(habit))
-  // }
+  function handleEditHabit(habit) {
+    dispatch(actions.putHabit(habit))
+  }
 
   // function handleDeleteHabit(habit) {
   //   dispatch(actions.deleteHabit(habit))
@@ -41,9 +41,9 @@ export default function Home() {
             <h3>Welcome username!</h3>
             <h2>{today}</h2>
           </span>
-          <AddHabit addHabit={handleAddHabit} />
+          <AddHabit habit={''} addHabit={handleAddHabit} />
         </div>
-        <HabitList habits={habits} />
+        <HabitList editHabit={handleEditHabit} habits={habits} />
       </div>
     </MainLayout>
   )

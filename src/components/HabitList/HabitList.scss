@@ -3,14 +3,23 @@
 .habits-view {
   width: 100%;
 }
+
 .habits-list {
   position: relative;
-  max-width: 1200px;
+  max-width: 1300px;
+
+  .checkbox {
+    position: absolute;
+    margin-top: 4px;
+    margin-left: 10px;
+  }
+
   li {
     display: flex;
     justify-content: space-between;
     padding: 5px;
     margin: 5px;
+    cursor: pointer;
     border-radius: 5px;
     transition: all 0.2s;
 
@@ -30,6 +39,7 @@
     .habit-time {
       transform: translateY(2px);
       left: 45%;
+      pointer-events: none;
       position: absolute;
     }
   }

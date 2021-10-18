@@ -6,5 +6,9 @@
   .header {
     display: flex;
     justify-content: space-between;
+
+    span {
+      margin-left: 10px;
+    }
   }
 }

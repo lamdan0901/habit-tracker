@@ -9,7 +9,7 @@ export default function MainLayout(props) {
       <div className="main-layout">
         <SideNav />
         <div className="content">
-          <NavBar></NavBar>
+          <NavBar />
           <div className="children">{props.children}</div>
         </div>
       </div>

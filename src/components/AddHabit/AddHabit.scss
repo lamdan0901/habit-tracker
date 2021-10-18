@@ -1,0 +1,216 @@
+@import '../../scss/variables';
+
+input {
+  outline: none;
+}
+
+textarea {
+  outline: none;
+  resize: none;
+  overflow: auto;
+}
+
+.btn {
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  letter-spacing: 0.16px;
+  font-weight: 500;
+  line-height: 24px;
+
+  &.add-btn {
+    background-color: $primary-color;
+    border-radius: 50%;
+    padding: 12px 17px;
+    color: #fff;
+    font-size: 25px;
+    transition: all 0.2s;
+    font-weight: 400;
+    margin-right: 8px;
+
+    &:hover {
+      box-shadow: 5px 5px 5px rgba($color: $primary-color, $alpha: 0.2),
+        -5px -5px 5px rgba($color: $primary-color, $alpha: 0.2),
+        -5px 5px 5px rgba($color: $primary-color, $alpha: 0.2),
+        5px -5px 5px rgba($color: $primary-color, $alpha: 0.2);
+    }
+  }
+
+  .pick-color-btn {
+    width: 25px;
+  }
+
+  &.confirm-btn {
+    background: $light-yellow-color;
+    color: $confirm-btn-color;
+    transform: translateY(5px);
+
+    &:hover {
+      background-color: #b8d8e06e;
+    }
+  }
+
+  &.cancel-btn {
+    background: $light-yellow-color;
+    color: $cancel-btn-color;
+    transform: translateY(5px);
+
+    &:hover {
+      background-color: #ff7a7a3a;
+    }
+  }
+}
+
+.modal-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .title {
+    margin: 10px 0 20px 0px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    font-weight: 400;
+    border-bottom: 1px solid $grey-color;
+  }
+
+  .data-fields {
+    display: flex;
+    flex-direction: column;
+
+    .name-input {
+      display: flex;
+      justify-content: space-between;
+
+      label {
+        color: #000;
+      }
+
+      input {
+        box-sizing: border-box;
+        border: 1px solid #9b9b9b;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        transform: translateY(-10px);
+
+        width: 73%;
+        height: 20px;
+        padding: 18px;
+        font-size: 20px;
+        background-color: $light-yellow-color;
+
+        &:hover {
+          border: 2px solid #9b9b9b;
+          padding: 17px 18px;
+        }
+
+        &:focus {
+          border: 2px solid $primary-color;
+          padding: 17px 18px;
+        }
+
+        &.red-border {
+          border: 2px solid red;
+          padding: 17px 18px;
+        }
+      }
+    }
+  }
+
+  .time-and-color-pickers {
+    display: flex;
+  }
+
+  .footer {
+    display: flex;
+    margin-top: 20px;
+    justify-content: space-between;
+    border-top: 1px solid $grey-color;
+
+    .error-message {
+      color: red;
+      font-weight: 500;
+      transform: translateY(16px);
+    }
+  }
+}
+
+.time-picker {
+  display: flex;
+  justify-content: space-between;
+
+  .time-label {
+    transform: translateY(4px);
+    width: 110px;
+  }
+
+  .date-input {
+    background-color: $light-yellow-color;
+    border: 1px solid #9b9b9b;
+    box-sizing: border-box;
+    text-align: center;
+    border-radius: 4px;
+    height: 12px;
+    width: 120px;
+    padding: 12px;
+    font-size: 18px;
+    transform: translate(250px, -10px);
+  }
+
+  .react-datepicker-wrapper {
+    width: 150px;
+
+    input.date-input {
+      transform: translate(0px, 0px);
+    }
+  }
+
+  .react-datepicker-popper {
+    padding: 0;
+  }
+}
+
+.Modal {
+  position: absolute;
+  z-index: 5;
+  top: 30px;
+  left: 30px;
+  right: 30px;
+  bottom: 30px;
+  max-width: 500px;
+  max-height: 400px;
+
+  margin: auto;
+  outline: none;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid $grey-color;
+  background-color: $light-yellow-color;
+  box-shadow: 6px 6px 5px rgba(0, 0, 0, 0.3);
+}
+
+.Overlay {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+// .ReactModal__Body--open {}
+
+// ReactModal Animation:
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+}
