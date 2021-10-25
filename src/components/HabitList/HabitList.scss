@@ -8,46 +8,45 @@
   position: relative;
   max-width: 1300px;
 
-  .checkbox {
+  .check-habit-box {
     position: absolute;
-    margin-top: 4px;
+    margin-top: 13px;
     margin-left: 10px;
+    display: flex;
+    padding: 15px 0;
+    transform: translateY(-15px);
+    z-index: 1;
   }
 
   li {
+    position: relative;
     display: flex;
     justify-content: space-between;
-    padding: 5px;
-    margin: 5px;
+    padding: 10px 5px;
+    margin: 10px 5px;
+    height: 45px;
     cursor: pointer;
     border-radius: 5px;
-    transition: all 0.2s;
+    align-items: center;
 
-    &:hover {
-      background-color: $grey-color;
-
-      .menu-icon {
-        button {
-          background-color: $grey-color;
-          &:hover {
-            background-color: #fff;
-          }
-        }
-      }
+    .habit-name {
+      transform: translateX(25px);
     }
 
     .habit-time {
-      transform: translateY(2px);
-      left: 45%;
-      pointer-events: none;
+      left: 46%;
       position: absolute;
     }
   }
 }
 
-span.jsx-1463224140.text.line-through {
-  font-size: 18px;
+// override the checkbox's text color
+span.jsx-1463224140.text,
+span.jsx-1355072277.text,
+.jsx-1463224140.icon-check {
+  color: inherit;
 }
+
 // @media (max-width: 768px) {
 
 // }

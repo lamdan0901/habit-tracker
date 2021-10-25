@@ -5,7 +5,7 @@ a {
 }
 
 .menu {
-  background-color: $primary-color;
+  background: transparent;
   padding: 50px 0 50px 15px;
   min-height: 100vh;
   min-width: 200px;
@@ -30,16 +30,12 @@ a {
   }
 }
 
-.add-btn {
+.sidebar-top {
   color: #fff;
   padding: 15px 5px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  p {
-    font-size: 25px;
-  }
 
   .sidebar-icon {
     position: relative;
@@ -63,7 +59,7 @@ a {
   }
 }
 
-.menu-item {
+a.menu-item {
   color: #fff;
   padding: 15px;
   border-radius: 10px 0 0 10px;
@@ -74,57 +70,52 @@ a {
   align-items: center;
   position: relative;
 
-  &:hover {
-    padding: 14px;
+  .menu-text {
+    display: inline-block;
+    margin-left: 20px;
+  }
 
+  &:hover {
     .menu-text {
-      font-size: 17px;
-      transform: translateY(-1px);
-      margin-left: 9px;
+      transition: all 0.1s ease-in;
+      transform: scale(1.1);
+      margin-left: 23px;
     }
 
     & svg {
-      font-size: 18px;
+      transition: all 0.1s ease-in;
+      transform: scale(1.1);
     }
   }
+}
 
-  &.active {
-    background-color: #fff;
-    font-weight: 600;
+a.menu-item.item-active {
+  background: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  position: relative;
+  color: $primary-color;
 
-    &::before {
-      content: '';
-      width: 20px;
-      height: 20px;
-      position: absolute;
-      background-color: $primary-color;
-      top: 0;
-      right: 0;
-      border-radius: 50%;
-      transform: translateY(-100%);
-      box-shadow: 10px 10px 0 0 #fff;
-    }
-
-    &::after {
-      content: '';
-      width: 20px;
-      height: 20px;
-      position: absolute;
-      background-color: $primary-color;
-      border-radius: 50%;
-      bottom: 0;
-      right: 0;
-      transform: translateY(100%);
-      box-shadow: 10px -10px 0 0 #fff;
-    }
-
-    a {
-      color: $primary-color;
-    }
+  &::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 50%;
+    transform: translateY(-100%);
+    box-shadow: 10px 10px 0 0 rgb(238, 238, 249);
   }
 
-  span {
-    display: inline-block;
-    margin-left: 10px;
+  &::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    border-radius: 50%;
+    bottom: 0;
+    right: 0;
+    transform: translateY(100%);
+    box-shadow: 10px -10px 0 0 rgb(238, 238, 249);
   }
 }

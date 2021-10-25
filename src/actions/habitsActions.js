@@ -1,9 +1,9 @@
-import usersApi from '../apis/habitsApi'
+import habitsApi from '../apis/habitsApi'
 import * as types from './types'
 
 export const getAllHabits = () => async (dispatch) => {
   try {
-    const res = await usersApi.getAllHabits()
+    const res = await habitsApi.getAllHabits()
     dispatch({
       type: types.GET_ALL_HABITS,
       payload: res,
@@ -15,8 +15,7 @@ export const getAllHabits = () => async (dispatch) => {
 
 export const postHabit = (data) => async (dispatch) => {
   try {
-    const res = await usersApi.postHabit(data)
-    console.log(res)
+    const res = await habitsApi.postHabit(data)
     dispatch({
       type: types.CREATE_HABIT,
       payload: res,
@@ -26,12 +25,12 @@ export const postHabit = (data) => async (dispatch) => {
   }
 }
 
-export const putHabit = (id, user) => async (dispatch) => {
+export const putHabit = (habit) => async (dispatch) => {
   try {
-    await usersApi.putHabit(id, user)
+    await habitsApi.putHabit(habit.id, habit)
     dispatch({
       type: types.UPDATE_HABIT,
-      payload: [id, user],
+      payload: [habit.id, habit],
     })
   } catch (error) {
     Promise.reject(error)
@@ -40,7 +39,7 @@ export const putHabit = (id, user) => async (dispatch) => {
 
 export const deleteHabit = (id) => async (dispatch) => {
   try {
-    await usersApi.deleteHabit(id)
+    await habitsApi.deleteHabit(id)
     dispatch({
       type: types.DELETE_HABIT,
       payload: id,

@@ -37,8 +37,9 @@ textarea {
     }
   }
 
-  .pick-color-btn {
-    width: 25px;
+  &.pick-color-btn {
+    width: 70px;
+    height: 25px;
   }
 
   &.confirm-btn {
@@ -55,7 +56,6 @@ textarea {
     background: $light-yellow-color;
     color: $cancel-btn-color;
     transform: translateY(5px);
-
     &:hover {
       background-color: #ff7a7a3a;
     }
@@ -125,7 +125,7 @@ textarea {
 
   .footer {
     display: flex;
-    margin-top: 20px;
+    margin-top: 5px;
     justify-content: space-between;
     border-top: 1px solid $grey-color;
 

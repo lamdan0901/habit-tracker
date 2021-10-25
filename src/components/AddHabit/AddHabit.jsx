@@ -1,31 +1,56 @@
 import { useState } from 'react'
 import Modal from 'react-modal'
-import DatePicker from 'react-datepicker'
-import { registerLocale } from 'react-datepicker'
-import vi from 'date-fns/locale/vi'
 import { SketchPicker } from 'react-color'
+import DatePicker from 'react-datepicker'
+// import { registerLocale } from 'react-datepicker'
+// import vi from 'date-fns/locale/vi'
+// registerLocale('vi', vi)
 
 import DayPicker from './AddHabit.dayPicker'
-
 import 'react-datepicker/dist/react-datepicker.css'
+import 'react-toastify/dist/ReactToastify.css'
 import './AddHabit.scss'
-
-registerLocale('vi', vi)
 
 export default function AddHabit(props) {
   const [modalOpened, setModalOpened] = useState(!!props.editModalOpened)
-  const [startDate, setStartDate] = useState(new Date())
   const [error, setError] = useState('')
 
   const initialHabitValues = !props.editMode
     ? {
         name: '',
-        daysChecked: [startDate.toString().slice(0, 3)],
-        time: startDate.toString().slice(16, 21),
+        daysChecked: [new Date().toString().slice(0, 3)],
+        time: new Date(),
         checkedTimes: 0,
-        color: '#fff',
+        // checked: false,
+        bgColor: {
+          hex: '#2a291b',
+          rgb: {
+            r: 228,
+            g: 228,
+            b: 228,
+            a: 1,
+          },
+        },
+        textColor: {
+          hex: '#eae7e7',
+          rgb: {
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 1,
+          },
+        },
       }
-    : props.habit
+    : {
+        id: props.habit.id,
+        name: props.habit.name,
+        daysChecked: props.habit.daysChecked,
+        time: new Date(props.habit.time),
+        checkedTimes: props.habit.checkedTimes,
+        // checked: false,
+        bgColor: props.habit.bgColor,
+        textColor: props.habit.textColor,
+      }
 
   const [habit, setHabit] = useState(initialHabitValues)
 
@@ -36,21 +61,17 @@ export default function AddHabit(props) {
     }))
   }
 
-  // console.log(habit)
-
   function setTime(date) {
-    setStartDate(date)
-
     setHabit((prevValue) => ({
       ...prevValue,
-      time: date.toString().slice(16, 21),
+      time: date,
     }))
   }
 
   function saveHabit() {
     if (!habit.name) setError("Habit's name is not left blank!")
     else {
-      props.editMode ? props.editHabit(habit) : props.addHabit(habit)
+      props.editMode ? props.onEditHabit(habit) : props.onAddHabit(habit)
       handleCloseModal()
     }
   }
@@ -65,31 +86,50 @@ export default function AddHabit(props) {
     })
   }
 
+  function handleDelete() {
+    props.onDeleteHabit(habit.id)
+    handleCloseModal()
+  }
+
   function handleOpenModal() {
     setModalOpened(true)
   }
   function handleCloseModal() {
     setModalOpened(false)
-    // props.editMode && props.closeModal()
+    props.editMode && props.onCloseModal()
     setHabit(initialHabitValues)
     setError('')
   }
 
-  const [displayColorPicker, setDisplayColorPicker] = useState(false)
+  const [displayBgColorPicker, setDisplayBgColorPicker] = useState(false)
+  const [displayTextColorPicker, setDisplayTextColorPicker] = useState(false)
 
-  function handleChooseColorClick(e) {
-    setDisplayColorPicker(!displayColorPicker)
+  function handleChooseBgColorClick(e) {
+    setDisplayBgColorPicker(!displayBgColorPicker)
+    e.preventDefault()
+  }
+  function handleChooseTextColorClick(e) {
+    setDisplayTextColorPicker(!displayTextColorPicker)
     e.preventDefault()
   }
 
-  function handleChooseColorClose() {
-    setDisplayColorPicker(false)
+  function handleChooseBgColorClose() {
+    setDisplayBgColorPicker(false)
+  }
+  function handleChooseTextColorClose() {
+    setDisplayTextColorPicker(false)
   }
 
-  function handleColorChange(color, event) {
+  function handleBgColorChange(bgColor, event) {
     setHabit((prevValue) => ({
       ...prevValue,
-      color: color,
+      bgColor: bgColor,
+    }))
+  }
+  function handleTextColorChange(textColor, event) {
+    setHabit((prevValue) => ({
+      ...prevValue,
+      textColor: textColor,
     }))
   }
 
@@ -108,9 +148,11 @@ export default function AddHabit(props) {
 
   return (
     <div>
-      <button className="btn add-btn" onClick={handleOpenModal}>
-        +
-      </button>
+      {!props.editMode && (
+        <button className="btn add-btn" onClick={handleOpenModal}>
+          +
+        </button>
+      )}
 
       <Modal
         isOpen={modalOpened}
@@ -121,7 +163,7 @@ export default function AddHabit(props) {
         overlayClassName="Overlay">
         {/* -------------------------- */}
         <div className="modal-content">
-          <h2 className="title">{props.editMode ? 'Save Habit' : 'Add Habit'}</h2>
+          <h2 className="title">{props.editMode ? 'Edit Habit' : 'Add Habit'}</h2>
 
           <form className="data-fields">
             <div className="name-input">
@@ -132,35 +174,54 @@ export default function AddHabit(props) {
                 className={error !== '' ? 'red-border' : ''}
                 name="name"
                 onChange={handleChange}
-                defaultValue={props.habit.name}
+                defaultValue={habit.name}
               />
             </div>
 
-            <div className="time-and-color-pickers">
-              <div className="time-picker">
-                <label className="time-label">Pick A Time:</label>
-                <DatePicker
-                  selected={startDate}
-                  onChange={(date) => setTime(date)}
-                  showTimeSelect
-                  showTimeSelectOnly
-                  timeIntervals={15}
-                  locale="vi"
-                  showPopperArrow={false}
-                  timeCaption="Time"
-                  dateFormat="h:mm aa"
-                  className="date-input"
-                />
+            <div className="time-picker">
+              <label className="time-label">Pick A Time:</label>
+              <DatePicker
+                selected={habit.time}
+                onChange={(date) => setTime(date)}
+                showTimeSelect
+                showTimeSelectOnly
+                timeIntervals={15}
+                showPopperArrow={false}
+                timeCaption="Time"
+                dateFormat="h:mm aa"
+                className="date-input"
+              />
+            </div>
+
+            <div className="color-pickers">
+              <div className="bgColor-picker">
+                <label htmlFor="">Background Color: </label>
+                <button
+                  className="btn pick-color-btn"
+                  onClick={handleChooseBgColorClick}
+                  style={{ backgroundColor: habit.bgColor.hex }}>
+                  <span style={{ color: habit.textColor.hex }}>{habit.bgColor.hex}</span>
+                </button>
+                {displayBgColorPicker ? (
+                  <div style={popover}>
+                    <div style={cover} onClick={handleChooseBgColorClose} />
+                    <SketchPicker color={habit.bgColor} onChange={handleBgColorChange} />
+                  </div>
+                ) : null}
               </div>
 
-              <div>
-                <button className="btn pick-color-btn" onClick={handleChooseColorClick}>
-                  Pick A Color
+              <div className="textColor-picker">
+                <label htmlFor="">Text Color: </label>
+                <button
+                  className="btn pick-color-btn"
+                  onClick={handleChooseTextColorClick}
+                  style={{ backgroundColor: habit.textColor.hex }}>
+                  <span style={{ color: habit.bgColor.hex }}>{habit.textColor.hex}</span>
                 </button>
-                {displayColorPicker ? (
+                {displayTextColorPicker ? (
                   <div style={popover}>
-                    <div style={cover} onClick={handleChooseColorClose} />
-                    <SketchPicker color={habit.color} onChange={handleColorChange} />
+                    <div style={cover} onClick={handleChooseTextColorClose} />
+                    <SketchPicker color={habit.textColor} onChange={handleTextColorChange} />
                   </div>
                 ) : null}
               </div>
@@ -172,6 +233,11 @@ export default function AddHabit(props) {
           <div className="footer">
             <div className="error-message">{error !== '' && error}</div>
             <div>
+              {props.editMode && (
+                <button className="btn cancel-btn" onClick={handleDelete}>
+                  DELETE
+                </button>
+              )}
               <button className="btn confirm-btn" onClick={saveHabit}>
                 {props.editMode ? 'SAVE' : 'ADD'}
               </button>
