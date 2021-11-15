@@ -12,7 +12,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import './animate.min.css'
 import './Home.scss'
 
-export default function Home() {
+export default function Home(props) {
   document.title = 'Home - Habit Tracker'
 
   let today = new Date(Date.now()).toDateString()
@@ -23,16 +23,10 @@ export default function Home() {
 
   const [renderHomePage, setRenderHomePage] = useState(false)
 
-  const [habitListLoadError, setHabitListLoadError] = useState('')
-
   useEffect(() => {
-    dispatch(actions.getAllHabits())
-      .then(() => {
-        setRenderHomePage(true)
-      })
-      .catch((error) => {
-        setHabitListLoadError(`Something goes wrong! <br />${error}`)
-      })
+    dispatch(actions.getAllHabits()).then(() => {
+      setRenderHomePage(true)
+    })
   }, [dispatch])
 
   function handleAddHabit(habit) {
@@ -76,7 +70,7 @@ export default function Home() {
 
   function displayNotif(msg, notify) {
     toast.promise(notify, {
-      pending: 'Promise is pending...',
+      pending: 'Working on it...',
       success: {
         render() {
           return msg
@@ -105,13 +99,13 @@ export default function Home() {
 
   return (
     <>
-      <MainLayout>
+      <MainLayout sidebarOpened={props.sidebarOpened} setSidebarOpened={props.setSidebarOpened}>
         {renderHomePage ? (
           <div className="home">
             <div className="header">
               <span>
-                <h3>Welcome username!</h3>
-                <h2>{today}</h2>
+                <h3>{today}</h3>
+                <h2>Welcome username!</h2>
               </span>
               <AddHabit onAddHabit={handleAddHabit} />
             </div>
@@ -121,12 +115,10 @@ export default function Home() {
               habits={habits}
             />
           </div>
-        ) : !habitListLoadError ? (
+        ) : (
           <Loading size="xlarge" color="warning" textColor="warning" className="loading-animation">
             Loading...
           </Loading>
-        ) : (
-          <h2 className="error-text">{habitListLoadError}</h2>
         )}
       </MainLayout>
     </>

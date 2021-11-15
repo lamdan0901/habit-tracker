@@ -45,13 +45,13 @@ export default function HabitList(props) {
                 onClick={() => {
                   handleChooseHabit(habit)
                 }}>
-                <span></span>
+                <div></div>
 
-                <span className="habit-time">{new Date(habit.time).toString().slice(16, 21)}</span>
+                <div className="habit-time">{new Date(habit.time).toString().slice(16, 21)}</div>
 
-                <span>
+                <div className="checked-time">
                   Checked <strong>{habit.checkedTimes}</strong> times
-                </span>
+                </div>
               </li>
             </div>
           ))}

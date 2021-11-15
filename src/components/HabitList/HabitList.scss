@@ -2,18 +2,18 @@
 
 .habits-view {
   width: 100%;
+  overflow-x: auto;
 }
 
 .habits-list {
   position: relative;
-  max-width: 1300px;
 
   .check-habit-box {
     position: absolute;
     margin-top: 13px;
     margin-left: 10px;
     display: flex;
-    padding: 15px 0;
+    padding: 15px 10px;
     transform: translateY(-15px);
     z-index: 1;
   }
@@ -22,7 +22,7 @@
     position: relative;
     display: flex;
     justify-content: space-between;
-    padding: 10px 5px;
+    padding: 10px 15px;
     margin: 10px 5px;
     height: 45px;
     cursor: pointer;
@@ -34,19 +34,39 @@
     }
 
     .habit-time {
-      left: 46%;
+      left: 50%;
       position: absolute;
     }
   }
 }
 
 // override the checkbox's text color
-span.jsx-1463224140.text,
-span.jsx-1355072277.text,
-.jsx-1463224140.icon-check {
+.jsx-1463224140.icon-check,
+span.jsx-2293672674.text,
+span.jsx-3904811003.text {
   color: inherit;
 }
 
-// @media (max-width: 768px) {
+@media (min-width: 1366px) {
+  .habits-list {
+    margin: auto;
+    max-width: 1095px;
+  }
+}
 
-// }
+@media (max-width: 480px) {
+  .habits-list {
+    li {
+      height: 100px;
+
+      .habit-time {
+        left: 15px;
+      }
+
+      .checked-time {
+        transform: translateY(25px);
+        position: absolute;
+      }
+    }
+  }
+}

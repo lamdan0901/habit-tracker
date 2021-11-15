@@ -1,6 +1,6 @@
 import React from 'react'
 import { ToastContainer } from 'react-toastify'
-import SideNav from 'components/SideNav/SideNav'
+import Sidebar from 'components/Sidebar/Sidebar'
 import NavBar from 'components/NavBar/NavBar'
 import './MainLayout.scss'
 
@@ -10,7 +10,7 @@ export default function MainLayout(props) {
       <ToastContainer autoClose={2000} />
       <React.StrictMode>
         <div className="main-layout">
-          <SideNav />
+          <Sidebar sidebarOpened={props.sidebarOpened} setSidebarOpened={props.setSidebarOpened} />
           <div className="content">
             <NavBar />
             <div className="children">{props.children}</div>
