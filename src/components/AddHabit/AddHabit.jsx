@@ -1,10 +1,7 @@
 import { useState } from 'react'
 import Modal from 'react-modal'
-import { SketchPicker } from 'react-color'
-import DatePicker from 'react-datepicker'
-// import { registerLocale } from 'react-datepicker'
-// import vi from 'date-fns/locale/vi'
-// registerLocale('vi', vi)
+import MobileTimePicker from '@mui/lab/MobileTimePicker'
+import TextField from '@mui/material/TextField'
 
 import DayPicker from './AddHabit.dayPicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -54,6 +51,8 @@ export default function AddHabit(props) {
 
   const [habit, setHabit] = useState(initialHabitValues)
 
+  // console.log(habit)
+
   function handleDayCheck(days) {
     setHabit((prevValue) => ({
       ...prevValue,
@@ -101,57 +100,60 @@ export default function AddHabit(props) {
     setError('')
   }
 
-  const [displayBgColorPicker, setDisplayBgColorPicker] = useState(false)
-  const [displayTextColorPicker, setDisplayTextColorPicker] = useState(false)
+  // const [displayBgColorPicker, setDisplayBgColorPicker] = useState(false)
+  // const [displayTextColorPicker, setDisplayTextColorPicker] = useState(false)
 
-  function handleChooseBgColorClick(e) {
-    setDisplayBgColorPicker(!displayBgColorPicker)
-    e.preventDefault()
-  }
-  function handleChooseTextColorClick(e) {
-    setDisplayTextColorPicker(!displayTextColorPicker)
-    e.preventDefault()
-  }
+  // function handleChooseBgColorClick(e) {
+  //   setDisplayBgColorPicker(!displayBgColorPicker)
+  //   e.preventDefault()
+  // }
+  // function handleChooseTextColorClick(e) {
+  //   setDisplayTextColorPicker(!displayTextColorPicker)
+  //   e.preventDefault()
+  // }
 
-  function handleChooseBgColorClose() {
-    setDisplayBgColorPicker(false)
-  }
-  function handleChooseTextColorClose() {
-    setDisplayTextColorPicker(false)
-  }
+  // function handleChooseBgColorClose() {
+  //   setDisplayBgColorPicker(false)
+  // }
+  // function handleChooseTextColorClose() {
+  //   setDisplayTextColorPicker(false)
+  // }
 
-  function handleBgColorChange(bgColor, event) {
-    setHabit((prevValue) => ({
-      ...prevValue,
-      bgColor: bgColor,
-    }))
-  }
-  function handleTextColorChange(textColor, event) {
-    setHabit((prevValue) => ({
-      ...prevValue,
-      textColor: textColor,
-    }))
-  }
+  // function handleBgColorChange(bgColor, event) {
+  //   setHabit((prevValue) => ({
+  //     ...prevValue,
+  //     bgColor: bgColor,
+  //   }))
+  // }
+  // function handleTextColorChange(textColor, event) {
+  //   setHabit((prevValue) => ({
+  //     ...prevValue,
+  //     textColor: textColor,
+  //   }))
+  // }
 
   //color picker' style
-  const popover = {
-    position: 'absolute',
-    zIndex: '2',
-  }
-  const cover = {
-    position: 'fixed',
-    top: '0px',
-    right: '0px',
-    bottom: '0px',
-    left: '0px',
-  }
+  // const popover = {
+  //   position: 'absolute',
+  //   zIndex: '2',
+  // }
+  // const cover = {
+  //   position: 'fixed',
+  //   top: '0px',
+  //   right: '0px',
+  //   bottom: '0px',
+  //   left: '0px',
+  // }
 
   return (
     <div>
       {!props.editMode && (
-        <button className="btn add-btn" onClick={handleOpenModal}>
-          +
-        </button>
+        <div>
+          <button className="btn add-btn" onClick={handleOpenModal}>
+            +
+          </button>
+          <div className="add-btn-text">Add Habit</div>
+        </div>
       )}
 
       <Modal
@@ -180,7 +182,18 @@ export default function AddHabit(props) {
 
             <div className="time-picker">
               <label className="time-label">Pick A Time:</label>
-              <DatePicker
+
+              <MobileTimePicker
+                label="Select time"
+                orientation="portrait"
+                ampm
+                value={habit.time}
+                onChange={(newValue) => {
+                  setTime(newValue)
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+              {/* <DatePicker
                 selected={habit.time}
                 onChange={(date) => setTime(date)}
                 showTimeSelect
@@ -190,41 +203,7 @@ export default function AddHabit(props) {
                 timeCaption="Time"
                 dateFormat="h:mm aa"
                 className="date-input"
-              />
-            </div>
-
-            <div className="color-pickers">
-              <div className="bgColor-picker">
-                <label htmlFor="">Background Color: </label>
-                <button
-                  className="btn pick-color-btn"
-                  onClick={handleChooseBgColorClick}
-                  style={{ backgroundColor: habit.bgColor.hex }}>
-                  <span style={{ color: habit.textColor.hex }}>{habit.bgColor.hex}</span>
-                </button>
-                {displayBgColorPicker ? (
-                  <div style={popover}>
-                    <div style={cover} onClick={handleChooseBgColorClose} />
-                    <SketchPicker color={habit.bgColor} onChange={handleBgColorChange} />
-                  </div>
-                ) : null}
-              </div>
-
-              <div className="textColor-picker">
-                <label htmlFor="">Text Color: </label>
-                <button
-                  className="btn pick-color-btn"
-                  onClick={handleChooseTextColorClick}
-                  style={{ backgroundColor: habit.textColor.hex }}>
-                  <span style={{ color: habit.bgColor.hex }}>{habit.textColor.hex}</span>
-                </button>
-                {displayTextColorPicker ? (
-                  <div style={popover}>
-                    <div style={cover} onClick={handleChooseTextColorClose} />
-                    <SketchPicker color={habit.textColor} onChange={handleTextColorChange} />
-                  </div>
-                ) : null}
-              </div>
+              />*/}
             </div>
 
             <DayPicker daysCheck={habit.daysChecked} onDaysCheck={handleDayCheck} />

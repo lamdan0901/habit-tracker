@@ -1,4 +1,6 @@
 import React from 'react'
+import AdapterDateFns from '@mui/lab/AdapterDateFns'
+import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import { ToastContainer } from 'react-toastify'
 import Sidebar from 'components/Sidebar/Sidebar'
 import NavBar from 'components/NavBar/NavBar'
@@ -9,13 +11,18 @@ export default function MainLayout(props) {
     <main>
       <ToastContainer autoClose={2000} />
       <React.StrictMode>
-        <div className="main-layout">
-          <Sidebar sidebarOpened={props.sidebarOpened} setSidebarOpened={props.setSidebarOpened} />
-          <div className="content">
-            <NavBar />
-            <div className="children">{props.children}</div>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <div className="main-layout">
+            <Sidebar
+              sidebarOpened={props.sidebarOpened}
+              setSidebarOpened={props.setSidebarOpened}
+            />
+            <div className="content">
+              <NavBar />
+              <div className="children">{props.children}</div>
+            </div>
           </div>
-        </div>
+        </LocalizationProvider>
       </React.StrictMode>
     </main>
   )

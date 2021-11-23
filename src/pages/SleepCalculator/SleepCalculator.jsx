@@ -2,8 +2,6 @@ import React from 'react'
 import TextField from '@mui/material/TextField'
 import StaticTimePicker from '@mui/lab/StaticTimePicker'
 import MobileTimePicker from '@mui/lab/MobileTimePicker'
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import LocalizationProvider from '@mui/lab/LocalizationProvider'
 
 import { useState } from 'react'
 
@@ -17,8 +15,7 @@ export default function SleepCalculator(props) {
   const [moreInfoShowed, setMoreInfoShowed] = useState(false)
 
   const [time, setTime] = useState(new Date())
-  // console.log(time.toString().slice(16, 21))
-  // const [time, setTime] = useState({ hour: 7, minute: 20 })
+
   const [calculatedTime, setCalculatedTime] = useState({
     sleepTime1: { hour: 0, minute: 0 },
     sleepTime2: { hour: 0, minute: 0 },
@@ -95,106 +92,103 @@ export default function SleepCalculator(props) {
   }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <MainLayout sidebarOpened={props.sidebarOpened} setSidebarOpened={props.setSidebarOpened}>
-        <div className="sleep-cal">
-          <h3>You have to wake up at...</h3>
+    <MainLayout sidebarOpened={props.sidebarOpened} setSidebarOpened={props.setSidebarOpened}>
+      <div className="sleep-cal">
+        <h3>You want to wake up at...</h3>
 
-          <div className="selector-wrapper">
-            {props.windowWidth > 480 ? (
-              <StaticTimePicker
-                label="Select time you have to wake up at"
-                ampm
-                orientation={props.windowWidth > 768 ? 'landscape' : 'portrait'}
-                openTo="hours"
-                value={time}
-                onChange={(newValue) => {
-                  setTime(newValue)
-                }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            ) : (
-              <MobileTimePicker
-                label="Select time"
-                orientation="portrait"
-                ampm
-                value={time}
-                onChange={(newValue) => {
-                  setTime(newValue)
-                }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            )}
+        <div className="selector-wrapper">
+          {props.windowWidth > 480 ? (
+            <StaticTimePicker
+              ampm
+              orientation={props.windowWidth > 768 ? 'landscape' : 'portrait'}
+              openTo="hours"
+              value={time}
+              onChange={(newValue) => {
+                setTime(newValue)
+              }}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          ) : (
+            <MobileTimePicker
+              label="Select time"
+              orientation="portrait"
+              ampm
+              value={time}
+              onChange={(newValue) => {
+                setTime(newValue)
+              }}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          )}
 
-            <button
-              className="cal-btn"
-              onClick={() => {
-                handleCalculatedTimeChange()
-                setResultsShowed(true)
-              }}>
-              Calculate
-            </button>
+          <button
+            className="cal-btn"
+            onClick={() => {
+              handleCalculatedTimeChange()
+              setResultsShowed(true)
+            }}>
+            Calculate
+          </button>
+        </div>
+      </div>
+
+      <div className={resultsShowed ? 'results' : 'results inactive'}>
+        <h3>You should try to fall asleep at one of these following times:</h3>
+
+        <div className="calculated-time">
+          <div></div>
+
+          <div className="item">
+            <h1>{`${calculatedTime.sleepTime1.hour} : ${calculatedTime.sleepTime1.minute}`}</h1>
+            <p>(3 sleep cycles)</p>
           </div>
+          <div className="item">
+            <h1>{`${calculatedTime.sleepTime2.hour} : ${calculatedTime.sleepTime2.minute}`}</h1>
+            <p>(4 sleep cycles)</p>
+          </div>
+
+          <div></div>
+          <div></div>
+
+          <div className="item">
+            <h1>{`${calculatedTime.sleepTime3.hour} : ${calculatedTime.sleepTime3.minute}`}</h1>
+            <p>(5 sleep cycles)</p>
+          </div>
+          <div className="item">
+            <h1>{`${calculatedTime.sleepTime4.hour} : ${calculatedTime.sleepTime4.minute}`}</h1>
+            <p>(6 sleep cycles)</p>
+          </div>
+
+          <div></div>
         </div>
 
-        <div className={resultsShowed ? 'results' : 'results inactive'}>
-          <h3>You should try to fall asleep at one of these following times:</h3>
+        <div className="more-info-wrapper">
+          <button
+            className="learn-more-btn"
+            onClick={() => {
+              setMoreInfoShowed(!moreInfoShowed)
+            }}>
+            {!moreInfoShowed ? 'Learn more' : 'Hide info'}
+          </button>
 
-          <div className="calculated-time">
-            <div></div>
-
-            <div className="item">
-              <h1>{`${calculatedTime.sleepTime1.hour} : ${calculatedTime.sleepTime1.minute}`}</h1>
-              <p>(3 sleep cycles)</p>
-            </div>
-            <div className="item">
-              <h1>{`${calculatedTime.sleepTime2.hour} : ${calculatedTime.sleepTime2.minute}`}</h1>
-              <p>(4 sleep cycles)</p>
-            </div>
-
-            <div></div>
-            <div></div>
-
-            <div className="item">
-              <h1>{`${calculatedTime.sleepTime3.hour} : ${calculatedTime.sleepTime3.minute}`}</h1>
-              <p>(5 sleep cycles)</p>
-            </div>
-            <div className="item">
-              <h1>{`${calculatedTime.sleepTime4.hour} : ${calculatedTime.sleepTime4.minute}`}</h1>
-              <p>(6 sleep cycles)</p>
-            </div>
-
-            <div></div>
-          </div>
-
-          <div className="more-info-wrapper">
-            <button
-              className="learn-more-btn"
-              onClick={() => {
-                setMoreInfoShowed(!moreInfoShowed)
-              }}>
-              {!moreInfoShowed ? 'Learn more' : 'Hide info'}
-            </button>
-
-            <div className={moreInfoShowed ? 'more-info' : 'more-info inactive'}>
-              <p>
-                The average human takes <strong>fifteen minutes</strong> to fall asleep, so we added
-                it to the calculation.
-              </p>
-              <p>
-                Waking up in the middle of a sleep cycle leaves you feeling tired and groggy, but
-                waking up in between cycles wakes you up feeling refreshed and alert!
-              </p>
-              <a
-                href="https://www.sleephealthfoundation.org.au/good-sleep-habits.html"
-                target="_blank"
-                rel="noreferrer">
-                Click here to find out more about good sleep habits
-              </a>
-            </div>
+          <div className={moreInfoShowed ? 'more-info' : 'more-info inactive'}>
+            <p>
+              The average human takes <strong>fifteen minutes</strong> to fall asleep, so we added
+              it to the calculation.
+            </p>
+            <p>
+              Waking up in the middle of a sleep cycle leaves you feeling tired and groggy, but
+              waking up in between cycles wakes you up feeling refreshed and alert!
+            </p>
+            <a
+              href="https://www.sleephealthfoundation.org.au/good-sleep-habits.html"
+              target="_blank"
+              rel="noreferrer">
+              Click here to find out more about good sleep habits
+            </a>
           </div>
         </div>
-      </MainLayout>
-    </LocalizationProvider>
+      </div>
+    </MainLayout>
   )
 }
