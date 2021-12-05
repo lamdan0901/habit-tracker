@@ -10,7 +10,7 @@ export default function SideNav(props) {
       <div className="sidebar-top">
         <div></div>
         <span
-          className="sidebar-icon"
+          className="show-sidebar-btn"
           onClick={() => {
             props.setSidebarOpened(!props.sidebarOpened)
           }}>

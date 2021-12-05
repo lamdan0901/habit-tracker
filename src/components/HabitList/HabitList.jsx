@@ -35,13 +35,13 @@ export default function HabitList(props) {
                 title="Click to check this habit"
                 onClick={() => {}}
                 className="check-habit-box "
-                style={{ color: habit.textColor.hex }}>
+                style={{ color: habit.textColor }}>
                 {habit.name}
               </Checkbox>
 
               <li
                 title="Click to view details"
-                style={{ backgroundColor: habit.bgColor.hex, color: habit.textColor.hex }}
+                style={{ backgroundColor: habit.bgColor, color: habit.textColor }}
                 onClick={() => {
                   handleChooseHabit(habit)
                 }}>

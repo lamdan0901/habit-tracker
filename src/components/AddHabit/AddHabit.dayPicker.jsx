@@ -31,7 +31,7 @@ export default function DayPicker(props) {
 
   return (
     <div className="day-picker">
-      <label htmlFor="">Pick Days: </label>
+      <label htmlFor="">Reminder Days: </label>
 
       <div className="day-checkboxes">
         <div className="day-checkbox">

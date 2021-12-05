@@ -1,15 +1,4 @@
 @import '../../scss/variables';
-
-input {
-  outline: none;
-}
-
-textarea {
-  outline: none;
-  resize: none;
-  overflow: auto;
-}
-
 .btn {
   border-radius: 5px;
   padding: 10px;
@@ -26,7 +15,6 @@ textarea {
     font-size: 28px;
     width: 47px;
     height: 47px;
-    // transition: box-shadow 0.4s;
     transition: transform 0.4s;
     font-weight: 300;
     margin-right: 8px;
@@ -37,12 +25,11 @@ textarea {
       transform: rotate(90deg);
       & + .add-btn-text {
         opacity: 1;
-        width: 100px;
+        width: 125px;
+        padding-top: 13px;
+        padding-right: 21px;
+        color: #fff;
       }
-      // box-shadow: 5px 5px 5px rgba($color: $primary-color, $alpha: 0.2),
-      //   -5px -5px 5px rgba($color: $primary-color, $alpha: 0.2),
-      //   -5px 5px 5px rgba($color: $primary-color, $alpha: 0.2),
-      //   5px -5px 5px rgba($color: $primary-color, $alpha: 0.2);
     }
   }
 
@@ -74,17 +61,17 @@ textarea {
 .add-btn-text {
   position: absolute;
   background-color: $primary-color;
-  // background-color: blueviolet;
   text-align: center;
-  border-radius: 50px;
-  color: #fff;
-  right: 40px;
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  color: $primary-color;
+  right: 48px;
   top: 70px;
   z-index: 1;
-  width: 28px;
+  width: 47px;
   opacity: 0;
   height: 47px;
-  transition: all 0.4s;
+  transition: all 0.3s ease-out;
 }
 
 .modal-content {
@@ -92,6 +79,7 @@ textarea {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
 
   .title {
     margin: 10px 0 20px 0px;
@@ -107,45 +95,85 @@ textarea {
 
     .name-input {
       display: flex;
-      justify-content: space-between;
 
-      label {
+      .name-label {
         color: #000;
+        width: 100px;
+        margin-right: 10px;
       }
 
       input {
+        outline: none;
         box-sizing: border-box;
-        border: 1px solid #9b9b9b;
+        border: 1px solid #bbb;
         border-radius: 4px;
         margin-bottom: 20px;
         transform: translateY(-10px);
 
         width: 73%;
         height: 20px;
-        padding: 18px;
-        font-size: 20px;
+        padding: 18px 10px;
+        font-size: 18px;
         background-color: $light-yellow-color;
 
         &:hover {
-          border: 2px solid #9b9b9b;
-          padding: 17px 18px;
+          border: 1px solid #000;
         }
 
         &:focus {
-          border: 2px solid $primary-color;
-          padding: 17px 18px;
+          border: 2px solid rgb(25, 118, 209);
+          padding: 17px 9px;
         }
 
         &.red-border {
           border: 2px solid red;
-          padding: 17px 18px;
+          padding: 17px 9px;
+        }
+      }
+    }
+
+    .description-input {
+      display: flex;
+      margin-bottom: 10px;
+
+      .name-label {
+        color: #000;
+        width: 100px;
+        margin-right: 10px;
+      }
+
+      textarea {
+        outline: none;
+        box-sizing: border-box;
+        border: 1px solid #bbb;
+        border-radius: 4px;
+        transform: translateY(-10px);
+
+        width: 73%;
+        height: 60px;
+        padding: 10px;
+        font-size: 16px;
+        background-color: $light-yellow-color;
+
+        &:hover {
+          border: 1px solid #000;
+        }
+
+        &:focus {
+          border: 2px solid rgb(25, 118, 209);
+          padding: 9px;
         }
       }
     }
   }
 
-  .time-and-color-pickers {
+  .time-picker {
     display: flex;
+
+    .time-label {
+      width: 100px;
+      min-width: 50px;
+    }
   }
 
   .footer {
@@ -162,41 +190,6 @@ textarea {
   }
 }
 
-.time-picker {
-  display: flex;
-  justify-content: space-between;
-
-  .time-label {
-    transform: translateY(4px);
-    width: 110px;
-  }
-
-  .date-input {
-    background-color: $light-yellow-color;
-    border: 1px solid #9b9b9b;
-    box-sizing: border-box;
-    text-align: center;
-    border-radius: 4px;
-    height: 12px;
-    width: 120px;
-    padding: 12px;
-    font-size: 18px;
-    transform: translate(250px, -10px);
-  }
-
-  .react-datepicker-wrapper {
-    width: 150px;
-
-    input.date-input {
-      transform: translate(0px, 0px);
-    }
-  }
-
-  .react-datepicker-popper {
-    padding: 0;
-  }
-}
-
 .Modal {
   position: absolute;
   z-index: 5;
@@ -205,7 +198,7 @@ textarea {
   right: 30px;
   bottom: 30px;
   max-width: 500px;
-  max-height: 400px;
+  max-height: 450px;
 
   margin: auto;
   outline: none;
@@ -226,8 +219,6 @@ textarea {
   background-color: rgba(0, 0, 0, 0.2);
 }
 
-// .ReactModal__Body--open {}
-
 // ReactModal Animation:
 .ReactModal__Overlay {
   opacity: 0;
@@ -238,4 +229,76 @@ textarea {
 }
 .ReactModal__Overlay--before-close {
   opacity: 0;
+}
+
+//time input size
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+  height: 5px !important;
+  width: 70px !important;
+}
+
+//time input margin
+.css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+  margin-left: 20px !important;
+}
+
+//time input position
+.css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+  transform: translateX(-10px);
+}
+
+@media (max-height: 410px) {
+  .modal-content {
+    overflow: auto;
+  }
+}
+
+@media (max-width: 505px) {
+  .modal-content {
+    overflow: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-btn-text {
+    display: none;
+  }
+
+  .name-input {
+    flex-direction: column;
+
+    input {
+      margin-top: 13px;
+      width: 100% !important;
+    }
+  }
+
+  .description-input {
+    flex-direction: column;
+    transform: translateY(-10px);
+
+    textarea {
+      transform: translateY(2px) !important;
+      width: 100% !important;
+    }
+  }
+
+  .time-picker {
+    transform: translateY(-10px);
+    justify-content: space-between;
+
+    .time-label {
+      transform: translateY(20px) !important;
+      width: 120px !important;
+    }
+
+    .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root {
+      width: 100px !important;
+    }
+
+    .css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+      margin-top: 10px !important;
+      transform: translateX(0px);
+    }
+  }
 }

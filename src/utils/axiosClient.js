@@ -6,7 +6,7 @@ const axiosClient = axios.create({
   header: {
     'content-type': 'application/json',
   },
-  timeout: 4000,
+  timeout: 10000,
   //use queryString to stringify params
   paramsSerializer: (params) => queryString.stringify(params),
 })

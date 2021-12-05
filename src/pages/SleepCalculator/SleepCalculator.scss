@@ -149,15 +149,15 @@
 }
 
 @media (max-width: 480px) {
+  .selector-wrapper {
+    .css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+      transform: translate(-10px, 8px);
+    }
+  }
   .results {
     .calculated-time {
       grid-template-columns: auto;
     }
-  }
-
-  //hide the chevron
-  .select__indicator.select__dropdown-indicator.css-tlfecz-indicatorContainer {
-    display: none;
   }
 }
 

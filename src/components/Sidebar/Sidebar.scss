@@ -28,6 +28,10 @@ a {
     .menu-item .menu-text {
       opacity: 0;
     }
+
+    .show-sidebar-btn {
+      transform: translateX(-15px);
+    }
   }
 }
 
@@ -38,7 +42,7 @@ a {
   justify-content: space-between;
   align-items: center;
 
-  .sidebar-icon {
+  .show-sidebar-btn {
     position: relative;
     color: #fff;
     width: 40px;
@@ -122,5 +126,24 @@ a.menu-item.item-active {
     right: 0;
     transform: translateY(100%);
     box-shadow: 10px -10px 0 0 rgb(238, 238, 249);
+  }
+}
+
+@media (max-width: 480px) {
+  .menu {
+    padding-left: 10px;
+
+    &.minimized {
+      min-width: 60px;
+      max-width: 60px;
+
+      .show-sidebar-btn {
+        transform: translateX(-5px) !important;
+      }
+    }
+  }
+
+  a.menu-item svg {
+    transform: translateX(-5px);
   }
 }

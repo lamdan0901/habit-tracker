@@ -15,7 +15,7 @@ import './Home.scss'
 export default function Home(props) {
   document.title = 'Home - Habit Tracker'
 
-  let today = new Date(Date.now()).toDateString()
+  let today = new Date().toDateString()
   today = today.slice(0, 3) + ', ' + today.slice(3)
 
   const dispatch = useDispatch()
@@ -97,6 +97,13 @@ export default function Home(props) {
     exit: 'animate__animated animate__fadeOut',
   })
 
+  let currentTime = parseInt(new Date().toString().slice(16, 18))
+  let sayHi = 'Good morning'
+  if (currentTime > 12) {
+    if (currentTime < 18) sayHi = 'Good afternoon'
+    else sayHi = 'Good evening'
+  }
+
   return (
     <>
       <MainLayout sidebarOpened={props.sidebarOpened} setSidebarOpened={props.setSidebarOpened}>
@@ -105,7 +112,7 @@ export default function Home(props) {
             <div className="header">
               <span>
                 <h3>{today}</h3>
-                <h2>Welcome username!</h2>
+                <h2>{sayHi}, username!</h2>
               </span>
               <AddHabit onAddHabit={handleAddHabit} />
             </div>

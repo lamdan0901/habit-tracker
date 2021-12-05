@@ -3,6 +3,7 @@
 .day-picker {
   display: flex;
   flex-direction: column;
+  transform: translateY(10px);
   & > label {
     transform: translateY(7px);
   }
@@ -11,6 +12,7 @@
     margin: 20px 0;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
   }
 }
 
@@ -27,11 +29,11 @@
 
     border: 5px solid #e0e0e0;
     -webkit-appearance: none;
-    box-shadow: -10px -10px 10px rgba(255, 255, 255, 0.5), 10px 10px 10px rgba(70, 70, 70, 0.12);
+    box-shadow: -10px -10px 10px rgba(255, 255, 255, 0.2), 10px 10px 10px rgba(70, 70, 70, 0.12);
 
     &:checked {
-      background-color: rgba($color: $primary-color, $alpha: 0.2);
-      border-color: $primary-color;
+      background-color: rgba($color: #6db5cb, $alpha: 0.2);
+      border-color: #6db5cb;
       & + label {
         color: #000;
       }
@@ -57,15 +59,19 @@
     }
   }
   &:nth-child(2),
-  &:nth-child(4),
+  &:nth-child(4) {
+    & > label {
+      transform: translateX(-45px);
+    }
+  }
   &:nth-child(7) {
     & > label {
-      transform: translateX(-42px);
+      transform: translateX(-41px);
     }
   }
   &:nth-child(5) {
     & > label {
-      transform: translateX(-38px);
+      transform: translateX(-42px);
     }
   }
 }
