@@ -6,13 +6,20 @@ a {
 
 .menu {
   background: transparent;
-  padding: 50px 0 50px 15px;
+  padding: 10px 0 50px 15px;
   min-height: 100vh;
   min-width: 200px;
   max-width: 200px;
   overflow: hidden;
   position: relative;
   transition: all 0.5s ease;
+
+  .aib-logo {
+    width: 35px;
+    position: relative;
+    top: 3px;
+    left: 8px;
+  }
 
   .menu-item .menu-text {
     opacity: 1;
@@ -129,9 +136,13 @@ a.menu-item.item-active {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: $mobile) {
   .menu {
     padding-left: 10px;
+
+    .aib-logo {
+      left: 3px;
+    }
 
     &.minimized {
       min-width: 60px;

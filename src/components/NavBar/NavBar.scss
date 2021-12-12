@@ -1,8 +1,62 @@
 @import '../../scss/variables';
 
 .navbar {
-  position: relative;
-  width: 100%;
+  max-width: 1080px;
+  margin: auto;
   height: 50px;
+  padding: 5px 0;
   background: transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #222;
+
+  .digi-clock {
+    font-weight: 500;
+  }
+
+  .user-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 110px;
+    padding: 5px;
+
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+
+    img.user-avatar {
+      width: 30px;
+      height: 30px;
+      margin-right: 10px;
+    }
+
+    &:hover {
+      border-color: #eee;
+    }
+  }
+}
+
+@media screen and (max-width: 1366px) {
+  .navbar {
+    margin: 0 30px;
+  }
+}
+
+@media screen and (max-width: $mobile) {
+  .navbar {
+    .user-info {
+      width: 41px;
+      border-radius: 50%;
+
+      img.user-avatar {
+        margin-right: 0px;
+      }
+
+      .user-name {
+        display: none;
+      }
+    }
+  }
 }

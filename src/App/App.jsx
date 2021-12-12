@@ -27,13 +27,29 @@ export default function App() {
     return () => window.removeEventListener('resize', resizeWindow)
   }, [windowWidth])
 
+  const [clockState, setClockState] = useState()
+
+  //deps: effect will only activate if the values in the list change
+  useEffect(() => {
+    setInterval(() => {
+      const date = new Date()
+      setClockState(date.toLocaleTimeString())
+    }, 1000)
+  })
+
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
           <Route
             path="/"
-            element={<Home sidebarOpened={sidebarOpened} setSidebarOpened={setSidebarOpened} />}
+            element={
+              <Home
+                sidebarOpened={sidebarOpened}
+                setSidebarOpened={setSidebarOpened}
+                clockState={clockState}
+              />
+            }
           />
           <Route
             path="/sleep-calculator"
@@ -42,13 +58,18 @@ export default function App() {
                 windowWidth={windowWidth}
                 sidebarOpened={sidebarOpened}
                 setSidebarOpened={setSidebarOpened}
+                clockState={clockState}
               />
             }
           />
           <Route
             path="/statistics"
             element={
-              <Statistics sidebarOpened={sidebarOpened} setSidebarOpened={setSidebarOpened} />
+              <Statistics
+                sidebarOpened={sidebarOpened}
+                setSidebarOpened={setSidebarOpened}
+                clockState={clockState}
+              />
             }
           />
           <Route path="*" element={<NotFound />} />

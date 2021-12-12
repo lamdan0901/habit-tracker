@@ -10,10 +10,14 @@ $blue-color2: #b8d8e0;
 $confirm-btn-color: #2c98f0;
 $cancel-btn-color: #ff4040;
 
-/* *** Mixin *** */
-// @mixin button {
-//   border-radius: 5px;
-// }
+// Search box
+$rad: 10px;
+$dur: 0.3s;
+$color-dark: #2f2f2f;
+$color-light: #fff;
+$color-brand: #57bd84;
+$height: 46px;
+$btn-width: 46px;
 
 /* *** Screen size for responsiveness *** */
 $tablet: 768px;

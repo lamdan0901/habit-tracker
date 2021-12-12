@@ -18,7 +18,7 @@ export default function MainLayout(props) {
               setSidebarOpened={props.setSidebarOpened}
             />
             <div className="content">
-              <NavBar />
+              <NavBar clockState={props.clockState} />
               <div className="children">{props.children}</div>
             </div>
           </div>

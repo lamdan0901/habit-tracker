@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Checkbox } from '@nextui-org/react'
-import EditHabit from 'components/EditHabit/EditHabit'
+import HabitModel from 'components/HabitModel/HabitModel'
+import { BsTrash } from 'react-icons/bs'
 import './HabitList.scss'
 
 export default function HabitList(props) {
@@ -12,19 +13,24 @@ export default function HabitList(props) {
     setModalOpened(true)
   }
 
-  function handleCloseModal() {
-    setModalOpened(false)
+  function handleDeleteHabit(habitId) {
+    props.onDeleteHabit(habitId)
   }
 
   return (
     <>
-      <EditHabit
-        habit={currentHabit}
-        modalOpened={modalOpened}
-        onCloseModal={handleCloseModal}
-        onEditHabit={props.onEditHabit}
-        onDeleteHabit={props.onDeleteHabit}
-      />
+      {modalOpened && (
+        <HabitModel
+          habit={currentHabit}
+          editModalOpened={modalOpened}
+          onCloseModal={() => {
+            setModalOpened(false)
+          }}
+          onEditHabit={props.onEditHabit}
+          onDeleteHabit={handleDeleteHabit}
+          editMode={true}
+        />
+      )}
 
       <div className="habits-view">
         <ul className="habits-list">
@@ -34,7 +40,7 @@ export default function HabitList(props) {
                 color="success"
                 title="Click to check this habit"
                 onClick={() => {}}
-                className="check-habit-box "
+                className="check-habit-box"
                 style={{ color: habit.textColor }}>
                 {habit.name}
               </Checkbox>
@@ -49,8 +55,14 @@ export default function HabitList(props) {
 
                 <div className="habit-time">{new Date(habit.time).toString().slice(16, 21)}</div>
 
-                <div className="checked-time">
-                  Checked <strong>{habit.checkedTimes}</strong> times
+                <div
+                  title="Delete this habit"
+                  className="delete-btn"
+                  onClick={(e) => {
+                    e.stopPropagation() //so that when we click the child element, it won't call the parent element
+                    handleDeleteHabit(habit.id)
+                  }}>
+                  <BsTrash />
                 </div>
               </li>
             </div>

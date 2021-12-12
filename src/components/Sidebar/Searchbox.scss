@@ -1,0 +1,61 @@
+@import '../../scss/variables';
+
+form.search-box {
+  box-sizing: border-box;
+  position: relative;
+  width: 10.6rem;
+  margin-bottom: 10px;
+  background: rgba($color: #fff, $alpha: 0.8);
+  border-radius: $rad;
+
+  & > input,
+  button {
+    height: $height;
+    border: 0;
+    color: $color-dark;
+    font-size: 1rem;
+  }
+
+  & > input[type='search'] {
+    outline: 0;
+    width: 100%;
+    background: transparent;
+    padding: 0 1rem;
+    border-radius: $rad;
+    appearance: none; //for iOS input[type="search"] roundedness issue. border-radius alone doesn't work
+    transition: all $dur cubic-bezier(0, 0, 0.43, 1.49);
+    transition-property: width, border-radius;
+
+    z-index: 1;
+    position: relative;
+  }
+
+  & > button {
+    position: absolute;
+    display: none;
+    top: 0;
+    right: 0;
+    width: $btn-width;
+    font-weight: bold;
+    background: $primary-color;
+    border-radius: 0 $rad $rad 0;
+    cursor: pointer;
+    z-index: 2;
+
+    svg {
+      pointer-events: none;
+      transform: translateY(4px);
+      width: 1.2em;
+      height: 1.2em;
+      color: #fff;
+      font-size: 20px;
+    }
+  }
+
+  & > input:not(:placeholder-shown) {
+    width: calc(100% - 46px);
+    + button {
+      display: block;
+    }
+  }
+}

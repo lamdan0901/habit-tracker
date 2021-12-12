@@ -5,7 +5,7 @@ import { Loading } from '@nextui-org/react'
 
 import HabitList from 'components/HabitList/HabitList'
 import MainLayout from 'layouts/MainLayout'
-import AddHabit from 'components/AddHabit/AddHabit'
+import HabitModel from 'components/HabitModel/HabitModel'
 import * as actions from 'actions/habitsActions'
 
 import 'react-toastify/dist/ReactToastify.css'
@@ -18,10 +18,10 @@ export default function Home(props) {
   let today = new Date().toDateString()
   today = today.slice(0, 3) + ', ' + today.slice(3)
 
+  const [renderHomePage, setRenderHomePage] = useState(false)
+
   const dispatch = useDispatch()
   const habits = useSelector((state) => state.habits)
-
-  const [renderHomePage, setRenderHomePage] = useState(false)
 
   useEffect(() => {
     dispatch(actions.getAllHabits()).then(() => {
@@ -97,16 +97,19 @@ export default function Home(props) {
     exit: 'animate__animated animate__fadeOut',
   })
 
-  let currentTime = parseInt(new Date().toString().slice(16, 18))
+  const currentHour = parseInt(new Date().toString().slice(16, 18))
   let sayHi = 'Good morning'
-  if (currentTime > 12) {
-    if (currentTime < 18) sayHi = 'Good afternoon'
+  if (currentHour >= 12) {
+    if (currentHour < 18) sayHi = 'Good afternoon'
     else sayHi = 'Good evening'
   }
 
   return (
     <>
-      <MainLayout sidebarOpened={props.sidebarOpened} setSidebarOpened={props.setSidebarOpened}>
+      <MainLayout
+        clockState={props.clockState}
+        sidebarOpened={props.sidebarOpened}
+        setSidebarOpened={props.setSidebarOpened}>
         {renderHomePage ? (
           <div className="home">
             <div className="header">
@@ -114,8 +117,9 @@ export default function Home(props) {
                 <h3>{today}</h3>
                 <h2>{sayHi}, username!</h2>
               </span>
-              <AddHabit onAddHabit={handleAddHabit} />
+              <HabitModel onAddHabit={handleAddHabit} />
             </div>
+
             <HabitList
               onEditHabit={handleEditHabit}
               onDeleteHabit={handleDeleteHabit}
