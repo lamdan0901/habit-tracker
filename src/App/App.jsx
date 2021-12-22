@@ -27,15 +27,24 @@ export default function App() {
     return () => window.removeEventListener('resize', resizeWindow)
   }, [windowWidth])
 
-  const [clockState, setClockState] = useState()
+  const now = new Date().toLocaleTimeString()
+  const [clockState, setClockState] = useState(formatTime(now))
 
-  //deps: effect will only activate if the values in the list change
+  // deps: effect will only activate if the values in the list change
   useEffect(() => {
     setInterval(() => {
-      const date = new Date()
-      setClockState(date.toLocaleTimeString())
-    }, 1000)
+      const now = new Date().toLocaleTimeString()
+      setClockState(formatTime(now))
+    }, 60000)
   })
+
+  function formatTime(time) {
+    if (time.slice(0, 1) === '1') {
+      return time.slice(0, 5) + ' ' + now.slice(9, 11)
+    } else {
+      return time.slice(0, 4) + ' ' + now.slice(8, 10)
+    }
+  }
 
   return (
     <Provider store={store}>

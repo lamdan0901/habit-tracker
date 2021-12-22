@@ -39,6 +39,22 @@ a {
     .show-sidebar-btn {
       transform: translateX(-15px);
     }
+
+    form.search-box {
+      width: 46px;
+
+      & > button.trigger-search-btn {
+        display: block;
+      }
+
+      & > button.main-search-btn {
+        display: none;
+      }
+
+      & > input {
+        width: 46px;
+      }
+    }
   }
 }
 
@@ -150,6 +166,25 @@ a.menu-item.item-active {
 
       .show-sidebar-btn {
         transform: translateX(-5px) !important;
+      }
+
+      form.search-box {
+        width: 42px;
+        height: 42px;
+
+        & > input {
+          width: 42px;
+        }
+
+        & > button.trigger-search-btn {
+          width: 42px;
+          height: 42px;
+
+          svg {
+            top: 12px;
+            left: 12px;
+          }
+        }
       }
     }
   }

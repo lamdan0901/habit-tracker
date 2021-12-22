@@ -17,6 +17,35 @@ export default function HabitList(props) {
     props.onDeleteHabit(habitId)
   }
 
+  function handleShowAllHabits() {
+    props.setIsSearching(false)
+  }
+
+  const habitIDs = props.habits.map((habit) => habit.id)
+  const [habitsCheck, setHabitsCheck] = useState([])
+  const [allHabitsChecked, setAllHabitsChecked] = useState(false)
+
+  const handleAllCheck = () => {
+    if (allHabitsChecked) {
+      setAllHabitsChecked(false)
+      setHabitsCheck([])
+    } else {
+      setAllHabitsChecked(true)
+      setHabitsCheck(habitIDs)
+    }
+  }
+
+  const handleSingleCheck = (id) => {
+    if (habitsCheck.includes(id)) {
+      setHabitsCheck(habitsCheck.filter((checked_habitID) => checked_habitID !== id))
+      setAllHabitsChecked(false)
+    } else {
+      habitsCheck.push(id)
+      setHabitsCheck([...habitsCheck])
+      setAllHabitsChecked(habitsCheck.length === habitIDs.length)
+    }
+  }
+
   return (
     <>
       {modalOpened && (
@@ -33,15 +62,37 @@ export default function HabitList(props) {
       )}
 
       <div className="habits-view">
+        <div>
+          <Checkbox
+            color="success"
+            title="Click to set all the habits done"
+            onChange={handleAllCheck}
+            checked={allHabitsChecked}
+            className="check-all_done-box">
+            All done
+          </Checkbox>
+
+          <button
+            className={
+              props.isSearching ? 'btn show-all_habits-btn active' : 'btn show-all_habits-btn'
+            }
+            onClick={handleShowAllHabits}>
+            Show all habits
+          </button>
+        </div>
+
         <ul className="habits-list">
           {props.habits.map((habit, index) => (
             <div key={index}>
               <Checkbox
                 color="success"
                 title="Click to check this habit"
-                onClick={() => {}}
+                onChange={() => {
+                  handleSingleCheck(habit.id)
+                }}
+                checked={habitsCheck.includes(habit.id)}
                 className="check-habit-box"
-                style={{ color: habit.textColor }}>
+                textColor={habit.textColor}>
                 {habit.name}
               </Checkbox>
 

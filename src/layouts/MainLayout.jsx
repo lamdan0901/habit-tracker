@@ -14,6 +14,9 @@ export default function MainLayout(props) {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <div className="main-layout">
             <Sidebar
+              habits={props.habits}
+              handleSetSearchedHabits={props.handleSetSearchedHabits}
+              setIsSearching={props.setIsSearching}
               sidebarOpened={props.sidebarOpened}
               setSidebarOpened={props.setSidebarOpened}
             />

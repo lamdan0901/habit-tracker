@@ -1,4 +1,5 @@
 @import '../../scss/variables';
+
 .btn {
   border-radius: 5px;
   padding: 10px;
@@ -13,8 +14,8 @@
     border-radius: 50%;
     color: #fff;
     font-size: 28px;
-    width: 47px;
-    height: 47px;
+    width: 48px;
+    height: 48px;
     transition: transform 0.4s;
     font-weight: 300;
     margin-right: 8px;
@@ -24,11 +25,6 @@
     &:hover {
       transform: rotate(90deg);
     }
-  }
-
-  &.pick-color-btn {
-    width: 70px;
-    height: 25px;
   }
 
   &.confirm-btn {
@@ -50,6 +46,7 @@
     }
   }
 }
+
 .modal-content {
   height: 100%;
   display: flex;
@@ -182,7 +179,7 @@
   border-radius: 10px;
   border: 1px solid $grey-color;
   background-color: $light-yellow-color;
-  box-shadow: 6px 6px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 4px 4px 6px 5px rgba(0, 0, 0, 0.3);
 }
 
 .Overlay {
@@ -230,8 +227,8 @@
 }
 
 @media (max-width: 505px) {
-  .modal-content {
-    overflow: auto;
+  .Modal {
+    max-height: 550px;
   }
 }
 

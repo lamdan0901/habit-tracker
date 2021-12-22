@@ -1,7 +1,7 @@
 @import '../../scss/variables';
 
 .navbar {
-  max-width: 1080px;
+  max-width: 1099px;
   margin: auto;
   height: 50px;
   padding: 5px 0;
@@ -24,6 +24,7 @@
 
     border: 1px solid #ddd;
     border-radius: 5px;
+    outline: none;
     cursor: pointer;
 
     img.user-avatar {
@@ -35,6 +36,57 @@
     &:hover {
       border-color: #eee;
     }
+  }
+
+  div[role='menu'] {
+    position: absolute;
+    top: 50px;
+    right: 30px;
+    z-index: 5;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+
+    background-color: rgb(244, 246, 248);
+    border-radius: 5px;
+    box-shadow: 2px 3px 4px 3px rgba(0, 0, 0, 0.3);
+
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(5px);
+    transition: all 0.2s ease-in;
+
+    & > .dropdown-item {
+      color: #111;
+      outline: none;
+      padding: 8px 10px;
+
+      svg {
+        transform: translateY(3px);
+        margin-right: 3px;
+        font-size: 17px;
+      }
+
+      &:hover {
+        background-color: #ddd;
+      }
+    }
+  }
+
+  div[role='menu'].visible {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+  }
+}
+
+@media screen and (min-width: 1366px) {
+  .navbar {
+    width: 1080px;
+  }
+
+  div[role='menu'] {
+    right: 130px !important;
   }
 }
 

@@ -104,9 +104,21 @@ export default function Home(props) {
     else sayHi = 'Good evening'
   }
 
+  //store state when is searching and when is not
+  const [isSearching, setIsSearching] = useState(false)
+  const [searchedHabits, setSearchedHabits] = useState(habits)
+  // console.log(isSearching)
+
+  function handleSetSearchedHabits(habits) {
+    setSearchedHabits(habits)
+  }
+
   return (
     <>
       <MainLayout
+        habits={habits}
+        handleSetSearchedHabits={handleSetSearchedHabits}
+        setIsSearching={setIsSearching}
         clockState={props.clockState}
         sidebarOpened={props.sidebarOpened}
         setSidebarOpened={props.setSidebarOpened}>
@@ -123,7 +135,9 @@ export default function Home(props) {
             <HabitList
               onEditHabit={handleEditHabit}
               onDeleteHabit={handleDeleteHabit}
-              habits={habits}
+              habits={isSearching ? searchedHabits : habits}
+              isSearching={isSearching}
+              setIsSearching={setIsSearching}
             />
           </div>
         ) : (

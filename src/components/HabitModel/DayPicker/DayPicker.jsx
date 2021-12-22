@@ -47,7 +47,7 @@ export default function DayPicker(props) {
               name={day}
               onChange={handleSingleCheck}
             />
-            <label htmlFor="">{day}</label>
+            <label>{day}</label>
           </div>
         ))}
       </div>

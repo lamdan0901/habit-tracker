@@ -4,10 +4,27 @@ import { AiOutlineMenuFold, AiOutlineMenuUnfold, AiFillPieChart } from 'react-ic
 import { GiNightSleep } from 'react-icons/gi'
 import { BiSearch } from 'react-icons/bi'
 import aibLogo from '../../assets/img/aib-logo.png'
-import './Sidebar.scss'
 import './Searchbox.scss'
+import './Sidebar.scss'
+import { useState } from 'react'
 
 export default function SideNav(props) {
+  const [searchText, setSearchText] = useState('')
+
+  function handleTextChange(e) {
+    setSearchText(e.target.value)
+  }
+
+  function handleSearchHabit(e) {
+    e.preventDefault()
+
+    let habitsFiltered = props.habits.filter((habit) =>
+      habit.name.toLowerCase().includes(searchText.toLowerCase()),
+    )
+    props.handleSetSearchedHabits(habitsFiltered)
+    props.setIsSearching(true)
+  }
+
   return (
     <div className={props.sidebarOpened ? 'menu' : 'menu minimized'}>
       <img src={aibLogo} alt="aib-logo" className="aib-logo" />
@@ -23,14 +40,27 @@ export default function SideNav(props) {
         </span>
       </div>
 
-      <form role="search" className="search-box">
-        <input id="search" type="search" placeholder="Search..." required />
+      <form className="search-box">
         <button
-          title="Click to search"
-          type="submit"
+          className="trigger-search-btn"
           onClick={(e) => {
+            e.stopPropagation()
             e.preventDefault()
+            props.setSidebarOpened(true)
           }}>
+          <BiSearch />
+        </button>
+
+        <input
+          id="search"
+          type="search"
+          value={searchText}
+          onChange={handleTextChange}
+          placeholder={props.sidebarOpened ? 'Search...' : ' '}
+          required
+        />
+
+        <button className="main-search-btn" title="Click to search" onClick={handleSearchHabit}>
           <BiSearch />
         </button>
       </form>

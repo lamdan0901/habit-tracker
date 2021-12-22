@@ -52,11 +52,6 @@ export default function AddHabit(props) {
     })
   }
 
-  // function handleDelete() {
-  //   props.onDeleteHabit(habit.id)
-  //   handleCloseModal()
-  // }
-
   function handleDayCheck(days) {
     setHabit((prevValue) => ({
       ...prevValue,

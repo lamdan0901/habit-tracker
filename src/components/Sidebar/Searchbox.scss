@@ -7,9 +7,28 @@ form.search-box {
   margin-bottom: 10px;
   background: rgba($color: #fff, $alpha: 0.8);
   border-radius: $rad;
+  transition: width 0.5s;
+
+  & > button.trigger-search-btn {
+    position: absolute;
+    z-index: 2;
+    border-radius: $rad;
+    width: 46px;
+    height: 46px;
+    font-size: 20px;
+    cursor: pointer;
+    display: none;
+    background-color: transparent;
+
+    svg {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+    }
+  }
 
   & > input,
-  button {
+  button.main-search-btn {
     height: $height;
     border: 0;
     color: $color-dark;
@@ -18,21 +37,21 @@ form.search-box {
 
   & > input[type='search'] {
     outline: 0;
-    width: 100%;
     background: transparent;
-    padding: 0 1rem;
     border-radius: $rad;
     appearance: none; //for iOS input[type="search"] roundedness issue. border-radius alone doesn't work
     transition: all $dur cubic-bezier(0, 0, 0.43, 1.49);
     transition-property: width, border-radius;
 
+    width: 100%;
     z-index: 1;
+    padding: 0 1rem;
     position: relative;
   }
 
-  & > button {
+  & > button.main-search-btn {
     position: absolute;
-    display: none;
+    z-index: 2;
     top: 0;
     right: 0;
     width: $btn-width;
@@ -40,7 +59,7 @@ form.search-box {
     background: $primary-color;
     border-radius: 0 $rad $rad 0;
     cursor: pointer;
-    z-index: 2;
+    display: none;
 
     svg {
       pointer-events: none;
@@ -54,7 +73,7 @@ form.search-box {
 
   & > input:not(:placeholder-shown) {
     width: calc(100% - 46px);
-    + button {
+    + button.main-search-btn {
       display: block;
     }
   }

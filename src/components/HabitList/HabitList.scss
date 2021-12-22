@@ -3,6 +3,37 @@
 .habits-view {
   width: 100%;
   overflow-x: auto;
+
+  & > div {
+    display: flex;
+    justify-content: space-between;
+
+    .check-all_done-box {
+      margin: 5px;
+      padding: 10px 15px;
+      height: 45px;
+      border-radius: 5px;
+      background-color: rgba(196, 196, 196, 0.7);
+      box-shadow: 2px 2px 6px 1px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s;
+
+      &:hover {
+        box-shadow: 3px 3px 6px 1px rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    .show-all_habits-btn {
+      visibility: hidden;
+      background-color: #ccc;
+      padding: 8px;
+      height: 45px;
+      margin-top: 5px;
+      box-shadow: inset -3px -2px 6px 1px rgba(0, 0, 0, 0.2), inset 3px 2px 6px 1px #eee;
+    }
+    .show-all_habits-btn.active {
+      visibility: visible;
+    }
+  }
 }
 
 .habits-list {
@@ -28,6 +59,12 @@
     cursor: pointer;
     border-radius: 5px;
     align-items: center;
+    box-shadow: 2px 2px 6px 1px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
+
+    &:hover {
+      box-shadow: 3px 3px 6px 1px rgba(0, 0, 0, 0.3);
+    }
 
     .habit-time {
       left: 5%;
@@ -55,14 +92,14 @@ span.jsx-3904811003.text {
   color: inherit;
 }
 
-@media (min-width: 1366px) {
-  .habits-list {
+@media screen and (min-width: 1366px) {
+  .habits-view {
     margin: auto;
     max-width: 1095px;
   }
 }
 
-@media (max-width: 480px) {
+@media screen and (max-width: $mobile) {
   .habits-list {
     li {
       height: 100px;
