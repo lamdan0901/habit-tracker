@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Checkbox } from '@nextui-org/react'
-import HabitModel from 'components/HabitModel/HabitModel'
 import { BsTrash } from 'react-icons/bs'
+import HabitModel from 'components/HabitModel/HabitModel'
 import './HabitList.scss'
 
 export default function HabitList(props) {
@@ -13,12 +13,8 @@ export default function HabitList(props) {
     setModalOpened(true)
   }
 
-  function handleDeleteHabit(habitId) {
-    props.onDeleteHabit(habitId)
-  }
-
-  function handleShowAllHabits() {
-    props.setIsSearching(false)
+  function handleDeleteHabit(habit) {
+    props.onDeleteHabit(habit)
   }
 
   const habitIDs = props.habits.map((habit) => habit.id)
@@ -71,14 +67,6 @@ export default function HabitList(props) {
             className="check-all_done-box">
             All done
           </Checkbox>
-
-          <button
-            className={
-              props.isSearching ? 'btn show-all_habits-btn active' : 'btn show-all_habits-btn'
-            }
-            onClick={handleShowAllHabits}>
-            Show all habits
-          </button>
         </div>
 
         <ul className="habits-list">
@@ -111,7 +99,7 @@ export default function HabitList(props) {
                   className="delete-btn"
                   onClick={(e) => {
                     e.stopPropagation() //so that when we click the child element, it won't call the parent element
-                    handleDeleteHabit(habit.id)
+                    handleDeleteHabit(habit)
                   }}>
                   <BsTrash />
                 </div>

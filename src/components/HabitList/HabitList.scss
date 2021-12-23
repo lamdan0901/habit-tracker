@@ -21,18 +21,6 @@
         box-shadow: 3px 3px 6px 1px rgba(0, 0, 0, 0.3);
       }
     }
-
-    .show-all_habits-btn {
-      visibility: hidden;
-      background-color: #ccc;
-      padding: 8px;
-      height: 45px;
-      margin-top: 5px;
-      box-shadow: inset -3px -2px 6px 1px rgba(0, 0, 0, 0.2), inset 3px 2px 6px 1px #eee;
-    }
-    .show-all_habits-btn.active {
-      visibility: visible;
-    }
   }
 }
 

@@ -18,6 +18,8 @@ export default function Home(props) {
   let today = new Date().toDateString()
   today = today.slice(0, 3) + ', ' + today.slice(3)
 
+  let deletedHabit
+
   const [renderHomePage, setRenderHomePage] = useState(false)
 
   const dispatch = useDispatch()
@@ -29,7 +31,7 @@ export default function Home(props) {
     })
   }, [dispatch])
 
-  function handleAddHabit(habit) {
+  function handleAddHabit(habit, msg) {
     const notify = new Promise((resolve, reject) =>
       dispatch(actions.postHabit(habit))
         .then(() => {
@@ -39,7 +41,7 @@ export default function Home(props) {
           reject()
         }),
     )
-    displayNotif('New habit is added', notify)
+    displayNotif(msg === undefined ? 'New habit is added' : msg, notify)
   }
 
   function handleEditHabit(habit) {
@@ -55,9 +57,10 @@ export default function Home(props) {
     displayNotif('Habit is saved', notify)
   }
 
-  function handleDeleteHabit(id) {
+  function handleDeleteHabit(habit) {
+    deletedHabit = habit
     const notify = new Promise((resolve, reject) =>
-      dispatch(actions.deleteHabit(id))
+      dispatch(actions.deleteHabit(habit.id))
         .then(() => {
           resolve()
         })
@@ -65,15 +68,28 @@ export default function Home(props) {
           reject(error)
         }),
     )
-    displayNotif('Habit is deleted', notify)
+    displayNotif('Habit is deleted', notify, '')
   }
 
-  function displayNotif(msg, notify) {
+  function displayNotif(msg, notify, deleteAction) {
     toast.promise(notify, {
       pending: 'Working on it...',
       success: {
         render() {
-          return msg
+          return (
+            <div>
+              <span>{msg}</span>
+              {deleteAction !== undefined && (
+                <button
+                  className="btn undo_delete-btn"
+                  onClick={() => {
+                    handleAddHabit(deletedHabit, 'Undo delete successfully!')
+                  }}>
+                  UNDO DELETE
+                </button>
+              )}
+            </div>
+          )
         },
         hideProgressBar: true,
         closeOnClick: true,
@@ -88,6 +104,7 @@ export default function Home(props) {
         hideProgressBar: true,
         closeOnClick: true,
         progress: undefined,
+        transition: bounce,
       },
     })
   }
@@ -104,10 +121,9 @@ export default function Home(props) {
     else sayHi = 'Good evening'
   }
 
-  //store state when is searching and when is not
+  //store state for when is searching and when is not
   const [isSearching, setIsSearching] = useState(false)
   const [searchedHabits, setSearchedHabits] = useState(habits)
-  // console.log(isSearching)
 
   function handleSetSearchedHabits(habits) {
     setSearchedHabits(habits)
@@ -137,7 +153,6 @@ export default function Home(props) {
               onDeleteHabit={handleDeleteHabit}
               habits={isSearching ? searchedHabits : habits}
               isSearching={isSearching}
-              setIsSearching={setIsSearching}
             />
           </div>
         ) : (

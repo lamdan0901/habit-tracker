@@ -25,6 +25,15 @@
   color: red;
 }
 
+.undo_delete-btn {
+  color: $confirm-btn-color;
+  transform: translateX(6px);
+
+  &:hover {
+    background-color: #b8d8e06e;
+  }
+}
+
 @media screen and (min-width: 1366px) {
   .home {
     .header {

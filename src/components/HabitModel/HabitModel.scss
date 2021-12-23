@@ -8,6 +8,7 @@
   letter-spacing: 0.16px;
   font-weight: 500;
   line-height: 24px;
+  background-color: transparent;
 
   &.add-btn {
     background-color: $primary-color;
@@ -28,7 +29,6 @@
   }
 
   &.confirm-btn {
-    background: $light-yellow-color;
     color: $confirm-btn-color;
     transform: translateY(5px);
 
@@ -38,7 +38,6 @@
   }
 
   &.cancel-btn {
-    background: $light-yellow-color;
     color: $cancel-btn-color;
     transform: translateY(5px);
     &:hover {
