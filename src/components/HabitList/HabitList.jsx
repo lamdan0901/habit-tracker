@@ -1,20 +1,32 @@
 import { useState } from 'react'
 import { Checkbox } from '@nextui-org/react'
+import Modal from 'react-modal'
 import { BsTrash } from 'react-icons/bs'
 import HabitModel from 'components/HabitModel/HabitModel'
 import './HabitList.scss'
 
 export default function HabitList(props) {
   const [modalOpened, setModalOpened] = useState(false)
+  const [confirmDialogOpened, setConfirmDialogOpened] = useState(false)
   const [currentHabit, setCurrentHabit] = useState({})
+  const [habitTemp, setHabitTemp] = useState() //habit that is saved before being deleted
 
   function handleChooseHabit(habit) {
     setCurrentHabit(habit)
     setModalOpened(true)
   }
 
-  function handleDeleteHabit(habit) {
-    props.onDeleteHabit(habit)
+  function handleOpenDialog(habit) {
+    setHabitTemp(habit)
+    setConfirmDialogOpened(true)
+  }
+
+  function handleCloseConfirmDialog() {
+    setConfirmDialogOpened(false)
+  }
+
+  function handleDeleteHabit() {
+    props.onDeleteHabit(habitTemp)
   }
 
   const habitIDs = props.habits.map((habit) => habit.id)
@@ -99,7 +111,7 @@ export default function HabitList(props) {
                   className="delete-btn"
                   onClick={(e) => {
                     e.stopPropagation() //so that when we click the child element, it won't call the parent element
-                    handleDeleteHabit(habit)
+                    handleOpenDialog(habit)
                   }}>
                   <BsTrash />
                 </div>
@@ -108,6 +120,32 @@ export default function HabitList(props) {
           ))}
         </ul>
       </div>
+
+      <Modal
+        isOpen={confirmDialogOpened}
+        closeTimeoutMS={200}
+        onRequestClose={handleCloseConfirmDialog}
+        shouldCloseOnOverlayClick={false}
+        className="confirm-dialog"
+        overlayClassName="confirm-dialog-overlay">
+        <div className="confirm-dialog-content">
+          <h3>Delete Habit</h3>
+          <p>Are you sure you want to delete this habit?</p>
+          <div className="delete-btn-group">
+            <button
+              className="btn cancel-btn"
+              onClick={() => {
+                handleDeleteHabit()
+                handleCloseConfirmDialog()
+              }}>
+              DELETE
+            </button>
+            <button className="btn confirm-btn" onClick={handleCloseConfirmDialog}>
+              CANCEL
+            </button>
+          </div>
+        </div>
+      </Modal>
     </>
   )
 }

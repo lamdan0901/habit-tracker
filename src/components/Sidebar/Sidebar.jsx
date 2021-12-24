@@ -12,6 +12,7 @@ export default function SideNav(props) {
   const [searchText, setSearchText] = useState('')
 
   function handleTextChange(e) {
+    e.target.value === '' && props.setIsSearching(false)
     setSearchText(e.target.value)
   }
 

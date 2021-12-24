@@ -5,14 +5,14 @@ a {
 }
 
 .menu {
-  background: transparent;
+  position: relative;
   padding: 10px 0 50px 15px;
   min-height: 100vh;
   min-width: 200px;
   max-width: 200px;
   overflow: hidden;
-  position: relative;
-  transition: all 0.5s ease;
+  transition: max-width, min-width 0.5s;
+  background: transparent;
 
   .aib-logo {
     width: 35px;
@@ -22,10 +22,10 @@ a {
   }
 
   .menu-item .menu-text {
-    opacity: 1;
     position: absolute;
-    transition: opacity 0.4s;
+    opacity: 1;
     width: 150px;
+    transition: opacity 0.4s;
   }
 
   &.minimized {

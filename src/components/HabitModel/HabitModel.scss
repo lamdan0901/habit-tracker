@@ -162,7 +162,7 @@
   }
 }
 
-.Modal {
+.habit-modal {
   position: absolute;
   z-index: 5;
   top: 30px;
@@ -181,7 +181,7 @@
   box-shadow: 4px 4px 6px 5px rgba(0, 0, 0, 0.3);
 }
 
-.Overlay {
+.habit-modal-overlay {
   top: 0;
   left: 0;
   right: 0;
@@ -194,7 +194,7 @@
 // ReactModal Animation:
 .ReactModal__Overlay {
   opacity: 0;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.2s;
 }
 .ReactModal__Overlay--after-open {
   opacity: 1;

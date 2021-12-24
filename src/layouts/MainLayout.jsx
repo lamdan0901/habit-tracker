@@ -9,7 +9,7 @@ import './MainLayout.scss'
 export default function MainLayout(props) {
   return (
     <main>
-      <ToastContainer autoClose={2000} />
+      <ToastContainer autoClose={2500} />
       <React.StrictMode>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <div className="main-layout">

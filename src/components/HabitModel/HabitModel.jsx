@@ -2,8 +2,8 @@ import { useState } from 'react'
 import Modal from 'react-modal'
 import MobileTimePicker from '@mui/lab/MobileTimePicker'
 import TextField from '@mui/material/TextField'
-
 import DayPicker from './DayPicker/DayPicker'
+
 import 'react-toastify/dist/ReactToastify.css'
 import './HabitModel.scss'
 
@@ -92,8 +92,8 @@ export default function AddHabit(props) {
         closeTimeoutMS={200}
         onRequestClose={handleCloseModal}
         shouldCloseOnOverlayClick={false}
-        className="Modal"
-        overlayClassName="Overlay">
+        className="habit-modal"
+        overlayClassName="habit-modal-overlay">
         {/* - - - - - - - - - - - - */}
         <div className="modal-content">
           <h2 className="title">{props.editMode ? 'View Habit' : 'Add Habit'}</h2>
@@ -141,11 +141,6 @@ export default function AddHabit(props) {
           <div className="footer">
             <div className="error-message">{error !== '' && error}</div>
             <div>
-              {/* {props.editMode && (
-                <button className="btn cancel-btn" onClick={handleDelete}>
-                  DELETE
-                </button>
-              )} */}
               <button className="btn confirm-btn" onClick={saveHabit}>
                 {props.editMode ? 'EDIT' : 'ADD'}
               </button>

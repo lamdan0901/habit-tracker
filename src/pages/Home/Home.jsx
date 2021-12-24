@@ -143,7 +143,7 @@ export default function Home(props) {
             <div className="header">
               <span>
                 <h3>{today}</h3>
-                <h2>{sayHi}, username!</h2>
+                <h2>{sayHi}, Edward!</h2>
               </span>
               <HabitModel onAddHabit={handleAddHabit} />
             </div>

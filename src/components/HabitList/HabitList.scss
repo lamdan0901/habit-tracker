@@ -74,6 +74,62 @@
   }
 }
 
+.confirm-dialog {
+  position: absolute;
+  z-index: 5;
+  top: 30px;
+  left: 30px;
+  right: 30px;
+  bottom: 30px;
+  max-width: 340px;
+  max-height: 150px;
+
+  margin: auto;
+  outline: none;
+  padding: 18px;
+  border-radius: 8px;
+  border: 1px solid $grey-color;
+  background-color: #fff;
+}
+
+.confirm-dialog-overlay {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.confirm-dialog-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  h3 {
+    color: #111;
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  p {
+    color: #222;
+    font-size: 16px;
+    transform: translateY(20px);
+  }
+
+  .delete-btn-group {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+
+    & > button {
+      margin-left: 5px;
+    }
+  }
+}
+
 // override the checkbox's text color
 span.jsx-2293672674.text,
 span.jsx-3904811003.text {
