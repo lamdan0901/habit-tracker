@@ -9,21 +9,28 @@ import './Sidebar.scss'
 import { useState } from 'react'
 
 export default function SideNav(props) {
-  const [searchText, setSearchText] = useState('')
+  const [searchText, setSearchText] = useState({ text: '', timeOut: 0 })
 
   function handleTextChange(e) {
-    e.target.value === '' && props.setIsSearching(false)
-    setSearchText(e.target.value)
-  }
+    const searchBoxText = e.target.value
 
-  function handleSearchHabit(e) {
-    e.preventDefault()
+    if (searchBoxText) {
+      props.setIsSearching(true)
 
-    let habitsFiltered = props.habits.filter((habit) =>
-      habit.name.toLowerCase().includes(searchText.toLowerCase()),
-    )
-    props.handleSetSearchedHabits(habitsFiltered)
-    props.setIsSearching(true)
+      //The clearTimeout(timeoutVariable) method stops the execution of the function specified in setTimeout() and setInterval()
+      if (searchText.timeOut) clearTimeout(searchText.timeOut)
+
+      let habitsFiltered = props.habits.filter((habit) =>
+        habit.name.toLowerCase().includes(searchBoxText.toLowerCase()),
+      )
+
+      setSearchText({
+        text: searchBoxText,
+        timeout: setTimeout(function () {
+          props.handleSetSearchedHabits(habitsFiltered)
+        }, 500),
+      })
+    } else props.setIsSearching(false)
   }
 
   return (
@@ -55,15 +62,10 @@ export default function SideNav(props) {
         <input
           id="search"
           type="search"
-          value={searchText}
+          value={searchText.name}
           onChange={handleTextChange}
           placeholder={props.sidebarOpened ? 'Search...' : ' '}
-          required
         />
-
-        <button className="main-search-btn" title="Click to search" onClick={handleSearchHabit}>
-          <BiSearch />
-        </button>
       </form>
 
       <NavLink
