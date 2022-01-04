@@ -1,12 +1,14 @@
+import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
+
 import { BsFillHouseDoorFill } from 'react-icons/bs'
 import { AiOutlineMenuFold, AiOutlineMenuUnfold, AiFillPieChart } from 'react-icons/ai'
 import { GiNightSleep } from 'react-icons/gi'
 import { BiSearch } from 'react-icons/bi'
+
 import aibLogo from '../../assets/img/aib-logo.png'
 import './Searchbox.scss'
 import './Sidebar.scss'
-import { useState } from 'react'
 
 export default function SideNav(props) {
   const [searchText, setSearchText] = useState({ text: '', timeOut: 0 })

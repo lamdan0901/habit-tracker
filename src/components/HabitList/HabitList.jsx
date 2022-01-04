@@ -2,12 +2,13 @@ import { useState } from 'react'
 import { Checkbox } from '@nextui-org/react'
 import Modal from 'react-modal'
 import { BsTrash } from 'react-icons/bs'
-import HabitModel from 'components/HabitModel/HabitModel'
+import HabitModal from 'components/HabitModal/HabitModal'
 import './HabitList.scss'
 
 export default function HabitList(props) {
   const [modalOpened, setModalOpened] = useState(false)
   const [confirmDialogOpened, setConfirmDialogOpened] = useState(false)
+
   const [currentHabit, setCurrentHabit] = useState({})
   const [habitTemp, setHabitTemp] = useState() //habit that is saved before being deleted
 
@@ -57,7 +58,7 @@ export default function HabitList(props) {
   return (
     <>
       {modalOpened && (
-        <HabitModel
+        <HabitModal
           habit={currentHabit}
           editModalOpened={modalOpened}
           onCloseModal={() => {

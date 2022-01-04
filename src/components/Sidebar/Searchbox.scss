@@ -1,4 +1,4 @@
-@import '../../scss/variables';
+@import '../../assets/scss/variables';
 
 form.search-box {
   box-sizing: border-box;
@@ -27,8 +27,7 @@ form.search-box {
     }
   }
 
-  & > input,
-  button.main-search-btn {
+  & > input {
     height: $height;
     border: 0;
     color: $color-dark;
@@ -47,34 +46,5 @@ form.search-box {
     z-index: 1;
     padding: 0 1rem;
     position: relative;
-  }
-
-  & > button.main-search-btn {
-    position: absolute;
-    z-index: 2;
-    top: 0;
-    right: 0;
-    width: $btn-width;
-    font-weight: bold;
-    background: $primary-color;
-    border-radius: 0 $rad $rad 0;
-    cursor: pointer;
-    display: none;
-
-    svg {
-      pointer-events: none;
-      transform: translateY(4px);
-      width: 1.2em;
-      height: 1.2em;
-      color: #fff;
-      font-size: 20px;
-    }
-  }
-
-  & > input:not(:placeholder-shown) {
-    width: calc(100% - 46px);
-    + button.main-search-btn {
-      display: block;
-    }
   }
 }

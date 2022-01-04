@@ -1,14 +1,16 @@
-@import '../../scss/variables';
+@import '../../assets/scss/variables';
 
 .navbar {
-  max-width: 1099px;
+  position: relative;
   margin: auto;
   height: 50px;
   padding: 5px 0;
-  background: transparent;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  background: transparent;
   color: #222;
 
   .digi-clock {
@@ -21,6 +23,7 @@
     align-items: center;
     width: 110px;
     padding: 5px;
+    transform: translateX(10px);
 
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -41,7 +44,7 @@
   div[role='menu'] {
     position: absolute;
     top: 50px;
-    right: 30px;
+    right: -15px;
     z-index: 5;
     padding: 10px 0;
     display: flex;
@@ -84,10 +87,6 @@
   .navbar {
     width: 1080px;
   }
-
-  div[role='menu'] {
-    right: 130px !important;
-  }
 }
 
 @media screen and (max-width: 1366px) {
@@ -97,18 +96,16 @@
 }
 
 @media screen and (max-width: $mobile) {
-  .navbar {
-    .user-info {
-      width: 41px;
-      border-radius: 50%;
+  .navbar .user-info {
+    width: 41px;
+    border-radius: 50%;
 
-      img.user-avatar {
-        margin-right: 0px;
-      }
+    img.user-avatar {
+      margin-right: 0px;
+    }
 
-      .user-name {
-        display: none;
-      }
+    .user-name {
+      display: none;
     }
   }
 }

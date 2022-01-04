@@ -1,7 +1,7 @@
-@import '../../scss/variables';
+@import '../../assets/scss/variables';
 
 .habits-view {
-  width: 100%;
+  margin: 15px auto 0px auto;
   overflow-x: auto;
 
   & > div {
@@ -9,7 +9,7 @@
     justify-content: space-between;
 
     .check-all_done-box {
-      margin: 5px;
+      margin: 10px 5px;
       padding: 10px 15px;
       height: 45px;
       border-radius: 5px;
@@ -138,7 +138,6 @@ span.jsx-3904811003.text {
 
 @media screen and (min-width: 1366px) {
   .habits-view {
-    margin: auto;
     max-width: 1095px;
   }
 }
@@ -149,7 +148,8 @@ span.jsx-3904811003.text {
       height: 100px;
 
       .habit-time {
-        left: 44%;
+        left: -10px;
+        top: 32px;
       }
 
       .delete-btn {

@@ -5,7 +5,7 @@ import { Loading } from '@nextui-org/react'
 
 import HabitList from 'components/HabitList/HabitList'
 import MainLayout from 'layouts/MainLayout'
-import HabitModel from 'components/HabitModel/HabitModel'
+import HabitModal from 'components/HabitModal/HabitModal'
 import * as actions from 'actions/habitsActions'
 
 import 'react-toastify/dist/ReactToastify.css'
@@ -145,7 +145,7 @@ export default function Home(props) {
                 <h3>{today}</h3>
                 <h2>{sayHi}, Edward!</h2>
               </span>
-              <HabitModel onAddHabit={handleAddHabit} />
+              <HabitModal onAddHabit={handleAddHabit} />
             </div>
 
             <HabitList

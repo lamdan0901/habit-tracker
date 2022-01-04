@@ -1,4 +1,4 @@
-@import '../../scss/variables';
+@import '../../assets/scss/variables';
 
 a {
   color: #fff;
@@ -45,10 +45,6 @@ a {
 
       & > button.trigger-search-btn {
         display: block;
-      }
-
-      & > button.main-search-btn {
-        display: none;
       }
 
       & > input {
