@@ -145,7 +145,7 @@ export default function Home(props) {
                 <h3>{today}</h3>
                 <h2>{sayHi}, Edward!</h2>
               </span>
-              <HabitModal onAddHabit={handleAddHabit} />
+              <HabitModal onAddHabit={handleAddHabit} habits={habits} />
             </div>
 
             <HabitList

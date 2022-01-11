@@ -60,6 +60,7 @@ export default function HabitList(props) {
       {modalOpened && (
         <HabitModal
           habit={currentHabit}
+          habits={props.habits}
           editModalOpened={modalOpened}
           onCloseModal={() => {
             setModalOpened(false)
@@ -73,7 +74,7 @@ export default function HabitList(props) {
       <div className="habits-view">
         <div>
           <Checkbox
-            color="success"
+            color="primary"
             title="Click to set all the habits done"
             onChange={handleAllCheck}
             checked={allHabitsChecked}
@@ -93,9 +94,7 @@ export default function HabitList(props) {
                 }}
                 checked={habitsCheck.includes(habit.id)}
                 className="check-habit-box"
-                textColor={habit.textColor}>
-                {habit.name}
-              </Checkbox>
+                textColor={habit.textColor}></Checkbox>
 
               <li
                 title="Click to view details"
@@ -103,7 +102,7 @@ export default function HabitList(props) {
                 onClick={() => {
                   handleChooseHabit(habit)
                 }}>
-                <div></div>
+                <p className="habit-name">{habit.name}</p>
 
                 <div className="habit-time">{new Date(habit.time).toString().slice(16, 21)}</div>
 

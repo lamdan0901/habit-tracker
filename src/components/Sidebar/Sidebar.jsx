@@ -17,8 +17,6 @@ export default function SideNav(props) {
     const searchBoxText = e.target.value
 
     if (searchBoxText) {
-      props.setIsSearching(true)
-
       //The clearTimeout(timeoutVariable) method stops the execution of the function specified in setTimeout() and setInterval()
       if (searchText.timeOut) clearTimeout(searchText.timeOut)
 
@@ -29,8 +27,9 @@ export default function SideNav(props) {
       setSearchText({
         text: searchBoxText,
         timeout: setTimeout(function () {
+          props.setIsSearching(true)
           props.handleSetSearchedHabits(habitsFiltered)
-        }, 500),
+        }, 200),
       })
     } else props.setIsSearching(false)
   }

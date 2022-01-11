@@ -36,6 +36,7 @@ export default function AddHabit(props) {
 
   function saveHabit() {
     if (!habit.name) setError('Habit name is not left blank!')
+    else if (isDuplicatedHabitName(habit)) setError('Habit name is duplicated!')
     else {
       props.editMode ? props.onEditHabit(habit) : props.onAddHabit(habit)
       handleCloseModal()
@@ -71,6 +72,19 @@ export default function AddHabit(props) {
     props.editMode && props.onCloseModal()
     setHabit(initialHabitValues)
     setError('')
+  }
+
+  function isDuplicatedHabitName(currentHabit) {
+    let habitNames
+
+    !props.editMode
+      ? (habitNames = props.habits.map((habit) => habit.name))
+      : (habitNames = props.habits
+          .filter((habit) => habit.name !== initialHabitValues.name)
+          .map((habit) => habit.name))
+
+    if (habitNames.includes(currentHabit.name)) return true
+    return false
   }
 
   return (
