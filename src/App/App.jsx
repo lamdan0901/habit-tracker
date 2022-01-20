@@ -10,19 +10,18 @@ import SleepCalculator from 'pages/SleepCalculator/SleepCalculator'
 import './App.scss'
 
 export default function App() {
-  const [sidebarOpened, setSidebarOpened] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [windowWidth, setWindowWidth] = useState(0)
 
-  let resizeWindow = () => {
+  const resizeWindow = () => {
     setWindowWidth(window.innerWidth)
   }
 
   useEffect(() => {
-    if (windowWidth < 768) setSidebarOpened(false)
-    else setSidebarOpened(true)
+    if (windowWidth <= 768) setSidebarOpen(false)
+    else setSidebarOpen(true)
 
     resizeWindow()
-
     window.addEventListener('resize', resizeWindow)
     return () => window.removeEventListener('resize', resizeWindow)
   }, [windowWidth])
@@ -30,19 +29,19 @@ export default function App() {
   const now = new Date().toLocaleTimeString()
   const [clockState, setClockState] = useState(formatTime(now))
 
-  // deps: effect will only activate if the values in the list change
   useEffect(() => {
-    setInterval(() => {
+    const interval = setInterval(() => {
       const now = new Date().toLocaleTimeString()
       setClockState(formatTime(now))
-    }, 60000)
+    }, 10000)
+    return () => clearInterval(interval)
   })
 
   function formatTime(time) {
     if (time.slice(0, 1) === '1') {
       return time.slice(0, 5) + ' ' + now.slice(9, 11)
     } else {
-      return time.slice(0, 4) + ' ' + now.slice(8, 10)
+      return '0' + time.slice(0, 4) + ' ' + now.slice(8, 10)
     }
   }
 
@@ -54,8 +53,8 @@ export default function App() {
             path="/"
             element={
               <Home
-                sidebarOpened={sidebarOpened}
-                setSidebarOpened={setSidebarOpened}
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
                 clockState={clockState}
               />
             }
@@ -65,8 +64,8 @@ export default function App() {
             element={
               <SleepCalculator
                 windowWidth={windowWidth}
-                sidebarOpened={sidebarOpened}
-                setSidebarOpened={setSidebarOpened}
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
                 clockState={clockState}
               />
             }
@@ -75,8 +74,8 @@ export default function App() {
             path="/statistics"
             element={
               <Statistics
-                sidebarOpened={sidebarOpened}
-                setSidebarOpened={setSidebarOpened}
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
                 clockState={clockState}
               />
             }

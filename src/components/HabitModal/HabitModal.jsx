@@ -8,10 +8,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import './HabitModal.scss'
 
 export default function AddHabit(props) {
-  const [modalOpened, setModalOpened] = useState(!!props.editModalOpened)
-  const [error, setError] = useState('')
-
-  const initialHabitValues = !props.editMode
+  const initialHabitValues = !props.isEditMode
     ? {
         name: '',
         daysChecked: [new Date().toString().slice(0, 3)],
@@ -34,13 +31,36 @@ export default function AddHabit(props) {
 
   const [habit, setHabit] = useState(initialHabitValues)
 
+  const [isModalOpened, setIsModalOpened] = useState(!!props.isEditModalOpened)
+  const [error, setError] = useState('')
+
   function saveHabit() {
     if (!habit.name) setError('Habit name is not left blank!')
     else if (isDuplicatedHabitName(habit)) setError('Habit name is duplicated!')
     else {
-      props.editMode ? props.onEditHabit(habit) : props.onAddHabit(habit)
+      props.isEditMode ? props.onEditHabit(habit) : props.onAddHabit(habit)
       handleCloseModal()
     }
+  }
+
+  function setTime(date) {
+    setHabit((prevValue) => ({
+      ...prevValue,
+      time: date,
+    }))
+  }
+
+  function isDuplicatedHabitName(currentHabit) {
+    let habitNames
+
+    !props.isEditMode
+      ? (habitNames = props.habitsList.map((habit) => habit.name))
+      : (habitNames = props.habitsList
+          .filter((habit) => habit.name !== initialHabitValues.name)
+          .map((habit) => habit.name))
+
+    if (habitNames.includes(currentHabit.name)) return true
+    return false
   }
 
   function handleChange(e) {
@@ -60,61 +80,38 @@ export default function AddHabit(props) {
     }))
   }
 
-  function setTime(date) {
-    setHabit((prevValue) => ({
-      ...prevValue,
-      time: date,
-    }))
-  }
-
   function handleCloseModal() {
-    setModalOpened(false)
-    props.editMode && props.onCloseModal()
+    setIsModalOpened(false)
+    props.isEditMode && props.onCloseModal()
     setHabit(initialHabitValues)
     setError('')
   }
 
-  function isDuplicatedHabitName(currentHabit) {
-    let habitNames
-
-    !props.editMode
-      ? (habitNames = props.habits.map((habit) => habit.name))
-      : (habitNames = props.habits
-          .filter((habit) => habit.name !== initialHabitValues.name)
-          .map((habit) => habit.name))
-
-    if (habitNames.includes(currentHabit.name)) return true
-    return false
-  }
-
   return (
     <div>
-      {!props.editMode && (
-        <div>
-          <button
-            className="btn add-btn"
-            onClick={() => {
-              setModalOpened(true)
-            }}>
-            +
-          </button>
-        </div>
+      {!props.isEditMode && (
+        <button
+          className="btn add-btn"
+          onClick={() => {
+            setIsModalOpened(true)
+          }}>
+          +
+        </button>
       )}
 
       <Modal
-        isOpen={modalOpened}
-        closeTimeoutMS={200}
-        onRequestClose={handleCloseModal}
-        shouldCloseOnOverlayClick={false}
         className="habit-modal"
-        overlayClassName="habit-modal-overlay">
-        {/* - - - - - - - - - - - - */}
+        overlayClassName="habit-modal-overlay"
+        closeTimeoutMS={200}
+        isOpen={isModalOpened}
+        onRequestClose={handleCloseModal}
+        shouldCloseOnOverlayClick={false}>
         <div className="modal-content">
-          <h2 className="title">{props.editMode ? 'View Habit' : 'Add Habit'}</h2>
+          <h2 className="modal-title">{props.isEditMode ? 'View Habit' : 'Add Habit'}</h2>
 
           <form className="data-fields">
-            <div className="name-input">
-              <label className="name-label">Name:</label>
+            <div className="name-field">
+              <label className="data-label">Name:</label>
               <input
                 type="text"
                 className={error !== '' ? 'red-border' : ''}
@@ -124,8 +121,8 @@ export default function AddHabit(props) {
               />
             </div>
 
-            <div className="description-input">
-              <label className="name-label">Description:</label>
+            <div className="description-field">
+              <label className="data-label">Description:</label>
               <textarea
                 type="text"
                 name="description"
@@ -136,7 +133,6 @@ export default function AddHabit(props) {
 
             <div className="time-picker">
               <label className="time-label">Reminder Time:</label>
-
               <MobileTimePicker
                 label=""
                 orientation="portrait"
@@ -152,17 +148,17 @@ export default function AddHabit(props) {
             <DayPicker daysCheck={habit.daysChecked} onDaysCheck={handleDayCheck} />
           </form>
 
-          <div className="footer">
+          <footer className="modal-footer">
             <div className="error-message">{error !== '' && error}</div>
             <div>
               <button className="btn confirm-btn" onClick={saveHabit}>
-                {props.editMode ? 'EDIT' : 'ADD'}
+                {props.isEditMode ? 'EDIT' : 'ADD'}
               </button>
               <button className="btn cancel-btn" onClick={handleCloseModal}>
                 CANCEL
               </button>
             </div>
-          </div>
+          </footer>
         </div>
       </Modal>
     </div>

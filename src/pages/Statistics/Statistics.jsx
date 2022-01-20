@@ -5,8 +5,8 @@ export default function Statistics(props) {
   return (
     <MainLayout
       clockState={props.clockState}
-      sidebarOpened={props.sidebarOpened}
-      setSidebarOpened={props.setSidebarOpened}>
+      sidebarOpen={props.sidebarOpen}
+      setSidebarOpen={props.setSidebarOpen}>
       <h2>Statistics</h2>
     </MainLayout>
   )

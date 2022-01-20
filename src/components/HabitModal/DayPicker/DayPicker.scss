@@ -90,7 +90,7 @@
   }
 }
 
-@media screen and (max-width: $mobile) {
+@media screen and (max-width: 505px) {
   .day-checkboxes {
     display: grid !important;
     grid-template-columns: auto auto auto auto;

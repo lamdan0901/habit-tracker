@@ -18,6 +18,13 @@ export default function Home(props) {
   let today = new Date().toDateString()
   today = today.slice(0, 3) + ', ' + today.slice(3)
 
+  const currentHour = parseInt(new Date().toString().slice(16, 18))
+  let greetingText = 'Good morning'
+  if (currentHour >= 12) {
+    if (currentHour < 18) greetingText = 'Good afternoon'
+    else greetingText = 'Good evening'
+  }
+
   let deletedHabit
 
   const [renderHomePage, setRenderHomePage] = useState(false)
@@ -25,23 +32,64 @@ export default function Home(props) {
   const dispatch = useDispatch()
   const habits = useSelector((state) => state.habits)
 
+  const [isSearching, setIsSearching] = useState(false)
+  const [searchedHabits, setSearchedHabits] = useState(habits)
+
+  const [displayAllHabits, setDisplayAllHabits] = useState(false)
+  const [habitsList, setHabitsList] = useState(habits)
+
+  function handleChangeHabitsListDisplay() {
+    if (!displayAllHabits) {
+      setHabitsList(habits)
+    } else {
+      const todayHabitsList = setTodayHabitsList(habits)
+      setHabitsList(todayHabitsList)
+    }
+  }
+
   useEffect(() => {
-    dispatch(actions.getAllHabits()).then(() => {
+    dispatchTesting()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch])
+
+  function setTodayHabitsList(habits) {
+    let todayHabitsList = []
+    habits.forEach((habit) => {
+      if (habit.daysChecked.includes(today.slice(0, 3))) {
+        todayHabitsList.push(habit)
+      }
+    })
+    return todayHabitsList
+  }
+
+  function dispatchTesting(commandText) {
+    dispatch(actions.getAllHabits()).then((res) => {
+      if (commandText === 'display all') {
+        setHabitsList(res)
+      } else {
+        const todayHabitsList = setTodayHabitsList(res)
+        setHabitsList(todayHabitsList)
+      }
       setRenderHomePage(true)
     })
-  }, [dispatch])
+  }
 
   function handleAddHabit(habit, msg) {
     const notify = new Promise((resolve, reject) =>
       dispatch(actions.postHabit(habit))
         .then(() => {
           resolve()
+          if (!displayAllHabits) {
+            dispatchTesting()
+          } else {
+            dispatchTesting('display all')
+          }
         })
         .catch(() => {
           reject()
         }),
     )
-    displayNotif(msg === undefined ? 'New habit is added' : msg, notify)
+    displayNotif(!msg ? 'New habit is added' : msg, notify)
   }
 
   function handleEditHabit(habit) {
@@ -49,6 +97,11 @@ export default function Home(props) {
       dispatch(actions.putHabit(habit))
         .then(() => {
           resolve()
+          if (!displayAllHabits) {
+            dispatchTesting()
+          } else {
+            dispatchTesting('display all')
+          }
         })
         .catch((error) => {
           reject(error)
@@ -63,6 +116,11 @@ export default function Home(props) {
       dispatch(actions.deleteHabit(habit.id))
         .then(() => {
           resolve()
+          if (!displayAllHabits) {
+            dispatchTesting()
+          } else {
+            dispatchTesting('display all')
+          }
         })
         .catch((error) => {
           reject(error)
@@ -114,53 +172,51 @@ export default function Home(props) {
     exit: 'animate__animated animate__fadeOut',
   })
 
-  const currentHour = parseInt(new Date().toString().slice(16, 18))
-  let sayHi = 'Good morning'
-  if (currentHour >= 12) {
-    if (currentHour < 18) sayHi = 'Good afternoon'
-    else sayHi = 'Good evening'
-  }
-
-  //store state for when is searching and when is not
-  const [isSearching, setIsSearching] = useState(false)
-  const [searchedHabits, setSearchedHabits] = useState(habits)
-
-  function handleSetSearchedHabits(habits) {
-    setSearchedHabits(habits)
-  }
-
   return (
-    <>
-      <MainLayout
-        habits={habits}
-        handleSetSearchedHabits={handleSetSearchedHabits}
-        setIsSearching={setIsSearching}
-        clockState={props.clockState}
-        sidebarOpened={props.sidebarOpened}
-        setSidebarOpened={props.setSidebarOpened}>
-        {renderHomePage ? (
-          <div className="home">
-            <div className="header">
-              <span>
-                <h3>{today}</h3>
-                <h2>{sayHi}, Edward!</h2>
-              </span>
-              <HabitModal onAddHabit={handleAddHabit} habits={habits} />
-            </div>
+    <MainLayout
+      habits={habitsList}
+      clockState={props.clockState}
+      sidebarOpen={props.sidebarOpen}
+      setSidebarOpen={props.setSidebarOpen}
+      setIsSearching={setIsSearching}
+      handleSetSearchedHabits={(habits) => {
+        setSearchedHabits(habits)
+      }}>
+      {renderHomePage ? (
+        <div>
+          <div className="header">
+            <span>
+              <h3>{today}</h3>
+              <h2>{greetingText}, Edward!</h2>
+            </span>
 
-            <HabitList
-              onEditHabit={handleEditHabit}
-              onDeleteHabit={handleDeleteHabit}
-              habits={isSearching ? searchedHabits : habits}
-              isSearching={isSearching}
-            />
+            <button
+              className="btn show-all-btn"
+              onClick={() => {
+                setDisplayAllHabits(!displayAllHabits)
+                handleChangeHabitsListDisplay()
+              }}>
+              {!displayAllHabits ? 'All habits' : "Today's habits"}
+            </button>
+
+            <HabitModal onAddHabit={handleAddHabit} habitsList={habits} />
           </div>
-        ) : (
-          <Loading size="xlarge" color="warning" textColor="warning" className="loading-animation">
-            Loading...
-          </Loading>
-        )}
-      </MainLayout>
-    </>
+
+          <HabitList
+            isSearching={isSearching}
+            onEditHabit={handleEditHabit}
+            onDeleteHabit={handleDeleteHabit}
+            habitsList={isSearching ? searchedHabits : habitsList}
+            displayAllHabits={displayAllHabits}
+            setDisplayAllHabits={setDisplayAllHabits}
+            handleChangeHabitsListDisplay={handleChangeHabitsListDisplay}
+          />
+        </div>
+      ) : (
+        <Loading size="xlarge" color="warning" textColor="warning" className="loading-animation">
+          Loading...
+        </Loading>
+      )}
+    </MainLayout>
   )
 }

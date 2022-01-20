@@ -8,6 +8,7 @@ export const getAllHabits = () => async (dispatch) => {
       type: types.GET_ALL_HABITS,
       payload: res,
     })
+    return res
   } catch (error) {
     Promise.reject(error)
   }

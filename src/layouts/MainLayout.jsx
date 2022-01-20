@@ -9,18 +9,18 @@ import './MainLayout.scss'
 export default function MainLayout(props) {
   return (
     <main>
-      <ToastContainer autoClose={2000} />
+      <ToastContainer autoClose={2500} />
       <React.StrictMode>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <div className="main-layout">
             <Sidebar
               habits={props.habits}
-              handleSetSearchedHabits={props.handleSetSearchedHabits}
+              sidebarOpen={props.sidebarOpen}
+              setSidebarOpen={props.setSidebarOpen}
               setIsSearching={props.setIsSearching}
-              sidebarOpened={props.sidebarOpened}
-              setSidebarOpened={props.setSidebarOpened}
+              handleSetSearchedHabits={props.handleSetSearchedHabits}
             />
-            <div className="content">
+            <div className="content-and-nav">
               <NavBar clockState={props.clockState} />
               <div className="children">{props.children}</div>
             </div>

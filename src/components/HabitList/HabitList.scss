@@ -1,25 +1,24 @@
 @import '../../assets/scss/variables';
 
 .habits-view {
-  margin: 40px auto 0px auto;
-  overflow-x: auto;
+  height: 82vh;
+  margin: auto;
+  overflow: auto;
 
-  & > div {
-    display: flex;
-    justify-content: space-between;
+  .check-all_done-box {
+    position: absolute;
+    top: 150px;
+    z-index: 2;
+    margin: 0px 0 10px 5px;
+    padding: 10px 15px;
+    height: 45px;
+    border-radius: 5px;
+    background-color: rgba(196, 196, 196, 0.7);
+    box-shadow: 2px 2px 6px 1px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
 
-    .check-all_done-box {
-      margin: 0px 0 10px 5px;
-      padding: 10px 15px;
-      height: 45px;
-      border-radius: 5px;
-      background-color: rgba(196, 196, 196, 0.7);
-      box-shadow: 2px 2px 6px 1px rgba(0, 0, 0, 0.2);
-      transition: all 0.2s;
-
-      &:hover {
-        box-shadow: 3px 3px 6px 1px rgba(0, 0, 0, 0.3);
-      }
+    &:hover {
+      box-shadow: 3px 3px 6px 1px rgba(0, 0, 0, 0.3);
     }
   }
 }
@@ -28,13 +27,13 @@
   position: relative;
   display: grid;
   grid-template-columns: auto auto;
+  margin-bottom: 120px;
 
   .check-habit-box {
     position: absolute;
-    margin-top: 13px;
     margin-left: 10px;
     display: flex;
-    padding: 15px 10px;
+    padding: 10px;
     z-index: 1;
   }
 
@@ -43,7 +42,7 @@
     display: flex;
     justify-content: space-between;
     padding: 10px 15px;
-    margin: 20px 5px;
+    margin: 0 15px 40px 5px;
     height: 75px;
     cursor: pointer;
     border-radius: 5px;
@@ -58,7 +57,7 @@
     .habit-name {
       position: relative;
       left: 30px;
-      top: -20px;
+      top: -18px;
     }
 
     .habit-time {
@@ -158,21 +157,23 @@ span.jsx-3904811003.text {
 }
 
 @media screen and (max-width: $mobile) {
-  .habits-list {
-    li {
-      height: 100px;
+  .check-all_done-box {
+    top: 220px !important;
+  }
 
-      .habit-name {
-        transform: translateY(-12.5px);
-      }
+  .habits-list li {
+    height: 100px;
 
-      .habit-time {
-        top: 55px;
-      }
+    .habit-name {
+      transform: translateY(-12.5px);
+    }
 
-      .delete-btn {
-        transform: translateY(30px);
-      }
+    .habit-time {
+      top: 55px;
+    }
+
+    .delete-btn {
+      transform: translateY(30px);
     }
   }
 }

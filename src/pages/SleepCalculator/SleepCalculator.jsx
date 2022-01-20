@@ -94,8 +94,8 @@ export default function SleepCalculator(props) {
   return (
     <MainLayout
       clockState={props.clockState}
-      sidebarOpened={props.sidebarOpened}
-      setSidebarOpened={props.setSidebarOpened}>
+      sidebarOpen={props.sidebarOpen}
+      setSidebarOpen={props.setSidebarOpen}>
       <div className="sleep-cal">
         <h3>You want to wake up at...</h3>
 

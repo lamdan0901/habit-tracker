@@ -35,7 +35,7 @@ export default function SideNav(props) {
   }
 
   return (
-    <div className={props.sidebarOpened ? 'menu' : 'menu minimized'}>
+    <div className={props.sidebarOpen ? 'menu' : 'menu minimized'}>
       <img src={aibLogo} alt="aib-logo" className="aib-logo" />
 
       <div className="sidebar-top">
@@ -43,9 +43,9 @@ export default function SideNav(props) {
         <span
           className="show-sidebar-btn"
           onClick={() => {
-            props.setSidebarOpened(!props.sidebarOpened)
+            props.setSidebarOpen(!props.sidebarOpen)
           }}>
-          {props.sidebarOpened ? <AiOutlineMenuFold /> : <AiOutlineMenuUnfold />}
+          {props.sidebarOpen ? <AiOutlineMenuFold /> : <AiOutlineMenuUnfold />}
         </span>
       </div>
 
@@ -55,7 +55,7 @@ export default function SideNav(props) {
           onClick={(e) => {
             e.stopPropagation()
             e.preventDefault()
-            props.setSidebarOpened(true)
+            props.setSidebarOpen(true)
           }}>
           <BiSearch />
         </button>
@@ -65,7 +65,7 @@ export default function SideNav(props) {
           type="search"
           value={searchText.name}
           onChange={handleTextChange}
-          placeholder={props.sidebarOpened ? 'Search...' : ' '}
+          placeholder={props.sidebarOpen ? 'Search...' : ' '}
         />
       </form>
 

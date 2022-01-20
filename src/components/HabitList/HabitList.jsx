@@ -6,19 +6,23 @@ import HabitModal from 'components/HabitModal/HabitModal'
 import './HabitList.scss'
 
 export default function HabitList(props) {
-  const [modalOpened, setModalOpened] = useState(false)
+  const [habitModalOpened, setHabitModalOpened] = useState(false)
   const [confirmDialogOpened, setConfirmDialogOpened] = useState(false)
 
   const [currentHabit, setCurrentHabit] = useState({})
-  const [habitTemp, setHabitTemp] = useState() //habit that is saved before being deleted
+  const [tempHabit, setTempHabit] = useState() //habit that is saved before being deleted
 
   function handleChooseHabit(habit) {
     setCurrentHabit(habit)
-    setModalOpened(true)
+    setHabitModalOpened(true)
+  }
+
+  function handleDeleteHabit() {
+    props.onDeleteHabit(tempHabit)
   }
 
   function handleOpenDialog(habit) {
-    setHabitTemp(habit)
+    setTempHabit(habit)
     setConfirmDialogOpened(true)
   }
 
@@ -26,11 +30,7 @@ export default function HabitList(props) {
     setConfirmDialogOpened(false)
   }
 
-  function handleDeleteHabit() {
-    props.onDeleteHabit(habitTemp)
-  }
-
-  const habitIDs = props.habits.map((habit) => habit.id)
+  const habitIDs = props.habitsList.map((habit) => habit.id)
   const [habitsCheck, setHabitsCheck] = useState([])
   const [allHabitsChecked, setAllHabitsChecked] = useState(false)
 
@@ -57,17 +57,17 @@ export default function HabitList(props) {
 
   return (
     <>
-      {modalOpened && (
+      {habitModalOpened && (
         <HabitModal
           habit={currentHabit}
-          habits={props.habits}
-          editModalOpened={modalOpened}
+          habits={props.habitsList}
+          isEditModalOpened={habitModalOpened}
           onCloseModal={() => {
-            setModalOpened(false)
+            setHabitModalOpened(false)
           }}
           onEditHabit={props.onEditHabit}
           onDeleteHabit={handleDeleteHabit}
-          editMode={true}
+          isEditMode={true}
         />
       )}
 
@@ -84,7 +84,7 @@ export default function HabitList(props) {
         </div>
 
         <ul className="habits-list">
-          {props.habits.map((habit, index) => (
+          {props.habitsList.map((habit, index) => (
             <div key={index}>
               <Checkbox
                 color="success"
