@@ -1,0 +1,98 @@
+@import '../../../assets/scss/variables';
+
+.day-picker {
+  display: flex;
+  flex-direction: column;
+  transform: translateY(10px);
+  & > label {
+    transform: translateY(7px);
+  }
+
+  .day-checkboxes {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.day-checkbox {
+  position: relative;
+
+  & > input[type='checkbox'] {
+    margin-left: 3px;
+    height: 50px;
+    width: 50px;
+    outline: none;
+    cursor: pointer;
+    border-radius: 50%;
+
+    border: 5px solid #e0e0e0;
+    -webkit-appearance: none;
+    box-shadow: -10px -10px 10px rgba(255, 255, 255, 0.2), 10px 10px 10px rgba(70, 70, 70, 0.12);
+
+    &:checked {
+      background-color: rgba($color: #6db5cb, $alpha: 0.2);
+      border-color: #6db5cb;
+      & + label {
+        color: #000;
+      }
+    }
+  }
+
+  & > label {
+    position: absolute;
+    color: #111111;
+    width: 10px;
+    cursor: pointer;
+    margin-left: 3px;
+
+    position: absolute;
+    top: 17px;
+    pointer-events: none;
+    transform: translate(-40px, -2px);
+  }
+
+  &:nth-child(1) {
+    & > label {
+      transform: translate(-38px, -2px);
+    }
+  }
+  &:nth-child(3) {
+    & > label {
+      transform: translate(-42px, -2px);
+    }
+  }
+  &:nth-child(2),
+  &:nth-child(4) {
+    & > label {
+      transform: translate(-43px, -2px);
+    }
+  }
+  &:nth-child(7) {
+    & > label {
+      transform: translate(-41px, -2px);
+    }
+  }
+  &:nth-child(5) {
+    & > label {
+      transform: translate(-42px, -2px);
+    }
+  }
+  &:nth-child(6) {
+    & > label {
+      transform: translate(-38px, -2px);
+    }
+  }
+  &:nth-child(8) {
+    & > label {
+      transform: translate(-42px, -2px);
+    }
+  }
+}
+
+@media screen and (max-width: 505px) {
+  .day-checkboxes {
+    display: grid !important;
+    grid-template-columns: auto auto auto auto;
+  }
+}
