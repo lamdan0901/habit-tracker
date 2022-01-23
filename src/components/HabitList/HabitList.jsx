@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Checkbox } from '@nextui-org/react'
 import Modal from 'react-modal'
 import { BsTrash } from 'react-icons/bs'
@@ -30,37 +30,61 @@ export default function HabitList(props) {
     setConfirmDialogOpened(false)
   }
 
-  const habitIDs = props.habitsList.map((habit) => habit.id)
+  const habitIds = props.habitsList.map((habit) => habit.id)
   const [habitsCheck, setHabitsCheck] = useState([])
-  const [allHabitsChecked, setAllHabitsChecked] = useState(false)
+  const [allHabitsCheck, setAllHabitsCheck] = useState(false)
 
-  const handleAllCheck = () => {
-    if (allHabitsChecked) {
-      setAllHabitsChecked(false)
+  const handleAllHabitsCheck = () => {
+    if (allHabitsCheck) {
+      setAllHabitsCheck(false)
       setHabitsCheck([])
     } else {
-      setAllHabitsChecked(true)
-      setHabitsCheck(habitIDs)
+      setAllHabitsCheck(true)
+      setHabitsCheck(habitIds)
     }
   }
 
-  const handleSingleCheck = (id) => {
+  const handleSingleHabitCheck = (id) => {
     if (habitsCheck.includes(id)) {
       setHabitsCheck(habitsCheck.filter((checked_habitID) => checked_habitID !== id))
-      setAllHabitsChecked(false)
+      setAllHabitsCheck(false)
     } else {
       habitsCheck.push(id)
       setHabitsCheck([...habitsCheck])
-      setAllHabitsChecked(habitsCheck.length === habitIDs.length)
+      setAllHabitsCheck(habitsCheck.length === habitIds.length)
     }
   }
+
+  const habitsListRef = useRef()
+  const [habitsListStyle, setHabitsListStyle] = useState({
+    display: 'grid',
+    gridTemplateColumns: 'auto auto',
+  })
+
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      const habitsListElement = entries[0]
+      const currentHabitsListSize = habitsListElement.contentRect.width
+
+      if (currentHabitsListSize < 530) {
+        setHabitsListStyle((prevValue) => ({ ...prevValue, gridTemplateColumns: 'auto' }))
+      } else {
+        setHabitsListStyle((prevValue) => ({ ...prevValue, gridTemplateColumns: 'auto auto' }))
+      }
+    })
+    resizeObserver.observe(habitsListRef.current)
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [habitsListRef])
 
   return (
     <>
       {habitModalOpened && (
         <HabitModal
           habit={currentHabit}
-          habits={props.habitsList}
+          habitsList={props.habitsList}
           isEditModalOpened={habitModalOpened}
           onCloseModal={() => {
             setHabitModalOpened(false)
@@ -76,21 +100,21 @@ export default function HabitList(props) {
           <Checkbox
             color="primary"
             title="Click to set all the habits done"
-            onChange={handleAllCheck}
-            checked={allHabitsChecked}
+            onChange={handleAllHabitsCheck}
+            checked={allHabitsCheck}
             className="check-all_done-box">
             All done
           </Checkbox>
         </div>
 
-        <ul className="habits-list">
+        <ul className="habits-list" ref={habitsListRef} style={habitsListStyle}>
           {props.habitsList.map((habit, index) => (
             <div key={index}>
               <Checkbox
                 color="success"
                 title="Click to check this habit"
                 onChange={() => {
-                  handleSingleCheck(habit.id)
+                  handleSingleHabitCheck(habit.id)
                 }}
                 checked={habitsCheck.includes(habit.id)}
                 className="check-habit-box"

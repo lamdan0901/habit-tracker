@@ -1,7 +1,7 @@
 @import '../../assets/scss/variables';
 
 .habits-view {
-  height: 82vh;
+  height: calc(100vh - 230px);
   margin: auto;
   overflow: auto;
 
@@ -25,9 +25,6 @@
 
 .habits-list {
   position: relative;
-  display: grid;
-  grid-template-columns: auto auto;
-  margin-bottom: 120px;
 
   .check-habit-box {
     position: absolute;
@@ -147,12 +144,6 @@ span.jsx-3904811003.text {
 @media screen and (min-width: 1366px) {
   .habits-view {
     max-width: 1095px;
-  }
-}
-
-@media screen and (max-width: $tablet) {
-  .habits-list {
-    grid-template-columns: auto;
   }
 }
 

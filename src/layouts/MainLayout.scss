@@ -7,10 +7,11 @@ main {
 
   .content-and-nav {
     width: 100vw;
+    height: 100vh;
+    overflow: hidden;
   }
 
   .children {
-    overflow: hidden;
     padding: 20px 5px 20px 20px;
     border-top-left-radius: 10px;
     width: 100%;

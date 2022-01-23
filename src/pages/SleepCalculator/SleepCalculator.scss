@@ -1,3 +1,9 @@
+.sleep-container {
+  height: calc(100vh - 75px);
+  overflow-y: auto !important;
+  overflow-x: hidden;
+}
+
 .sleep-cal {
   display: flex;
   flex-direction: column;
