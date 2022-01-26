@@ -1,28 +1,26 @@
 import axiosClient from '../utils/axiosClient'
 
+const basePath = '/habitsList'
+
 const habitsApi = {
   getAllHabits: (params) => {
-    const url = '/habitsList'
-    return axiosClient.get(url, { params })
+    return axiosClient.get(basePath, { params })
   },
 
   getHabitByID: (id) => {
-    const url = `/habitsList/${id}`
-    return axiosClient.get(url)
+    return axiosClient.get(`${basePath}/${id}`)
   },
 
   postHabit: (params) => {
-    const url = `/habitsList`
-    return axiosClient.post(url, params)
+    return axiosClient.post(basePath, params)
   },
 
   putHabit: (id, params) => {
-    const url = `/habitsList/${id}`
-    return axiosClient.put(url, params)
+    return axiosClient.put(`${basePath}/${id}`, params)
   },
 
   deleteHabit: (id) => {
-    return axiosClient.delete(`/habitsList/${id}`)
+    return axiosClient.delete(`${basePath}/${id}`)
   },
 }
 

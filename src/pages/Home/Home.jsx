@@ -7,12 +7,13 @@ import HabitList from 'components/HabitList/HabitList'
 import MainLayout from 'layouts/MainLayout'
 import HabitModal from 'components/HabitModal/HabitModal'
 import * as actions from 'actions/habitsActions'
+import * as actions2 from 'actions/habitsCheckActions'
 
 import 'react-toastify/dist/ReactToastify.css'
 import './animate.min.css'
 import './Home.scss'
 
-export default function Home(props) {
+export default function Home() {
   document.title = 'Home - Habit Tracker'
 
   let today = new Date().toDateString()
@@ -26,11 +27,13 @@ export default function Home(props) {
   }
 
   let deletedHabit
-
   const [renderHomePage, setRenderHomePage] = useState(false)
 
   const dispatch = useDispatch()
+  const dispatch2 = useDispatch()
+
   const habits = useSelector((state) => state.habits)
+  const habitsCheck = useSelector((state) => state.habitsCheck)
 
   const [isSearching, setIsSearching] = useState(false)
   const [searchedHabits, setSearchedHabits] = useState(habits)
@@ -48,9 +51,15 @@ export default function Home(props) {
   }
 
   useEffect(() => {
-    dispatchTesting()
+    dispatchHabits()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch])
+
+  useEffect(() => {
+    dispatch2(actions2.getHabitsCheck())
+  }, [dispatch2])
+
+  // console.log(habitsCheck[0])
 
   function setTodayHabitsList(habits) {
     let todayHabitsList = []
@@ -62,7 +71,7 @@ export default function Home(props) {
     return todayHabitsList
   }
 
-  function dispatchTesting(commandText) {
+  function dispatchHabits(commandText) {
     dispatch(actions.getAllHabits()).then((res) => {
       if (commandText === 'display all') {
         setHabitsList(res)
@@ -80,9 +89,9 @@ export default function Home(props) {
         .then(() => {
           resolve()
           if (!displayAllHabits) {
-            dispatchTesting()
+            dispatchHabits()
           } else {
-            dispatchTesting('display all')
+            dispatchHabits('display all')
           }
         })
         .catch(() => {
@@ -92,21 +101,23 @@ export default function Home(props) {
     displayNotif(!msg ? 'New habit is added' : msg, notify)
   }
 
-  function handleEditHabit(habit) {
+  function handleEditHabit(habit, msg) {
     const notify = new Promise((resolve, reject) =>
       dispatch(actions.putHabit(habit))
         .then(() => {
           resolve()
           if (!displayAllHabits) {
-            dispatchTesting()
+            dispatchHabits()
           } else {
-            dispatchTesting('display all')
+            dispatchHabits('display all')
           }
         })
         .catch((error) => {
           reject(error)
         }),
     )
+
+    if (msg === 'no notification') return
     displayNotif('Habit is saved', notify)
   }
 
@@ -117,9 +128,9 @@ export default function Home(props) {
         .then(() => {
           resolve()
           if (!displayAllHabits) {
-            dispatchTesting()
+            dispatchHabits()
           } else {
-            dispatchTesting('display all')
+            dispatchHabits('display all')
           }
         })
         .catch((error) => {
@@ -175,11 +186,8 @@ export default function Home(props) {
   return (
     <MainLayout
       habits={habitsList}
-      clockState={props.clockState}
-      sidebarOpen={props.sidebarOpen}
-      setSidebarOpen={props.setSidebarOpen}
       setIsSearching={setIsSearching}
-      handleSetSearchedHabits={(habits) => {
+      onSetSearchedHabits={(habits) => {
         setSearchedHabits(habits)
       }}>
       {renderHomePage ? (
@@ -203,13 +211,12 @@ export default function Home(props) {
           </div>
 
           <HabitList
+            habitsList={isSearching ? searchedHabits : habitsList}
+            habitsCheck={habitsCheck[0]}
             isSearching={isSearching}
+            displayAllHabits={displayAllHabits}
             onEditHabit={handleEditHabit}
             onDeleteHabit={handleDeleteHabit}
-            habitsList={isSearching ? searchedHabits : habitsList}
-            displayAllHabits={displayAllHabits}
-            setDisplayAllHabits={setDisplayAllHabits}
-            handleChangeHabitsListDisplay={handleChangeHabitsListDisplay}
           />
         </div>
       ) : (

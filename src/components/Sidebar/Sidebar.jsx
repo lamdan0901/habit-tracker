@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { useSidebar, useSidebarUpdate } from 'contexts/SidebarProvider'
+import { useSidebar } from 'contexts/SidebarProvider'
 
 import { BsFillHouseDoorFill } from 'react-icons/bs'
 import { AiOutlineMenuFold, AiOutlineMenuUnfold, AiFillPieChart } from 'react-icons/ai'
@@ -11,9 +11,8 @@ import aibLogo from '../../assets/img/aib-logo.png'
 import './Searchbox.scss'
 import './Sidebar.scss'
 
-export default function SideNav(props) {
-  const sidebarOpen = useSidebar()
-  const toggleSidebar = useSidebarUpdate()
+export default function Sidebar(props) {
+  const [sidebarOpen, toggleSidebar] = useSidebar()
   const [searchText, setSearchText] = useState({ text: '', timeOut: 0 })
 
   function handleTextChange(e) {
@@ -31,7 +30,7 @@ export default function SideNav(props) {
         text: searchBoxText,
         timeout: setTimeout(function () {
           props.setIsSearching(true)
-          props.handleSetSearchedHabits(habitsFiltered)
+          props.onSetSearchedHabits(habitsFiltered)
         }, 200),
       })
     } else props.setIsSearching(false)
@@ -54,7 +53,7 @@ export default function SideNav(props) {
           onClick={(e) => {
             e.stopPropagation()
             e.preventDefault()
-            toggleSidebar(true)
+            toggleSidebar()
           }}>
           <BiSearch />
         </button>

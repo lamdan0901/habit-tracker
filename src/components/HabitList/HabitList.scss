@@ -73,7 +73,8 @@
       cursor: pointer;
 
       &:hover {
-        background-color: #bbb;
+        background-color: rgba(66, 66, 66, 0.2);
+        color: #000;
       }
     }
   }

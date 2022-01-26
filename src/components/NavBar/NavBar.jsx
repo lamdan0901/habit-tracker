@@ -1,11 +1,14 @@
+import { useClockState } from 'contexts/SidebarProvider'
 import useDropdownMenu from 'react-accessible-dropdown-menu-hook'
 import userAvatar from '../../assets/img/demo-avatar.gif'
+
 import { AiTwotoneSetting } from 'react-icons/ai'
 import { MdDarkMode } from 'react-icons/md'
 import { GoSignOut } from 'react-icons/go'
 import './NavBar.scss'
 
-export default function NavBar({ clockState }) {
+export default function NavBar() {
+  const clockState = useClockState()
   const { buttonProps, itemProps, isOpen } = useDropdownMenu(3) //3 is the number of items in the dropdown menu
 
   return (
@@ -19,9 +22,9 @@ export default function NavBar({ clockState }) {
 
       <div className={isOpen ? 'visible' : ''} role="menu">
         <a
-          className="dropdown-item"
           {...itemProps[0]}
           href="/#"
+          className="dropdown-item"
           onClick={(e) => {
             e.stopPropagation()
             console.log('1 clicked')
@@ -30,9 +33,9 @@ export default function NavBar({ clockState }) {
           Settings
         </a>
         <a
-          className="dropdown-item"
           {...itemProps[1]}
           href="/#"
+          className="dropdown-item"
           onClick={(e) => {
             e.stopPropagation()
             console.log('2 clicked')
@@ -41,9 +44,9 @@ export default function NavBar({ clockState }) {
           Dark theme
         </a>
         <a
-          className="dropdown-item"
           {...itemProps[2]}
           href="/#"
+          className="dropdown-item"
           onClick={(e) => {
             e.stopPropagation()
             console.log('3 clicked')

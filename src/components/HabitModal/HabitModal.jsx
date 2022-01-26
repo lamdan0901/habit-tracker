@@ -15,8 +15,6 @@ export default function AddHabit(props) {
         time: new Date(),
         description: '',
         checked: false,
-        bgColor: 'rgba(196, 196, 196, 0.7)',
-        textColor: '#000',
       }
     : {
         id: props.habit.id,
@@ -25,13 +23,11 @@ export default function AddHabit(props) {
         time: new Date(props.habit.time),
         description: props.habit.description,
         checked: props.habit.checked,
-        bgColor: props.habit.bgColor,
-        textColor: props.habit.textColor,
       }
 
   const [habit, setHabit] = useState(initialHabitValues)
 
-  const [isModalOpened, setIsModalOpened] = useState(!!props.isEditModalOpened)
+  const [habitModalOpened, setHabitModalOpened] = useState(!!props.isEditModalOpened)
   const [error, setError] = useState('')
 
   function saveHabit() {
@@ -81,7 +77,7 @@ export default function AddHabit(props) {
   }
 
   function handleCloseModal() {
-    setIsModalOpened(false)
+    setHabitModalOpened(false)
     props.isEditMode && props.onCloseModal()
     setHabit(initialHabitValues)
     setError('')
@@ -93,7 +89,7 @@ export default function AddHabit(props) {
         <button
           className="btn add-btn"
           onClick={() => {
-            setIsModalOpened(true)
+            setHabitModalOpened(true)
           }}>
           +
         </button>
@@ -103,7 +99,7 @@ export default function AddHabit(props) {
         className="habit-modal"
         overlayClassName="habit-modal-overlay"
         closeTimeoutMS={200}
-        isOpen={isModalOpened}
+        isOpen={habitModalOpened}
         onRequestClose={handleCloseModal}
         shouldCloseOnOverlayClick={false}>
         <div className="modal-content">

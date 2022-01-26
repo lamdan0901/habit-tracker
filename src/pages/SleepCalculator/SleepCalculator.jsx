@@ -1,9 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import StaticTimePicker from '@mui/lab/StaticTimePicker'
 import MobileTimePicker from '@mui/lab/MobileTimePicker'
-
-import { useState } from 'react'
 
 import MainLayout from 'layouts/MainLayout'
 import './SleepCalculator.scss'
@@ -93,10 +91,7 @@ export default function SleepCalculator(props) {
   }
 
   return (
-    <MainLayout
-      clockState={props.clockState}
-      sidebarOpen={props.sidebarOpen}
-      setSidebarOpen={props.setSidebarOpen}>
+    <MainLayout>
       <div className={resultsShowed ? 'sleep-container' : ''}>
         <div className="sleep-cal">
           <h3>You want to wake up at...</h3>

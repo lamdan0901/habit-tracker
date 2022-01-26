@@ -2,7 +2,7 @@ import * as types from '../actions/types'
 
 const initialState = []
 
-export default function userReducer(state = initialState, action) {
+export default function habitsReducer(state = initialState, action) {
   switch (action.type) {
     case types.GET_ALL_HABITS:
       return action.payload
@@ -11,7 +11,7 @@ export default function userReducer(state = initialState, action) {
       return [...state, action.payload]
 
     case types.UPDATE_HABIT: {
-      const index = state.findIndex((user) => user.id === action.payload[0])
+      const index = state.findIndex((habit) => habit.id === action.payload[0])
 
       const newState = [...state]
       newState[index] = action.payload[1]
@@ -20,7 +20,7 @@ export default function userReducer(state = initialState, action) {
     }
 
     case types.DELETE_HABIT: {
-      const index = state.findIndex((user) => user.id === action.payload)
+      const index = state.findIndex((habit) => habit.id === action.payload)
 
       const newState = [...state]
       newState.splice(index, 1)
