@@ -149,23 +149,26 @@ span.jsx-3904811003.text {
 }
 
 @media screen and (max-width: $mobile) {
-  .check-all_done-box {
-    top: 220px !important;
-  }
-
-  .habits-list li {
-    height: 100px;
-
-    .habit-name {
-      transform: translateY(-12.5px);
+  .habits-view {
+    height: calc(100vh - 280px);
+    .check-all_done-box {
+      top: 220px !important;
     }
 
-    .habit-time {
-      top: 55px;
-    }
+    .habits-list li {
+      height: 100px;
 
-    .delete-btn {
-      transform: translateY(30px);
+      .habit-name {
+        transform: translateY(-12.5px);
+      }
+
+      .habit-time {
+        top: 55px;
+      }
+
+      .delete-btn {
+        transform: translateY(30px);
+      }
     }
   }
 }

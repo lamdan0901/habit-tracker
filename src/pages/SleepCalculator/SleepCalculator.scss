@@ -1,7 +1,9 @@
 .sleep-container {
-  height: calc(100vh - 75px);
-  overflow-y: auto !important;
-  overflow-x: hidden;
+  height: calc(100vh - 80px);
+
+  &.has-overflow {
+    overflow: auto;
+  }
 }
 
 .sleep-cal {
@@ -98,43 +100,39 @@
       height: 2px;
       bottom: 0;
       left: 0;
-      // transform-origin: bottom left;
       transition: all 0.3s ease-out;
     }
 
-    &:hover {
-      &::after {
-        transform: scaleX(1);
-        // transform-origin: bottom right;
-      }
+    &:hover::after {
+      transform: scaleX(1);
+    }
+  }
+}
+
+.more-info {
+  opacity: 1;
+  transition: opacity 0.2s ease-in;
+
+  &.inactive {
+    opacity: 0;
+
+    & > p,
+    a {
+      display: none;
     }
   }
 
-  .more-info {
-    opacity: 1;
-    transition: opacity 0.2s ease-in;
+  & > p {
+    margin-bottom: 5px;
+    max-width: 650px;
+  }
 
-    &.inactive {
-      opacity: 0;
+  a {
+    color: rgb(38, 132, 255);
+    position: relative;
 
-      & > p,
-      a {
-        display: none;
-      }
-    }
-
-    & > p {
-      margin-bottom: 5px;
-      max-width: 650px;
-    }
-
-    a {
-      color: rgb(38, 132, 255);
-      position: relative;
-
-      &:hover {
-        text-decoration: underline;
-      }
+    &:hover {
+      text-decoration: underline;
     }
   }
 }
@@ -154,16 +152,20 @@
   color: #000 !important;
 }
 
+@media screen and (max-height: 530px) {
+  .sleep-container {
+    overflow: auto;
+  }
+}
+
 @media (max-width: 480px) {
   .selector-wrapper {
     .css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
       transform: translate(-10px, 8px);
     }
   }
-  .results {
-    .calculated-time {
-      grid-template-columns: auto;
-    }
+  .results .calculated-time {
+    grid-template-columns: auto;
   }
 }
 
@@ -177,8 +179,6 @@
 
 @media (min-width: 1366px) {
   .more-info-wrapper {
-    text-align: left;
-    width: 100%;
     transform: translateX(25%);
   }
 }

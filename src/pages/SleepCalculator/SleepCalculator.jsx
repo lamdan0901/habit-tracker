@@ -92,7 +92,7 @@ export default function SleepCalculator(props) {
 
   return (
     <MainLayout>
-      <div className={resultsShowed ? 'sleep-container' : ''}>
+      <div className={resultsShowed ? 'sleep-container has-overflow' : 'sleep-container'}>
         <div className="sleep-cal">
           <h3>You want to wake up at...</h3>
 
