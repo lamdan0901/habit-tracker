@@ -7,7 +7,6 @@ import HabitList from 'components/HabitList/HabitList'
 import MainLayout from 'layouts/MainLayout'
 import HabitModal from 'components/HabitModal/HabitModal'
 import * as actions from 'actions/habitsActions'
-import * as actions2 from 'actions/habitsCheckActions'
 
 import 'react-toastify/dist/ReactToastify.css'
 import './animate.min.css'
@@ -30,10 +29,7 @@ export default function Home() {
   const [renderHomePage, setRenderHomePage] = useState(false)
 
   const dispatch = useDispatch()
-  const dispatch2 = useDispatch()
-
   const habits = useSelector((state) => state.habits)
-  const habitsCheck = useSelector((state) => state.habitsCheck)
 
   const [isSearching, setIsSearching] = useState(false)
   const [searchedHabits, setSearchedHabits] = useState(habits)
@@ -54,12 +50,6 @@ export default function Home() {
     dispatchHabits()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch])
-
-  useEffect(() => {
-    dispatch2(actions2.getHabitsCheck())
-  }, [dispatch2])
-
-  // console.log(habitsCheck[0])
 
   function setTodayHabitsList(habits) {
     let todayHabitsList = []
@@ -212,7 +202,6 @@ export default function Home() {
 
           <HabitList
             habitsList={isSearching ? searchedHabits : habitsList}
-            habitsCheck={habitsCheck[0]}
             isSearching={isSearching}
             displayAllHabits={displayAllHabits}
             onEditHabit={handleEditHabit}

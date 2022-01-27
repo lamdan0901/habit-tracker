@@ -36,11 +36,8 @@ export default function HabitList(props) {
   //**---- handle set habit checked or not ----**//
 
   const habitIds = props.habitsList.map((habit) => habit.id)
-  const [habitsCheck, setHabitsCheck] = useState(props.habitsCheck.checkedHabitList)
-  const [allHabitsCheck, setAllHabitsCheck] = useState(() => {
-    if (habitsCheck.length === props.habitsList.length) return true
-    return false
-  })
+  const [habitsCheck, setHabitsCheck] = useState([])
+  const [allHabitsCheck, setAllHabitsCheck] = useState(false)
 
   // console.log(props.habitsCheck.checkedHabitList)
 
@@ -64,35 +61,34 @@ export default function HabitList(props) {
     }
   }
 
-  const handleSingleHabitCheck = (habit, index) => {
+  const handleSingleHabitCheck = (habit) => {
     const id = habit.id
 
     if (habitsCheck.includes(id)) {
       setHabitsCheck(habitsCheck.filter((checked_ID) => checked_ID !== id))
       setAllHabitsCheck(false)
-      habitsCheck[index] = false
+      habit.checked = false
     } else {
       habitsCheck.push(id)
       setHabitsCheck([...habitsCheck])
       setAllHabitsCheck(habitsCheck.length === habitIds.length)
-      habitsCheck[index] = true
+      habit.checked = true
     }
 
     props.onEditHabit(habit, 'no notification')
   }
 
-  useEffect(() => {
-    setHabitsCheck(() => {
-      return props.habitsCheck.checkedHabitList
-    })
-  }, [props.habitsCheck.checkedHabitList])
+  // useEffect(() => {
+  //   setHabitsCheck(() => {
+  //     return
+  //   })
+  // }, [])
 
-  useEffect(() => {
-    setAllHabitsCheck(() => {
-      if (habitsCheck.length === props.habitsList.length) return true
-      return false
-    })
-  }, [habitsCheck, props.habitsList.length])
+  // useEffect(() => {
+  //   setAllHabitsCheck(() => {
+
+  //   })
+  // }, [props.habitsList])
 
   //**---- handle change 'gridTemplateColumns' of the habits list according to width ----**//
 
@@ -229,7 +225,7 @@ export default function HabitList(props) {
                 color="success"
                 className="check-habit-box"
                 title="Click to check this habit"
-                checked={habitsCheck[index]}
+                checked={habitsCheck.includes(habit.id)}
                 onChange={() => {
                   handleSingleHabitCheck(habit)
                 }}
