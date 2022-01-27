@@ -1,5 +1,5 @@
 import Modal from 'react-modal'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { Checkbox } from '@nextui-org/react'
 import { BsTrash } from 'react-icons/bs'
 
@@ -33,22 +33,32 @@ export default function HabitList(props) {
     setConfirmDialogOpened(false)
   }
 
-  //**---- handle set habit checked or not ----**//
+  //**---- handle updating habit checkboxes list ----**//
 
   const habitIds = props.habitsList.map((habit) => habit.id)
-  const [habitsCheck, setHabitsCheck] = useState(() => {
+  const [habitsCheck, setHabitsCheck] = useState([])
+  const [allHabitsCheck, setAllHabitsCheck] = useState(false)
+
+  const updateHabitCheckBoxes = useCallback(() => {
     let habitsCheckList = []
     props.habitsList.forEach((habit) => {
       if (habit.checked) habitsCheckList.push(habit.id)
     })
     return habitsCheckList
-  })
-  const [allHabitsCheck, setAllHabitsCheck] = useState(() => {
+  }, [props.habitsList])
+
+  const updateAllDoneBox = useCallback(() => {
     if (habitsCheck.length === props.habitsList.length) return true
     return false
-  })
+  }, [habitsCheck, props.habitsList])
 
-  // console.log(props.habitsCheck.checkedHabitList)
+  useEffect(() => {
+    setHabitsCheck(updateHabitCheckBoxes)
+  }, [updateHabitCheckBoxes])
+
+  useEffect(() => {
+    setAllHabitsCheck(updateAllDoneBox)
+  }, [updateAllDoneBox])
 
   const handleAllHabitsCheck = () => {
     if (allHabitsCheck) {
@@ -86,23 +96,6 @@ export default function HabitList(props) {
 
     props.onEditHabit(habit, 'no notification')
   }
-
-  useEffect(() => {
-    setHabitsCheck(() => {
-      let habitsCheckList = []
-      props.habitsList.forEach((habit) => {
-        if (habit.checked) habitsCheckList.push(habit.id)
-      })
-      return habitsCheckList
-    })
-  }, [props.habitsList])
-
-  useEffect(() => {
-    setAllHabitsCheck(() => {
-      if (habitsCheck.length === props.habitsList.length) return true
-      return false
-    })
-  }, [props.habitsList, habitsCheck])
 
   //**---- handle change 'gridTemplateColumns' of the habits list according to width ----**//
 
