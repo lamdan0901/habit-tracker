@@ -36,8 +36,17 @@ export default function HabitList(props) {
   //**---- handle set habit checked or not ----**//
 
   const habitIds = props.habitsList.map((habit) => habit.id)
-  const [habitsCheck, setHabitsCheck] = useState([])
-  const [allHabitsCheck, setAllHabitsCheck] = useState(false)
+  const [habitsCheck, setHabitsCheck] = useState(() => {
+    let habitsCheckList = []
+    props.habitsList.forEach((habit) => {
+      if (habit.checked) habitsCheckList.push(habit.id)
+    })
+    return habitsCheckList
+  })
+  const [allHabitsCheck, setAllHabitsCheck] = useState(() => {
+    if (habitsCheck.length === props.habitsList.length) return true
+    return false
+  })
 
   // console.log(props.habitsCheck.checkedHabitList)
 
@@ -78,17 +87,22 @@ export default function HabitList(props) {
     props.onEditHabit(habit, 'no notification')
   }
 
-  // useEffect(() => {
-  //   setHabitsCheck(() => {
-  //     return
-  //   })
-  // }, [])
+  useEffect(() => {
+    setHabitsCheck(() => {
+      let habitsCheckList = []
+      props.habitsList.forEach((habit) => {
+        if (habit.checked) habitsCheckList.push(habit.id)
+      })
+      return habitsCheckList
+    })
+  }, [props.habitsList])
 
-  // useEffect(() => {
-  //   setAllHabitsCheck(() => {
-
-  //   })
-  // }, [props.habitsList])
+  useEffect(() => {
+    setAllHabitsCheck(() => {
+      if (habitsCheck.length === props.habitsList.length) return true
+      return false
+    })
+  }, [props.habitsList, habitsCheck])
 
   //**---- handle change 'gridTemplateColumns' of the habits list according to width ----**//
 
