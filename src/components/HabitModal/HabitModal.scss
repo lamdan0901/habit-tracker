@@ -208,18 +208,16 @@
 }
 
 //time input size
-.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input,
+.css-1x5jdmq {
   height: 5px !important;
   width: 70px !important;
 }
 
-//time input margin
-.css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+//time input margin and position
+.css-1u3bzj6-MuiFormControl-root-MuiTextField-root,
+.css-i44wyl {
   margin-left: 20px !important;
-}
-
-//time input position
-.css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
   transform: translateX(-10px);
 }
 

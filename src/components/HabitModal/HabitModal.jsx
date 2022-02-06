@@ -11,18 +11,18 @@ export default function AddHabit(props) {
   const initialHabitValues = !props.isEditMode
     ? {
         name: '',
-        daysChecked: [new Date().toString().slice(0, 3)],
-        time: new Date(),
         description: '',
         checked: false,
+        time: new Date(),
+        daysChecked: [new Date().toString().slice(0, 3)],
       }
     : {
         id: props.habit.id,
         name: props.habit.name,
-        daysChecked: props.habit.daysChecked,
-        time: new Date(props.habit.time),
         description: props.habit.description,
         checked: props.habit.checked,
+        time: new Date(props.habit.time),
+        daysChecked: props.habit.daysChecked,
       }
 
   const [habit, setHabit] = useState(initialHabitValues)

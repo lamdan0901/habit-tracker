@@ -5,7 +5,7 @@ import { BsTrash } from 'react-icons/bs'
 
 import HabitModal from 'components/HabitModal/HabitModal'
 import { useClockState } from 'contexts/SidebarProvider'
-import { normalColor, checkColor, expirationColor } from 'constants/habitColors'
+import * as habitColor from 'constants/habitColors'
 import './HabitList.scss'
 
 export default function HabitList(props) {
@@ -33,7 +33,7 @@ export default function HabitList(props) {
     setConfirmDialogOpened(false)
   }
 
-  //**---- handle updating habit checkboxes list ----**//
+  //**---- handle update habit checkboxes list ----**//
 
   const habitIds = props.habitsList.map((habit) => habit.id)
   const [habitsCheck, setHabitsCheck] = useState([])
@@ -64,6 +64,7 @@ export default function HabitList(props) {
     if (allHabitsCheck) {
       setAllHabitsCheck(false)
       setHabitsCheck([])
+
       props.habitsList.forEach((habit) => {
         habit.checked = false
         props.onEditHabit(habit, 'no notification')
@@ -71,6 +72,7 @@ export default function HabitList(props) {
     } else {
       setAllHabitsCheck(true)
       setHabitsCheck(habitIds)
+
       props.habitsList.forEach((habit) => {
         if (!habit.checked) {
           habit.checked = true
@@ -145,32 +147,32 @@ export default function HabitList(props) {
 
           if (formattedTimeHour === clockStateHour) {
             if (formattedTimeMinute < clockStateMinute) {
-              currentColorsList.push(expirationColor)
+              currentColorsList.push(habitColor.expirationColor)
             } else {
-              currentColorsList.push(normalColor)
+              currentColorsList.push(habitColor.normalColor)
             }
           } else if (formattedTimeHour !== 12 && clockStateHour !== 12) {
             if (formattedTimeHour < clockStateHour) {
-              currentColorsList.push(expirationColor)
+              currentColorsList.push(habitColor.expirationColor)
             } else {
-              currentColorsList.push(normalColor)
+              currentColorsList.push(habitColor.normalColor)
             }
           } else if (formattedTimeHour === 12) {
-            currentColorsList.push(expirationColor)
+            currentColorsList.push(habitColor.expirationColor)
           } else {
-            currentColorsList.push(normalColor)
+            currentColorsList.push(habitColor.normalColor)
           }
         }
         //PM-AM
         else if (am_pmCompareRes === 1) {
-          currentColorsList.push(expirationColor)
+          currentColorsList.push(habitColor.expirationColor)
         }
         //AM-PM
         else {
-          currentColorsList.push(normalColor)
+          currentColorsList.push(habitColor.normalColor)
         }
       } else {
-        currentColorsList.push(checkColor)
+        currentColorsList.push(habitColor.checkColor)
       }
     })
 

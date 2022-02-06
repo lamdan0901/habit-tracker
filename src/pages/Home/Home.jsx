@@ -107,6 +107,8 @@ export default function Home() {
         }),
     )
 
+    // console.log('edit called in ' + new Date().toLocaleTimeString())
+
     if (msg === 'no notification') return
     displayNotif('Habit is saved', notify)
   }
