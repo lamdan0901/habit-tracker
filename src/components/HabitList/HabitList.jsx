@@ -60,27 +60,25 @@ export default function HabitList(props) {
     setAllHabitsCheck(updateAllDoneBox)
   }, [updateAllDoneBox])
 
-  const handleAllHabitsCheck = () => {
-    if (allHabitsCheck) {
-      setAllHabitsCheck(false)
-      setHabitsCheck([])
-
-      props.habitsList.forEach((habit) => {
-        habit.checked = false
-        props.onEditHabit(habit, 'no notification')
-      })
-    } else {
-      setAllHabitsCheck(true)
-      setHabitsCheck(habitIds)
-
-      props.habitsList.forEach((habit) => {
-        if (!habit.checked) {
-          habit.checked = true
-          props.onEditHabit(habit, 'no notification')
-        }
-      })
-    }
-  }
+  // const handleAllHabitsCheck = () => {
+  // if (allHabitsCheck) {
+  //   setAllHabitsCheck(false)
+  //   setHabitsCheck([])
+  //   props.habitsList.forEach((habit) => {
+  //     habit.checked = false
+  //     props.onEditHabit(habit, 'no notification')
+  //   })
+  // } else {
+  //   setAllHabitsCheck(true)
+  //   setHabitsCheck(habitIds)
+  //   props.habitsList.forEach((habit) => {
+  //     if (!habit.checked) {
+  //       habit.checked = true
+  //       props.onEditHabit(habit, 'no notification')
+  //     }
+  //   })
+  // }
+  // }
 
   const handleSingleHabitCheck = (habit) => {
     const id = habit.id
@@ -199,6 +197,44 @@ export default function HabitList(props) {
     return formattedHabitTime
   }
 
+  //**---- handle send browser notification ----**//
+
+  useEffect(() => {
+    const today = new Date().toDateString().slice(0, 3)
+    const currentHabitsList = props.habitsList.filter((habit) => habit.daysChecked.includes(today))
+
+    currentHabitsList.forEach((habit) => {
+      const formattedHabitTime = formatHabitTime(habit.time)
+      if (formattedHabitTime.localeCompare(clockState) === 0) {
+        sendBrowserNotif("It's time you did this habit", habit.name)
+      }
+    })
+  }, [clockState, props.habitsList])
+
+  function sendBrowserNotif(title, body, icon) {
+    if (!('Notification' in window)) {
+      console.warn('Your Browser does not support Chrome Notifications :(')
+    } else if (Notification.permission === 'granted') {
+      new Notification(title, {
+        icon,
+        body,
+      })
+    } else if (Notification.permission !== 'denied') {
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          new Notification(title, {
+            icon,
+            body,
+          })
+        } else {
+          console.warn(`Failed, Notification Permission is ${Notification.permission}`)
+        }
+      })
+    } else {
+      console.warn(`Failed, Notification Permission is ${Notification.permission}`)
+    }
+  }
+
   return (
     <>
       {habitModalOpened && (
@@ -221,8 +257,9 @@ export default function HabitList(props) {
             color="primary"
             className="check-all_done-box"
             title="Click to set all the habits done"
-            onChange={handleAllHabitsCheck}
-            checked={allHabitsCheck}>
+            checked={allHabitsCheck}
+            // onChange={handleAllHabitsCheck}
+          >
             All done
           </Checkbox>
         </div>

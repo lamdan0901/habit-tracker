@@ -19,10 +19,9 @@ export default function Sidebar(props) {
     const searchBoxText = e.target.value
 
     if (searchBoxText) {
-      //The clearTimeout(timeoutVariable) method stops the execution of the function specified in setTimeout() and setInterval()
       if (searchText.timeOut) clearTimeout(searchText.timeOut)
 
-      let habitsFiltered = props.habits.filter((habit) =>
+      let filteredHabits = props.habits.filter((habit) =>
         habit.name.toLowerCase().includes(searchBoxText.toLowerCase()),
       )
 
@@ -30,7 +29,7 @@ export default function Sidebar(props) {
         text: searchBoxText,
         timeout: setTimeout(function () {
           props.setIsSearching(true)
-          props.onSetSearchedHabits(habitsFiltered)
+          props.onSetSearchedHabits(filteredHabits)
         }, 200),
       })
     } else props.setIsSearching(false)

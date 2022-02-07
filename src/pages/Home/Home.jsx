@@ -75,39 +75,29 @@ export default function Home() {
 
   function handleAddHabit(habit, msg) {
     const notify = new Promise((resolve, reject) =>
-      dispatch(actions.postHabit(habit))
-        .then(() => {
-          resolve()
-          if (!displayAllHabits) {
-            dispatchHabits()
-          } else {
-            dispatchHabits('display all')
-          }
-        })
-        .catch(() => {
-          reject()
-        }),
+      dispatch(actions.postHabit(habit)).then(() => {
+        resolve()
+        if (!displayAllHabits) {
+          dispatchHabits()
+        } else {
+          dispatchHabits('display all')
+        }
+      }),
     )
     displayNotif(!msg ? 'New habit is added' : msg, notify)
   }
 
   function handleEditHabit(habit, msg) {
     const notify = new Promise((resolve, reject) =>
-      dispatch(actions.putHabit(habit))
-        .then(() => {
-          resolve()
-          if (!displayAllHabits) {
-            dispatchHabits()
-          } else {
-            dispatchHabits('display all')
-          }
-        })
-        .catch((error) => {
-          reject(error)
-        }),
+      dispatch(actions.putHabit(habit)).then(() => {
+        resolve()
+        if (!displayAllHabits) {
+          dispatchHabits()
+        } else {
+          dispatchHabits('display all')
+        }
+      }),
     )
-
-    // console.log('edit called in ' + new Date().toLocaleTimeString())
 
     if (msg === 'no notification') return
     displayNotif('Habit is saved', notify)
@@ -116,18 +106,14 @@ export default function Home() {
   function handleDeleteHabit(habit) {
     deletedHabit = habit
     const notify = new Promise((resolve, reject) =>
-      dispatch(actions.deleteHabit(habit.id))
-        .then(() => {
-          resolve()
-          if (!displayAllHabits) {
-            dispatchHabits()
-          } else {
-            dispatchHabits('display all')
-          }
-        })
-        .catch((error) => {
-          reject(error)
-        }),
+      dispatch(actions.deleteHabit(habit.id)).then(() => {
+        resolve()
+        if (!displayAllHabits) {
+          dispatchHabits()
+        } else {
+          dispatchHabits('display all')
+        }
+      }),
     )
     displayNotif('Habit is deleted', notify, '')
   }

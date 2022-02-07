@@ -15,11 +15,12 @@
     border-radius: 5px;
     background-color: rgba(196, 196, 196, 0.7);
     box-shadow: 2px 2px 6px 1px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s;
+    pointer-events: none;
+    // transition: all 0.2s;
 
-    &:hover {
-      box-shadow: 3px 3px 6px 1px rgba(0, 0, 0, 0.3);
-    }
+    // &:hover {
+    //   box-shadow: 3px 3px 6px 1px rgba(0, 0, 0, 0.3);
+    // }
   }
 }
 

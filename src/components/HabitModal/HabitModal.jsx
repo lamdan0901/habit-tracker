@@ -110,10 +110,11 @@ export default function AddHabit(props) {
               <label className="data-label">Name:</label>
               <input
                 type="text"
-                className={error !== '' ? 'red-border' : ''}
                 name="name"
                 onChange={handleChange}
+                className={error !== '' ? 'red-border' : ''}
                 defaultValue={habit.name}
+                autoComplete={'off'}
               />
             </div>
 
@@ -124,6 +125,7 @@ export default function AddHabit(props) {
                 name="description"
                 onChange={handleChange}
                 defaultValue={habit.description}
+                autoComplete={'off'}
               />
             </div>
 
