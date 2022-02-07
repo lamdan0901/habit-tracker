@@ -1,5 +1,5 @@
 import Modal from 'react-modal'
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useLayoutEffect } from 'react'
 import { Checkbox } from '@nextui-org/react'
 import { BsTrash } from 'react-icons/bs'
 
@@ -201,9 +201,11 @@ export default function HabitList(props) {
     const currentHabitsList = props.habitsList.filter((habit) => habit.daysChecked.includes(today))
 
     currentHabitsList.forEach((habit) => {
-      const formattedHabitTime = formatHabitTime(habit.time)
-      if (formattedHabitTime.localeCompare(clockState) === 0) {
-        sendBrowserNotif("It's time you did this habit", habit.name)
+      if (!habit.checked) {
+        const formattedHabitTime = formatHabitTime(habit.time)
+        if (formattedHabitTime.localeCompare(clockState) === 0) {
+          sendBrowserNotif("It's time you did this habit", habit.name)
+        }
       }
     })
   }, [clockState, props.habitsList])
@@ -232,6 +234,31 @@ export default function HabitList(props) {
     }
   }
 
+  //**---- handle change all done checkbox color ----**//
+
+  const [allDoneColor, setAllDoneColor] = useState()
+
+  useLayoutEffect(() => {
+    setAllDoneColor(() => {
+      if (habitsCheck.length !== 0) {
+        return allHabitsCheck ? habitColor.checkColor : habitColor.normalColor
+      }
+
+      const lastHabitTime = formatHabitTime(props.habitsList[props.habitsList.length - 1].time)
+      return lastHabitTime < clockState ? habitColor.expirationColor : habitColor.normalColor
+    })
+  }, [allHabitsCheck, habitsCheck, clockState, props.habitsList])
+
+  //** for now, we don't need to use below lines of code to sort habits by habit.time */
+  // let currentHabitsList = props.habitsList
+  // currentHabitsList.sort((habit1, habit2) => {
+  //   const habitTime1 = new Date(habit1.time).toTimeString()
+  //   const habitTime2 = new Date(habit2.time).toTimeString()
+
+  //   return habitTime1 > habitTime2 ? 1 : habitTime2 > habitTime1 ? -1 : 0
+  // })
+  // console.log(currentHabitsList)
+
   return (
     <>
       {habitModalOpened && (
@@ -255,6 +282,7 @@ export default function HabitList(props) {
             className="check-all_done-box"
             title="Click to set all the habits done"
             checked={allHabitsCheck}
+            style={allDoneColor}
             // onChange={handleAllHabitsCheck}
           >
             All done
