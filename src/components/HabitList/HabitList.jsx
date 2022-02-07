@@ -44,21 +44,18 @@ export default function HabitList(props) {
     props.habitsList.forEach((habit) => {
       if (habit.checked) habitsCheckList.push(habit.id)
     })
+
+    setAllHabitsCheck(() => {
+      if (habitsCheckList.length === props.habitsList.length) return true
+      return false
+    })
+
     return habitsCheckList
   }, [props.habitsList])
-
-  const updateAllDoneBox = useCallback(() => {
-    if (habitsCheck.length === props.habitsList.length) return true
-    return false
-  }, [habitsCheck, props.habitsList])
 
   useEffect(() => {
     setHabitsCheck(updateHabitCheckBoxes)
   }, [updateHabitCheckBoxes])
-
-  useEffect(() => {
-    setAllHabitsCheck(updateAllDoneBox)
-  }, [updateAllDoneBox])
 
   // const handleAllHabitsCheck = () => {
   // if (allHabitsCheck) {
