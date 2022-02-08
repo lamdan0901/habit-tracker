@@ -6,6 +6,7 @@ import { BsTrash } from 'react-icons/bs'
 import HabitModal from 'components/HabitModal/HabitModal'
 import { useClockState } from 'contexts/SidebarProvider'
 import * as habitColor from 'constants/habitColors'
+import favicon from 'assets/img/favicon.ico'
 import './HabitList.scss'
 
 export default function HabitList(props) {
@@ -194,6 +195,37 @@ export default function HabitList(props) {
     return formattedHabitTime
   }
 
+  //**---- handle change all done checkbox color ----**//
+
+  const [allDoneColor, setAllDoneColor] = useState()
+
+  useLayoutEffect(() => {
+    setAllDoneColor(() => {
+      if (habitsCheck.length !== 0) {
+        return allHabitsCheck ? habitColor.checkColor : habitColor.normalColor
+      }
+
+      if (
+        !habitMainColors.includes(habitColor.checkColor) &&
+        !habitMainColors.includes(habitColor.normalColor)
+      ) {
+        return habitColor.expirationColor
+      }
+
+      return habitColor.normalColor
+    })
+  }, [allHabitsCheck, habitsCheck, habitMainColors])
+
+  //** for now, we don't need to use below lines of code to sort habits by habit.time */
+  // let currentHabitsList = props.habitsList
+  // currentHabitsList.sort((habit1, habit2) => {
+  //   const habitTime1 = new Date(habit1.time).toTimeString()
+  //   const habitTime2 = new Date(habit2.time).toTimeString()
+
+  //   return habitTime1 > habitTime2 ? 1 : habitTime2 > habitTime1 ? -1 : 0
+  // })
+  // console.log(currentHabitsList)
+
   //**---- handle send browser notification ----**//
 
   useEffect(() => {
@@ -204,7 +236,7 @@ export default function HabitList(props) {
       if (!habit.checked) {
         const formattedHabitTime = formatHabitTime(habit.time)
         if (formattedHabitTime.localeCompare(clockState) === 0) {
-          sendBrowserNotif("It's time you did this habit", habit.name)
+          sendBrowserNotif('Habit Tracker', "It's time you did this habit: " + habit.name, favicon)
         }
       }
     })
@@ -233,31 +265,6 @@ export default function HabitList(props) {
       console.warn(`Failed, Notification Permission is ${Notification.permission}`)
     }
   }
-
-  //**---- handle change all done checkbox color ----**//
-
-  const [allDoneColor, setAllDoneColor] = useState()
-
-  useLayoutEffect(() => {
-    setAllDoneColor(() => {
-      if (habitsCheck.length !== 0) {
-        return allHabitsCheck ? habitColor.checkColor : habitColor.normalColor
-      }
-
-      const lastHabitTime = formatHabitTime(props.habitsList[props.habitsList.length - 1].time)
-      return lastHabitTime < clockState ? habitColor.expirationColor : habitColor.normalColor
-    })
-  }, [allHabitsCheck, habitsCheck, clockState, props.habitsList])
-
-  //** for now, we don't need to use below lines of code to sort habits by habit.time */
-  // let currentHabitsList = props.habitsList
-  // currentHabitsList.sort((habit1, habit2) => {
-  //   const habitTime1 = new Date(habit1.time).toTimeString()
-  //   const habitTime2 = new Date(habit2.time).toTimeString()
-
-  //   return habitTime1 > habitTime2 ? 1 : habitTime2 > habitTime1 ? -1 : 0
-  // })
-  // console.log(currentHabitsList)
 
   return (
     <>
