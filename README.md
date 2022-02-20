@@ -1,8 +1,10 @@
-# Habit Tracker Web App
+# Habit Tracker Website
 
 ## Name
-Choose a self-explaining name for your project.
+Habit Tracker
 
 ## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
+This website help you create, view, follow your habits
+Some functionalities: habit CRUD, sleep time calculator, habit name searching,...
+## Product site
+http://habit-trkr.pages.dev/
