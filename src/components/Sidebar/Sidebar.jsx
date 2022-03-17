@@ -1,5 +1,5 @@
-import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import { useDebouncedCallback } from 'use-debounce'
 import { useSidebar } from 'contexts/SidebarProvider'
 
 import { BsFillHouseDoorFill } from 'react-icons/bs'
@@ -7,31 +7,21 @@ import { AiOutlineMenuFold, AiOutlineMenuUnfold, AiFillPieChart } from 'react-ic
 import { GiNightSleep } from 'react-icons/gi'
 import { BiSearch } from 'react-icons/bi'
 
-import aibLogo from '../../assets/img/aib-logo.png'
+import aibLogo from '../../assets/img/aib-logo.jpg'
 import './Searchbox.scss'
 import './Sidebar.scss'
 
 export default function Sidebar(props) {
   const [sidebarOpen, toggleSidebar] = useSidebar()
-  const [searchText, setSearchText] = useState({ text: '', timeOut: 0 })
+  const debounced = useDebouncedCallback(handleTextChange, 500)
 
-  function handleTextChange(e) {
-    const searchBoxText = e.target.value
-
-    if (searchBoxText) {
-      if (searchText.timeOut) clearTimeout(searchText.timeOut)
-
+  function handleTextChange(searchTextBox) {
+    if (searchTextBox) {
       let filteredHabits = props.habits.filter((habit) =>
-        habit.name.toLowerCase().includes(searchBoxText.toLowerCase()),
+        habit.name.toLowerCase().includes(searchTextBox.toLowerCase()),
       )
-
-      setSearchText({
-        text: searchBoxText,
-        timeout: setTimeout(function () {
-          props.setIsSearching(true)
-          props.onSetSearchedHabits(filteredHabits)
-        }, 200),
-      })
+      props.setIsSearching(true)
+      props.onSetSearchHabits(filteredHabits)
     } else props.setIsSearching(false)
   }
 
@@ -60,7 +50,7 @@ export default function Sidebar(props) {
         <input
           id="search"
           type="search"
-          onChange={handleTextChange}
+          onChange={(e) => debounced(e.target.value)}
           placeholder={sidebarOpen ? 'Search...' : ' '}
         />
       </form>

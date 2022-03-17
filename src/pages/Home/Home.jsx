@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast, cssTransition } from 'react-toastify'
 import { Loading } from '@nextui-org/react'
 
-import HabitList from 'components/HabitList/HabitList'
 import MainLayout from 'layouts/MainLayout'
+import HabitList from 'components/HabitList/HabitList'
 import HabitModal from 'components/HabitModal/HabitModal'
 import * as actions from 'actions/habitsActions'
 
@@ -13,7 +13,7 @@ import './animate.min.css'
 import './Home.scss'
 
 export default function Home() {
-  document.title = 'Home - Habit Tracker'
+  document.title = 'Home - Habit App'
 
   let today = new Date().toDateString()
   today = today.slice(0, 3) + ', ' + today.slice(3)
@@ -25,95 +25,123 @@ export default function Home() {
     else greetingText = 'Good evening'
   }
 
-  let deletedHabit
-  const [renderHomePage, setRenderHomePage] = useState(false)
+  const [loadingState, setLoadingState] = useState('pending')
 
   const dispatch = useDispatch()
   const habits = useSelector((state) => state.habits)
 
   const [isSearching, setIsSearching] = useState(false)
-  const [searchedHabits, setSearchedHabits] = useState(habits)
+  const [searchHabits, setSearchHabits] = useState(habits)
 
   const [displayAllHabits, setDisplayAllHabits] = useState(false)
-  const [habitsList, setHabitsList] = useState(habits)
+  const [habitList, setHabitList] = useState(habits)
+  let deletedHabit
 
-  function handleChangeHabitsListDisplay() {
+  function handleChangeHabitListDisplay() {
     if (!displayAllHabits) {
-      setHabitsList(habits)
+      setHabitList(habits)
     } else {
-      const todayHabitsList = setTodayHabitsList(habits)
-      setHabitsList(todayHabitsList)
+      const todayHabitList = setTodayHabitList(habits)
+      setHabitList(todayHabitList)
     }
   }
 
   useEffect(() => {
     dispatchHabits()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch])
+  }, [])
 
-  function setTodayHabitsList(habits) {
-    let todayHabitsList = []
+  function setTodayHabitList(habits) {
+    let todayHabitList = []
+    const thisDay = new Date().getDay()
     habits.forEach((habit) => {
-      if (habit.daysChecked.includes(today.slice(0, 3))) {
-        todayHabitsList.push(habit)
+      if (habit.reminderDays.includes(thisDay)) {
+        todayHabitList.push(habit)
       }
     })
-    return todayHabitsList
+    return todayHabitList
+  }
+
+  function handleSetSearchHabits(searchHabits) {
+    setSearchHabits(searchHabits)
   }
 
   function dispatchHabits(commandText) {
-    dispatch(actions.getAllHabits()).then((res) => {
-      if (commandText === 'display all') {
-        setHabitsList(res)
-      } else {
-        const todayHabitsList = setTodayHabitsList(res)
-        setHabitsList(todayHabitsList)
-      }
-      setRenderHomePage(true)
-    })
+    dispatch(actions.getAllHabits())
+      .then((res) => {
+        if (commandText === 'display all') {
+          setHabitList(res)
+        } else {
+          const todayHabitList = setTodayHabitList(res)
+          setHabitList(todayHabitList)
+        }
+        setLoadingState('resolved')
+      })
+      .catch((err) => {
+        setLoadingState('rejected')
+        console.error(err)
+
+        // if (err.status === 401) {
+        //   getToken()
+        // }
+      })
   }
 
   function handleAddHabit(habit, msg) {
     const notify = new Promise((resolve, reject) =>
-      dispatch(actions.postHabit(habit)).then(() => {
-        resolve()
-        if (!displayAllHabits) {
-          dispatchHabits()
-        } else {
-          dispatchHabits('display all')
-        }
-      }),
+      dispatch(actions.postHabit(habit))
+        .then(() => {
+          resolve()
+          if (!displayAllHabits) {
+            dispatchHabits()
+          } else {
+            dispatchHabits('display all')
+          }
+        })
+        .catch((err) => {
+          reject()
+          console.error(err)
+        }),
     )
     displayNotif(!msg ? 'New habit is added' : msg, notify)
   }
 
-  function handleEditHabit(habit, msg) {
+  function handleEditHabit(id, habit) {
     const notify = new Promise((resolve, reject) =>
-      dispatch(actions.putHabit(habit)).then(() => {
-        resolve()
-        if (!displayAllHabits) {
-          dispatchHabits()
-        } else {
-          dispatchHabits('display all')
-        }
-      }),
+      dispatch(actions.putHabit(id, habit))
+        .then(() => {
+          resolve()
+          if (!displayAllHabits) {
+            dispatchHabits()
+          } else {
+            dispatchHabits('display all')
+          }
+        })
+        .catch((err) => {
+          reject()
+          console.error(err)
+        }),
     )
 
-    if (msg === 'no notification') return
     displayNotif('Habit is saved', notify)
   }
 
   function handleDeleteHabit(habit) {
     deletedHabit = habit
     const notify = new Promise((resolve, reject) =>
-      dispatch(actions.deleteHabit(habit.id)).then(() => {
-        resolve()
-        if (!displayAllHabits) {
-          dispatchHabits()
-        } else {
-          dispatchHabits('display all')
-        }
-      }),
+      dispatch(actions.deleteHabit(habit.id))
+        .then(() => {
+          resolve()
+          if (!displayAllHabits) {
+            dispatchHabits()
+          } else {
+            dispatchHabits('display all')
+          }
+        })
+        .catch((err) => {
+          reject()
+          console.error(err)
+        }),
     )
     displayNotif('Habit is deleted', notify, '')
   }
@@ -143,7 +171,6 @@ export default function Home() {
         progress: undefined,
         transition: bounce,
       },
-
       error: {
         render() {
           return 'An error has occurred!'
@@ -163,12 +190,10 @@ export default function Home() {
 
   return (
     <MainLayout
-      habits={habitsList}
+      habits={habitList}
       setIsSearching={setIsSearching}
-      onSetSearchedHabits={(habits) => {
-        setSearchedHabits(habits)
-      }}>
-      {renderHomePage ? (
+      onSetSearchHabits={handleSetSearchHabits}>
+      {loadingState === 'resolved' ? (
         <div>
           <div className="header">
             <span>
@@ -177,25 +202,31 @@ export default function Home() {
             </span>
 
             <button
-              className="btn show-all-btn"
+              className={habits.length !== 0 ? 'btn show-all-btn' : 'btn show-all-btn disabled'}
               onClick={() => {
                 setDisplayAllHabits(!displayAllHabits)
-                handleChangeHabitsListDisplay()
+                handleChangeHabitListDisplay()
               }}>
               {!displayAllHabits ? 'All habits' : "Today's habits"}
             </button>
 
-            <HabitModal onAddHabit={handleAddHabit} habitsList={habits} />
+            <HabitModal onAddHabit={handleAddHabit} habitList={habits} />
           </div>
 
           <HabitList
-            habitsList={isSearching ? searchedHabits : habitsList}
+            habitList={isSearching ? searchHabits : habitList}
             isSearching={isSearching}
             displayAllHabits={displayAllHabits}
+            onGetHabits={dispatchHabits}
             onEditHabit={handleEditHabit}
             onDeleteHabit={handleDeleteHabit}
           />
         </div>
+      ) : loadingState === 'rejected' ? (
+        <>
+          <h2>Error occurred while fetching data...</h2>
+          <p>Please try again later</p>
+        </>
       ) : (
         <Loading size="xlarge" color="warning" textColor="warning" className="loading-animation">
           Loading...

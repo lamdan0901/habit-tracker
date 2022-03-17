@@ -85,7 +85,7 @@
 
 @media screen and (min-width: 1366px) {
   .navbar {
-    width: 1080px;
+    width: 1070px;
   }
 }
 
@@ -97,15 +97,15 @@
 
 @media screen and (max-width: $mobile) {
   .navbar .user-info {
-    width: 41px;
-    border-radius: 50%;
+    // width: 41px;
+    // border-radius: 50%;
 
     img.user-avatar {
       margin-right: 0px;
     }
 
-    .user-name {
-      display: none;
-    }
+    // .user-name {
+    //   display: none;
+    // }
   }
 }

@@ -16,11 +16,6 @@
     background-color: rgba(196, 196, 196, 0.7);
     box-shadow: 2px 2px 6px 1px rgba(0, 0, 0, 0.2);
     pointer-events: none;
-    // transition: all 0.2s;
-
-    // &:hover {
-    //   box-shadow: 3px 3px 6px 1px rgba(0, 0, 0, 0.3);
-    // }
 
     .jsx-2134861079.text {
       color: inherit;
@@ -81,6 +76,36 @@
         background-color: rgba(66, 66, 66, 0.2);
         color: #000;
       }
+    }
+  }
+
+  .no-habit-msg {
+    position: absolute;
+    left: 50%;
+    top: 50px;
+    transform: translateX(-50%);
+    text-align: center;
+
+    p {
+      display: inline;
+      color: #555;
+    }
+
+    .add-btn-icon {
+      display: inline-block;
+      background-color: $primary-color;
+      border-radius: 50%;
+      color: #fff;
+      font-weight: 300;
+      pointer-events: none;
+
+      position: relative;
+      padding-top: 6px;
+      font-size: 22px;
+      top: 5px;
+      margin: 0 5px;
+      width: 36px;
+      height: 36px;
     }
   }
 }
@@ -155,9 +180,9 @@ span.jsx-3904811003.text {
 
 @media screen and (max-width: $mobile) {
   .habits-view {
-    height: calc(100vh - 280px);
+    // height: calc(100vh - 280px);
     .check-all_done-box {
-      top: 220px !important;
+      top: 160px !important;
     }
 
     .habits-list li {
@@ -174,6 +199,14 @@ span.jsx-3904811003.text {
       .delete-btn {
         transform: translateY(30px);
       }
+    }
+  }
+}
+
+@media screen and (max-width: 410px) {
+  .habits-view {
+    .check-all_done-box {
+      top: 220px !important;
     }
   }
 }

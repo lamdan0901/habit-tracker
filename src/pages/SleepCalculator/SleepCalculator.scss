@@ -155,7 +155,8 @@
 
 @media screen and (max-height: 530px) {
   .sleep-container {
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 }
 

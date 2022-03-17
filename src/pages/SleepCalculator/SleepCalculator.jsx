@@ -86,7 +86,7 @@ export default function SleepCalculator(props) {
     return calculatingTime
   }
 
-  function handleCalculatedTimeChange() {
+  function handleChangeCalculatedTime() {
     setCalculatedTime(calSleepTime)
   }
 
@@ -124,7 +124,7 @@ export default function SleepCalculator(props) {
             <button
               className="cal-btn"
               onClick={() => {
-                handleCalculatedTimeChange()
+                handleChangeCalculatedTime()
                 setResultsShowed(true)
               }}>
               Calculate

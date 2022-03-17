@@ -2,9 +2,13 @@ import { days } from 'constants/days'
 import { useState } from 'react'
 import './DayPicker.scss'
 
-export default function DayPicker(props) {
-  const { daysCheck, onDaysCheck } = props
-  const [allDaysChecked, setAllDaysChecked] = useState(false)
+export default function DayPicker({ isEditMode, daysCheck, onDaysCheck }) {
+  const [allDaysChecked, setAllDaysChecked] = useState(() => {
+    if (!isEditMode || (isEditMode && daysCheck.length === 7)) {
+      return true
+    }
+    return false
+  })
 
   const handleAllCheck = () => {
     if (allDaysChecked) {
@@ -12,18 +16,19 @@ export default function DayPicker(props) {
       onDaysCheck([])
     } else {
       setAllDaysChecked(true)
-      onDaysCheck(days)
+      onDaysCheck([0, 1, 2, 3, 4, 5, 6])
     }
   }
 
   const handleSingleCheck = (e) => {
     const { name } = e.target
+    let day = ~~name
 
-    if (daysCheck.includes(name)) {
-      onDaysCheck(daysCheck.filter((checked_name) => checked_name !== name))
+    if (daysCheck.includes(day)) {
+      onDaysCheck(daysCheck.filter((checked_day) => checked_day !== day))
       setAllDaysChecked(false)
     } else {
-      daysCheck.push(name)
+      daysCheck.push(day)
       onDaysCheck([...daysCheck])
       setAllDaysChecked(daysCheck.length === days.length)
     }
@@ -43,9 +48,9 @@ export default function DayPicker(props) {
           <div className="day-checkbox" key={index}>
             <input
               type="checkbox"
-              checked={daysCheck.includes(day)}
-              name={day}
+              name={index}
               onChange={handleSingleCheck}
+              checked={daysCheck.includes(index)}
             />
             <label>{day}</label>
           </div>

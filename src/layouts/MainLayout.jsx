@@ -11,23 +11,19 @@ export default function MainLayout(props) {
   return (
     <main>
       <ToastContainer autoClose={2500} />
-      <React.StrictMode>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <React.Fragment>
-            <div className="main-layout">
-              <Sidebar
-                habits={props.habits}
-                setIsSearching={props.setIsSearching}
-                onSetSearchedHabits={props.onSetSearchedHabits}
-              />
-              <div className="content-and-nav">
-                <NavBar />
-                <div className="children">{props.children}</div>
-              </div>
-            </div>
-          </React.Fragment>
-        </LocalizationProvider>
-      </React.StrictMode>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <div className="main-layout">
+          <Sidebar
+            habits={props.habits}
+            setIsSearching={props.setIsSearching}
+            onSetSearchHabits={props.onSetSearchHabits}
+          />
+          <div className="content-and-nav">
+            <NavBar />
+            <div className="children">{props.children}</div>
+          </div>
+        </div>
+      </LocalizationProvider>
     </main>
   )
 }

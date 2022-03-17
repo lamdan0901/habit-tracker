@@ -1,27 +1,67 @@
 import axios from 'axios'
 import queryString from 'query-string'
+import TokenService from './tokenService'
 
 const axiosClient = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
-  header: {
+  headers: {
     'content-type': 'application/json',
   },
   timeout: 10000,
-  //use queryString to stringify params
   paramsSerializer: (params) => queryString.stringify(params),
 })
 
-axiosClient.interceptors.request.use(async (config) => {
-  //handle token here...
-  return config
-})
+axiosClient.interceptors.request.use(
+  (config) => {
+    const token = TokenService.getLocalAccessToken()
+    if (token) {
+      axiosClient.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => {
+    throw error
+  },
+)
 
-//request that has response returning data will be handled here
 axiosClient.interceptors.response.use(
   (response) => {
     if (response && response.data) return response.data
   },
-  (error) => {
+  async (error) => {
+    const originalConfig = error.config
+
+    if (originalConfig.url !== '/auth/login' && error.response) {
+      // * Access token expired
+      if (error.response.status === 401 && !originalConfig._retry) {
+        // * handle infinite loop
+        originalConfig._retry = true
+
+        try {
+          const res = await axiosClient.post('/auth/refresh-token', {
+            refreshToken: TokenService.getLocalRefreshToken(),
+          })
+          TokenService.updateLocalAccessToken(res.accessToken)
+
+          originalConfig.headers['Authorization'] = `Bearer ${res.accessToken}`
+          return axiosClient(originalConfig)
+        } catch (err) {
+          console.error(error)
+          return Promise.reject(err)
+        }
+      }
+      // * Refresh token expired
+      if (
+        error.response.status === 400 &&
+        error.response.data.message === 'Refresh token expired' &&
+        !originalConfig._retry
+      ) {
+        console.error('Refresh token expired')
+        localStorage.setItem('msg', 'Your session has expired. Please login again.')
+        TokenService.removeToken()
+        window.location.href = '/login'
+      }
+    }
     throw error
   },
 )

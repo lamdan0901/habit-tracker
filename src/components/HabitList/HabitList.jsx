@@ -3,10 +3,12 @@ import { useState, useRef, useEffect, useCallback, useLayoutEffect } from 'react
 import { Checkbox } from '@nextui-org/react'
 import { BsTrash } from 'react-icons/bs'
 
+import axiosClient from 'utils/axiosClient'
 import HabitModal from 'components/HabitModal/HabitModal'
 import { useClockState } from 'contexts/SidebarProvider'
+
 import * as habitColor from 'constants/habitColors'
-import favicon from 'assets/img/favicon.ico'
+import aibLogo from '../../assets/img/aib-logo.jpg'
 import './HabitList.scss'
 
 export default function HabitList(props) {
@@ -15,6 +17,8 @@ export default function HabitList(props) {
 
   const [currentHabit, setCurrentHabit] = useState({})
   const [tempHabit, setTempHabit] = useState() //habit that is saved before being deleted
+  const now = new Date()
+  const today = now.toISOString().slice(0, 10)
 
   function handleChooseHabit(habit) {
     setCurrentHabit(habit)
@@ -34,71 +38,105 @@ export default function HabitList(props) {
     setConfirmDialogOpened(false)
   }
 
-  //**---- handle update habit checkboxes list ----**//
+  function handleCloseHabitModal() {
+    setHabitModalOpened(false)
+  }
 
-  const habitIds = props.habitsList.map((habit) => habit.id)
+  //** handle sort habits by habit.reminderTime */
+  // we can give more options to sort by name, by being checked or not later
+  let sortedHabitList = useRef(props.habitList)
+
+  useEffect(() => {
+    sortedHabitList.current = props.habitList
+    sortedHabitList.current.sort((habit1, habit2) => {
+      return habit1.reminderTime > habit2.reminderTime
+        ? 1
+        : habit2.reminderTime > habit1.reminderTime
+        ? -1
+        : 0
+    })
+  }, [props.habitList])
+
+  //**---- handle update habit checkboxes and habit check----**//
+
+  const habitIds = props.habitList.map((habit) => habit.id)
   const [habitsCheck, setHabitsCheck] = useState([])
   const [allHabitsCheck, setAllHabitsCheck] = useState(false)
 
   const updateHabitCheckBoxes = useCallback(() => {
     let habitsCheckList = []
-    props.habitsList.forEach((habit) => {
-      if (habit.checked) habitsCheckList.push(habit.id)
+
+    sortedHabitList.current.forEach((habit) => {
+      for (let i = 0; i < habit.performances.length; i++) {
+        if (habit.performances[i].time === today && habit.performances[i].isChecked === true) {
+          habitsCheckList.push(habit.id)
+          break
+        }
+      }
     })
 
-    setAllHabitsCheck(() => {
-      if (habitsCheckList.length === props.habitsList.length) return true
-      return false
-    })
+    setAllHabitsCheck(() =>
+      habitsCheckList.length === props.habitList.length && props.habitList.length !== 0
+        ? true
+        : false,
+    )
 
     return habitsCheckList
-  }, [props.habitsList])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortedHabitList])
 
   useEffect(() => {
     setHabitsCheck(updateHabitCheckBoxes)
   }, [updateHabitCheckBoxes])
 
-  // const handleAllHabitsCheck = () => {
-  // if (allHabitsCheck) {
-  //   setAllHabitsCheck(false)
-  //   setHabitsCheck([])
-  //   props.habitsList.forEach((habit) => {
-  //     habit.checked = false
-  //     props.onEditHabit(habit, 'no notification')
-  //   })
-  // } else {
-  //   setAllHabitsCheck(true)
-  //   setHabitsCheck(habitIds)
-  //   props.habitsList.forEach((habit) => {
-  //     if (!habit.checked) {
-  //       habit.checked = true
-  //       props.onEditHabit(habit, 'no notification')
-  //     }
-  //   })
-  // }
-  // }
+  async function handleCheckHabit(habit) {
+    const inspectId =
+      habit.performances.length !== 0 && habit.performances.find((perf) => perf.time === today)
+        ? habit.performances.find((perf) => perf.time === today).id
+        : null
 
-  const handleSingleHabitCheck = (habit) => {
-    const id = habit.id
+    // if performances (inspection list) is not created (performances.length==0), we create by POST request
+    // if performances is created (performances.length>0):
+    // + if today is not in performances, we create by POST request
+    // + else we update by PATCH request
 
-    if (habitsCheck.includes(id)) {
-      setHabitsCheck(habitsCheck.filter((checked_ID) => checked_ID !== id))
+    if (habitsCheck.includes(habit.id)) {
+      await axiosClient.patch(`/inspection/${inspectId}`, {
+        time: today,
+        isChecked: false,
+      })
+
+      setHabitsCheck(habitsCheck.filter((checked_ID) => checked_ID !== habit.id))
       setAllHabitsCheck(false)
-      habit.checked = false
+      props.onGetHabits()
     } else {
-      habitsCheck.push(id)
+      if (
+        habit.performances.length !== 0 &&
+        habit.performances.find((perf) => perf.time === today)
+      ) {
+        await axiosClient.patch(`/inspection/${inspectId}`, {
+          time: today,
+          isChecked: true,
+        })
+      } else {
+        await axiosClient.post('/inspection', {
+          time: today,
+          isChecked: true,
+          habitId: habit.id,
+        })
+      }
+
+      habitsCheck.push(habit.id)
       setHabitsCheck([...habitsCheck])
       setAllHabitsCheck(habitsCheck.length === habitIds.length)
-      habit.checked = true
+      props.onGetHabits()
     }
-
-    props.onEditHabit(habit, 'no notification')
   }
 
-  //**---- handle change 'gridTemplateColumns' of the habits list according to width ----**//
+  //**---- handle change 'gridTemplateColumns' of the habits list according to its width ----**//
 
-  const habitsListRef = useRef()
-  const [habitsListStyle, setHabitsListStyle] = useState({
+  const habitListRef = useRef()
+  const [habitListStyle, setHabitListStyle] = useState({
     display: 'grid',
     gridTemplateColumns: 'auto auto',
   })
@@ -108,17 +146,23 @@ export default function HabitList(props) {
       const habitsListElement = entries[0]
 
       if (habitsListElement.contentRect.width < 530) {
-        setHabitsListStyle((prevValue) => ({ ...prevValue, gridTemplateColumns: 'auto' }))
+        setHabitListStyle((prevState) => ({
+          ...prevState,
+          gridTemplateColumns: 'auto',
+        }))
       } else {
-        setHabitsListStyle((prevValue) => ({ ...prevValue, gridTemplateColumns: 'auto auto' }))
+        setHabitListStyle((prevState) => ({
+          ...prevState,
+          gridTemplateColumns: 'auto auto',
+        }))
       }
     })
-    resizeObserver.observe(habitsListRef.current)
+    resizeObserver.observe(habitListRef.current)
 
     return () => {
       resizeObserver.disconnect()
     }
-  }, [habitsListRef])
+  }, [habitListRef])
 
   //**---- handle display habit color according to clockState and habitTime ----**//
 
@@ -128,9 +172,12 @@ export default function HabitList(props) {
   useEffect(() => {
     const currentColorsList = []
 
-    props.habitsList.forEach((habit) => {
-      if (!habit.checked) {
-        const formattedHabitTime = formatHabitTime(habit.time)
+    sortedHabitList.current.forEach((habit) => {
+      if (
+        !habit.performances.find((perf) => perf.time === today && perf.isChecked === true) ||
+        habit.performances.length === 0
+      ) {
+        const formattedHabitTime = formatHabitTime(habit.reminderTime)
         const am_pmCompareRes = clockState.slice(6, 8).localeCompare(formattedHabitTime.slice(6, 8))
 
         //PM-PM || AM-AM
@@ -173,26 +220,25 @@ export default function HabitList(props) {
     })
 
     setHabitMainColors(currentColorsList)
-  }, [clockState, props.habitsList])
+  }, [clockState, props.habitList, today])
 
   function formatHabitTime(habitTime) {
-    let formattedHabitTime = new Date(habitTime).toString().slice(16, 21)
-    const hour = ~~formattedHabitTime.slice(0, 2)
-    const minute = formattedHabitTime.slice(3, 5)
+    const hour = ~~habitTime.slice(0, 2)
+    const minute = habitTime.slice(3, 5)
 
     if (hour === 0) {
-      formattedHabitTime = 12 + ':' + minute + ' AM'
+      habitTime = 12 + ':' + minute + ' AM'
     } else if (hour < 12) {
-      if (hour < 10) formattedHabitTime = '0' + hour + ':' + minute + ' AM'
-      else formattedHabitTime = hour + ':' + minute + ' AM'
+      if (hour < 10) habitTime = '0' + hour + ':' + minute + ' AM'
+      else habitTime = hour + ':' + minute + ' AM'
     } else if (hour === 12) {
-      formattedHabitTime = hour + ':' + minute + ' PM'
+      habitTime = hour + ':' + minute + ' PM'
     } else {
-      if (hour - 12 < 10) formattedHabitTime = '0' + (hour - 12) + ':' + minute + ' PM'
-      else formattedHabitTime = hour - 12 + ':' + minute + ' PM'
+      if (hour - 12 < 10) habitTime = '0' + (hour - 12) + ':' + minute + ' PM'
+      else habitTime = hour - 12 + ':' + minute + ' PM'
     }
 
-    return formattedHabitTime
+    return habitTime
   }
 
   //**---- handle change all done checkbox color ----**//
@@ -216,31 +262,23 @@ export default function HabitList(props) {
     })
   }, [allHabitsCheck, habitsCheck, habitMainColors])
 
-  //** for now, we don't need to use below lines of code to sort habits by habit.time */
-  // let currentHabitsList = props.habitsList
-  // currentHabitsList.sort((habit1, habit2) => {
-  //   const habitTime1 = new Date(habit1.time).toTimeString()
-  //   const habitTime2 = new Date(habit2.time).toTimeString()
-
-  //   return habitTime1 > habitTime2 ? 1 : habitTime2 > habitTime1 ? -1 : 0
-  // })
-  // console.log(currentHabitsList)
-
   //**---- handle send browser notification ----**//
 
   useEffect(() => {
-    const today = new Date().toDateString().slice(0, 3)
-    const currentHabitsList = props.habitsList.filter((habit) => habit.daysChecked.includes(today))
+    const currentHabitsList = props.habitList.filter((habit) =>
+      habit.reminderDays.includes(now.getDay()),
+    )
 
     currentHabitsList.forEach((habit) => {
       if (!habit.checked) {
-        const formattedHabitTime = formatHabitTime(habit.time)
+        const formattedHabitTime = formatHabitTime(habit.reminderTime)
         if (formattedHabitTime.localeCompare(clockState) === 0) {
-          sendBrowserNotif('Habit Tracker', "It's time you did this habit: " + habit.name, favicon)
+          sendBrowserNotif('Habit Tracker', "It's time you did this habit: " + habit.title, aibLogo)
         }
       }
     })
-  }, [clockState, props.habitsList])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clockState, props.habitList])
 
   function sendBrowserNotif(title, body, icon) {
     if (!('Notification' in window)) {
@@ -272,13 +310,11 @@ export default function HabitList(props) {
         <HabitModal
           isEditMode={true}
           habit={currentHabit}
-          habitsList={props.habitsList}
+          habitList={props.habitList}
           isEditModalOpened={habitModalOpened}
           onEditHabit={props.onEditHabit}
           onDeleteHabit={handleDeleteHabit}
-          onCloseModal={() => {
-            setHabitModalOpened(false)
-          }}
+          onCloseModal={handleCloseHabitModal}
         />
       )}
 
@@ -287,50 +323,55 @@ export default function HabitList(props) {
           <Checkbox
             color="primary"
             className="check-all_done-box"
-            title="Click to set all the habits done"
             checked={allHabitsCheck}
-            style={allDoneColor}
-            // onChange={handleAllHabitsCheck}
-          >
+            style={allDoneColor}>
             All done
           </Checkbox>
         </div>
 
-        <ul className="habits-list" ref={habitsListRef} style={habitsListStyle}>
-          {props.habitsList.map((habit, index) => (
-            <div key={index}>
-              <Checkbox
-                color="success"
-                className="check-habit-box"
-                title="Click to check this habit"
-                checked={habitsCheck.includes(habit.id)}
-                onChange={() => {
-                  handleSingleHabitCheck(habit)
-                }}
-              />
+        <ul className="habits-list" ref={habitListRef} style={habitListStyle}>
+          {sortedHabitList.current.length !== 0 ? (
+            props.habitList.map((habit, index) => (
+              <div key={index}>
+                <Checkbox
+                  color="success"
+                  className="check-habit-box"
+                  title="Click to check this habit"
+                  checked={habitsCheck.includes(habit.id)}
+                  onChange={() => {
+                    handleCheckHabit(habit)
+                  }}
+                />
 
-              <li
-                title="Click to view details"
-                style={habitMainColors[index]}
-                onClick={() => {
-                  handleChooseHabit(habit)
-                }}>
-                <p className="habit-name">{habit.name}</p>
-
-                <div className="habit-time">{formatHabitTime(habit.time)}</div>
-
-                <div
-                  title="Delete this habit"
-                  className="delete-btn"
-                  onClick={(e) => {
-                    e.stopPropagation() //so that when we click the child element, it won't call the parent element
-                    handleOpenDialog(habit)
+                <li
+                  title="Click to view details"
+                  style={habitMainColors[index]}
+                  onClick={() => {
+                    handleChooseHabit(habit)
                   }}>
-                  <BsTrash />
-                </div>
-              </li>
+                  <p className="habit-name">{habit.title}</p>
+
+                  <div className="habit-time">{formatHabitTime(habit.reminderTime)}</div>
+
+                  <div
+                    title="Delete this habit"
+                    className="delete-btn"
+                    onClick={(e) => {
+                      e.stopPropagation() //so that when we click the child element, it won't call the parent element
+                      handleOpenDialog(habit)
+                    }}>
+                    <BsTrash />
+                  </div>
+                </li>
+              </div>
+            ))
+          ) : (
+            <div className="no-habit-msg">
+              <p>You don't have any habits yet! Click</p>
+              <span className="add-btn-icon">+</span>
+              <p> to add one</p>
             </div>
-          ))}
+          )}
         </ul>
       </div>
 

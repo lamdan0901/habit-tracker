@@ -10,7 +10,7 @@ export const getAllHabits = () => async (dispatch) => {
     })
     return res
   } catch (error) {
-    Promise.reject(error)
+    throw error
   }
 }
 
@@ -22,19 +22,19 @@ export const postHabit = (data) => async (dispatch) => {
       payload: res,
     })
   } catch (error) {
-    return Promise.reject(error)
+    throw error
   }
 }
 
-export const putHabit = (habit) => async (dispatch) => {
+export const putHabit = (id, habit) => async (dispatch) => {
   try {
-    await habitsApi.putHabit(habit.id, habit)
+    await habitsApi.putHabit(id, habit)
     dispatch({
       type: types.UPDATE_HABIT,
-      payload: [habit.id, habit],
+      payload: [id, habit],
     })
   } catch (error) {
-    Promise.reject(error)
+    throw error
   }
 }
 
@@ -46,6 +46,6 @@ export const deleteHabit = (id) => async (dispatch) => {
       payload: id,
     })
   } catch (error) {
-    Promise.reject(error)
+    throw error
   }
 }

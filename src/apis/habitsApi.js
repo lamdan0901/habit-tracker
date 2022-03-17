@@ -1,26 +1,36 @@
 import axiosClient from '../utils/axiosClient'
 
-const basePath = '/habitsList'
+const basePath = '/habit'
 
 const habitsApi = {
   getAllHabits: (params) => {
-    return axiosClient.get(basePath, { params })
+    return axiosClient.get(basePath, { params }).catch((error) => {
+      throw error.toJSON()
+    })
   },
 
   getHabitByID: (id) => {
-    return axiosClient.get(`${basePath}/${id}`)
+    return axiosClient.get(`${basePath}/${id}`).catch((error) => {
+      throw error.toJSON()
+    })
   },
 
   postHabit: (params) => {
-    return axiosClient.post(basePath, params)
+    return axiosClient.post(basePath, params).catch((error) => {
+      throw error.toJSON()
+    })
   },
 
   putHabit: (id, params) => {
-    return axiosClient.put(`${basePath}/${id}`, params)
+    return axiosClient.patch(`${basePath}/${id}`, params).catch((error) => {
+      throw error.toJSON()
+    })
   },
 
   deleteHabit: (id) => {
-    return axiosClient.delete(`${basePath}/${id}`)
+    return axiosClient.delete(`${basePath}/${id}`).catch((error) => {
+      throw error.toJSON()
+    })
   },
 }
 
