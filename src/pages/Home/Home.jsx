@@ -80,10 +80,6 @@ export default function Home() {
       .catch((err) => {
         setLoadingState('rejected')
         console.error(err)
-
-        // if (err.status === 401) {
-        //   getToken()
-        // }
       })
   }
 
@@ -158,6 +154,9 @@ export default function Home() {
                 <button
                   className="btn undo_delete-btn"
                   onClick={() => {
+                    delete deletedHabit.id
+                    delete deletedHabit.createdAt
+                    delete deletedHabit.performance
                     handleAddHabit(deletedHabit, 'Undo delete successfully!')
                   }}>
                   UNDO DELETE

@@ -60,7 +60,7 @@ export function AuthProvider({ children }) {
 
   // function resetPassword(email) {}
 
-  // function update_Password(newPassword) {}
+  // function updatePassword(newPassword) {}
 
   function sign_Out() {
     TokenService.removeToken()
@@ -85,7 +85,7 @@ export function AuthProvider({ children }) {
     sendVerificationCode,
     setCurrentUser,
     // resetPassword,
-    // update_Password,
+    // updatePassword,
     sign_Out,
   }
 

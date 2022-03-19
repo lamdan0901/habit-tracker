@@ -53,7 +53,8 @@ axiosClient.interceptors.response.use(
       // * Refresh token expired
       if (
         error.response.status === 400 &&
-        error.response.data.message === 'Refresh token expired' &&
+        (error.response.data.message === 'Invalid refresh token.' 
+		|| error.response.message === 'Invalid refresh token.') &&
         !originalConfig._retry
       ) {
         console.error('Refresh token expired')
