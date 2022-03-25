@@ -13,11 +13,10 @@ export default function Login() {
     try {
       setError('')
       setLoading(true)
-      await resetPassword(emailRef.current.value).then(() => {
-        setError(
-          'An email sent to your email address. Please check your email for further instructions.',
-        )
-      })
+      await resetPassword(emailRef.current.value)
+      setError(
+        'An email sent to your email address. Please check your email for further instructions.',
+      )
     } catch (error) {
       setError('Failed to Reset password ' + error)
     }
