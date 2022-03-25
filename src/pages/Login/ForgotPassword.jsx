@@ -1,24 +1,23 @@
 import React, { useRef, useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from 'contexts/AuthProvider'
 import './Login.scss'
 
-export default function Login() {
+export default function ForgotPassword() {
   const emailRef = useRef()
-  const { resetPassword } = useAuth()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const { requestResetPassword } = useAuth()
+  let navigate = useNavigate()
 
   async function handleSubmit() {
     try {
       setError('')
       setLoading(true)
-      await resetPassword(emailRef.current.value)
-      setError(
-        'An email sent to your email address. Please check your email for further instructions.',
-      )
+      await requestResetPassword(emailRef.current.value)
+      navigate('/reset-password')
     } catch (error) {
-      setError('Failed to Reset password ' + error)
+      setError('Failed to Reset password: ' + error.response.data.message)
     }
     setLoading(false)
   }
@@ -44,7 +43,7 @@ export default function Login() {
 
           <div className="link sign-up">
             Don't have an account?
-            <NavLink to="/register">Sign up</NavLink>
+            <Link to="/register">Sign up</Link>
           </div>
         </div>
       </div>

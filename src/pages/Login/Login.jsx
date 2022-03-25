@@ -57,8 +57,10 @@ export default function Login() {
 
   useEffect(() => {
     const msg = localStorage.getItem('msg')
-    if (msg) setError(msg)
-    localStorage.removeItem('msg')
+    if (msg) {
+      setError(msg)
+      localStorage.removeItem('msg')
+    }
   }, [])
 
   return (
