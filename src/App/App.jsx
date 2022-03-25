@@ -12,6 +12,7 @@ import Login from 'pages/Login/Login'
 import Register from 'pages/Login/Register'
 import EmailVerification from 'pages/Login/EmailVerification'
 import ForgotPassword from 'pages/Login/ForgotPassword'
+import ResetPassword from 'pages/Login/ResetPassword'
 import NotFound from 'pages/NotFound/NotFound'
 import Profile from 'pages/Profile/Profile'
 import Statistics from 'pages/Statistics/Statistics'
@@ -49,6 +50,7 @@ export default function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/verify-email" element={<EmailVerification />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route
               path="/"
               element={
