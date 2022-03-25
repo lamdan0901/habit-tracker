@@ -58,9 +58,16 @@ export function AuthProvider({ children }) {
     }
   }
 
-  // function resetPassword(email) {}
+  async function resetPassword(email) {
+    try {
+      await axiosClient.post(`${basePath}/reset-password`, email)
+      localStorage.setItem('email', email)
+    } catch (err) {
+      throw err
+    }
+  }
 
-  // function updatePassword(newPassword) {}
+  function updatePassword(code, newPassword) {}
 
   function sign_Out() {
     TokenService.removeToken()
@@ -84,8 +91,8 @@ export function AuthProvider({ children }) {
     verifyUserInfo,
     sendVerificationCode,
     setCurrentUser,
-    // resetPassword,
-    // updatePassword,
+    resetPassword,
+    updatePassword,
     sign_Out,
   }
 
