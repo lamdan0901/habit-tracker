@@ -53,10 +53,11 @@ axiosClient.interceptors.response.use(
       // * Refresh token expired
       if (
         error.response.status === 400 &&
-        (error.response.data.message === 'Invalid refresh token.' 
-		|| error.response.message === 'Invalid refresh token.') &&
+        (error.response.data.message === 'Invalid refresh token.' ||
+          error.response.message === 'Invalid refresh token.') &&
         !originalConfig._retry
       ) {
+        console.log(error.response)
         console.error('Refresh token expired')
         localStorage.setItem('msg', 'Your session has expired. Please login again.')
         TokenService.removeToken()
