@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
       const email = localStorage.getItem('email')
       await axiosClient.post(`${basePath}/verify-token`, { email, code })
 
-      localStorage.setItem('msg', "Congrats! You've successfully verified your email address.")
+      localStorage.setItem('msg', "Congrats! You've successfully verified your email address")
       localStorage.removeItem('email')
     } catch (err) {
       throw err
@@ -58,16 +58,34 @@ export function AuthProvider({ children }) {
     }
   }
 
-  async function resetPassword(email) {
+  async function requestResetPassword(email) {
     try {
-      await axiosClient.post(`${basePath}/reset-password`, email)
+      await axiosClient.post(`${basePath}/forgot-password`, { email })
       localStorage.setItem('email', email)
+      localStorage.setItem(
+        'msg',
+        `Verification code's been sent to your email. 
+        Input it here and type your new password`,
+      )
     } catch (err) {
       throw err
     }
   }
 
-  function updatePassword(code, newPassword) {}
+  async function resetPassword(code, newPassword) {
+    try {
+      const email = localStorage.getItem('email')
+      await axiosClient.post(`${basePath}/reset-password`, {
+        email,
+        code,
+        newPassword,
+      })
+      localStorage.removeItem('email')
+      localStorage.setItem('msg', 'Congrats! Your password has been reset successfully')
+    } catch (err) {
+      throw err
+    }
+  }
 
   function sign_Out() {
     TokenService.removeToken()
@@ -91,8 +109,8 @@ export function AuthProvider({ children }) {
     verifyUserInfo,
     sendVerificationCode,
     setCurrentUser,
+    requestResetPassword,
     resetPassword,
-    updatePassword,
     sign_Out,
   }
 
