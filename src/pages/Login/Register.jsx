@@ -56,8 +56,8 @@ export default function Register() {
       setError('Invalid full name')
       return false
     }
-    if (!isLength(passwordRef.current.value, { min: 6 })) {
-      setError('Password must be at least 6 characters')
+    if (!isLength(passwordRef.current.value, { min: 8 })) {
+      setError('Password must be at least 8 characters')
       return false
     }
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
