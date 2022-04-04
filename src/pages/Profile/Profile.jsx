@@ -1,10 +1,11 @@
+/* eslint-disable no-unused-vars */
 import React, { useRef, useState } from 'react'
 // import { useNavigate } from 'react-router-dom'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthProvider'
 import '../Login/Login.scss'
 
-export default function Login() {
+export default function Profile() {
   // let navigate = useNavigate()
 
   const emailRef = useRef()
@@ -47,7 +48,9 @@ export default function Login() {
   return (
     <div className="login-container">
       <div className="login">
-        <div className="logo"></div>
+        <h1>Profile</h1>
+        <p>Coming soon...</p>
+        {/* <div className="logo"></div>
         <div className="title">Update Profile</div>
         <div className="sub-title">{error !== '' && error}</div>
         <input
@@ -116,7 +119,7 @@ export default function Login() {
           <div className="link sign-up">
             <NavLink to="/">Cancel</NavLink>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   )

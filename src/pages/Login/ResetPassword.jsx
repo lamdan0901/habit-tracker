@@ -18,7 +18,7 @@ export default function ResetPassword() {
       await resetPassword(codeRef.current.value, newPasswordRef.current.value)
       navigate('/login')
     } catch (error) {
-      setError('Failed to Reset password: ' + error.response.data.message)
+      setError('Failed to Reset password. ' + error?.response?.data?.message)
     }
     setLoading(false)
   }
@@ -40,8 +40,8 @@ export default function ResetPassword() {
 
         <div className="fields">
           <div className="username">
-            <svg className="svg-icon" viewBox="0 0 20 20">
-              <path d="M12.075,10.812c1.358-0.853,2.242-2.507,2.242-4.037c0-2.181-1.795-4.618-4.198-4.618S5.921,4.594,5.921,6.775c0,1.53,0.884,3.185,2.242,4.037c-3.222,0.865-5.6,3.807-5.6,7.298c0,0.23,0.189,0.42,0.42,0.42h14.273c0.23,0,0.42-0.189,0.42-0.42C17.676,14.619,15.297,11.677,12.075,10.812 M6.761,6.775c0-2.162,1.773-3.778,3.358-3.778s3.359,1.616,3.359,3.778c0,2.162-1.774,3.778-3.359,3.778S6.761,8.937,6.761,6.775 M3.415,17.69c0.218-3.51,3.142-6.297,6.704-6.297c3.562,0,6.486,2.787,6.705,6.297H3.415z"></path>
+            <svg class="svg-icon" viewBox="0 0 20 20">
+              <path d="M13.372,1.781H6.628c-0.696,0-1.265,0.569-1.265,1.265v13.91c0,0.695,0.569,1.265,1.265,1.265h6.744c0.695,0,1.265-0.569,1.265-1.265V3.045C14.637,2.35,14.067,1.781,13.372,1.781 M13.794,16.955c0,0.228-0.194,0.421-0.422,0.421H6.628c-0.228,0-0.421-0.193-0.421-0.421v-0.843h7.587V16.955z M13.794,15.269H6.207V4.731h7.587V15.269z M13.794,3.888H6.207V3.045c0-0.228,0.194-0.421,0.421-0.421h6.744c0.228,0,0.422,0.194,0.422,0.421V3.888z"></path>
             </svg>
             <input type="number" ref={codeRef} placeholder="code" className="user-input" />
           </div>

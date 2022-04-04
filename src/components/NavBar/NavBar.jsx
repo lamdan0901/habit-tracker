@@ -11,7 +11,7 @@ import './NavBar.scss'
 
 export default function NavBar() {
   const clockState = useClockState()
-  const { sign_Out, currentUser } = useAuth()
+  const { sign_Out, userState } = useAuth()
   const { buttonProps, itemProps, isOpen } = useDropdownMenu(3) //3 is the number of items in the dropdown menu
 
   return (
@@ -20,7 +20,7 @@ export default function NavBar() {
 
       <div {...buttonProps} className="user-info">
         {/* <img src={userAvatar} alt="user-avatar" className="user-avatar" /> */}
-        <div className="user-name">{currentUser}</div>
+        <div className="user-name">{userState}</div>
       </div>
 
       <div className={isOpen ? 'visible' : ''} role="menu">

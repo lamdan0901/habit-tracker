@@ -3,7 +3,6 @@
 
 .login-container {
   width: 100vw;
-  overflow: hidden;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -13,9 +12,9 @@
 }
 
 .login {
-  margin: 18px 0;
+  margin: 18px 10px;
   width: 430px;
-  height: 700px;
+  min-height: 700px;
   padding: 30px;
   border-radius: 40px;
   background-color: #ecf0f3;
@@ -118,13 +117,14 @@
       }
     }
 
+    .utilities {
+      display: flex;
+      justify-content: space-between;
+    }
+
     .link {
       text-align: center;
       color: #444;
-
-      &.forgot-pass {
-        float: right;
-      }
 
       &.sign-up {
         margin-top: 20px;
@@ -140,5 +140,17 @@
         }
       }
     }
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .utilities {
+    flex-direction: column;
+    align-items: flex-end;
+    margin-bottom: 15px;
+  }
+
+  input {
+    max-width: 150px;
   }
 }

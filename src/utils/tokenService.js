@@ -14,11 +14,6 @@ class TokenService {
     localStorage.setItem('accessToken', res.accessToken)
     localStorage.setItem('refreshToken', res.refreshToken)
   }
-  removeToken() {
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
-    localStorage.removeItem('username')
-  }
 }
 
 export default new TokenService()

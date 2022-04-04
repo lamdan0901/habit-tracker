@@ -1,33 +1,51 @@
-import React, { useContext, useEffect, useState } from 'react'
-import TokenService from 'utils/tokenService'
+import React, { useReducer, createContext, useContext, useEffect, useState } from 'react'
 import axiosClient from '../utils/axiosClient'
+import TokenService from 'utils/tokenService'
+import { useNavigate } from 'react-router-dom'
+import { authReducer } from '../reducers/authReducer'
+import * as types from './types'
 
 const basePath = '/auth'
 
-const AuthContext = React.createContext()
-
+const AuthContext = createContext()
 export function useAuth() {
   return useContext(AuthContext)
 }
 
 export function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState()
+  const [userState, dispatch] = useReducer(authReducer, null)
   const [loading, setLoading] = useState(true)
+  let navigate = useNavigate()
 
   async function register(user) {
     try {
       await axiosClient.post(`${basePath}/register`, user)
-      localStorage.setItem('email', user.email)
+      dispatch({ type: types.REGISTER, payload: user })
     } catch (err) {
       throw err
     }
+  }
+
+  async function login(user) {
+    try {
+      const res = await axiosClient.post(`${basePath}/login`, user)
+      dispatch({ type: types.LOGIN, payload: { res, username: user.username } })
+
+      navigate('/')
+    } catch (err) {
+      throw err
+    }
+  }
+
+  function sign_Out() {
+    dispatch({ type: types.LOGOUT, payload: userState })
   }
 
   async function sendVerificationCode() {
     try {
       const email = localStorage.getItem('email')
       const res = await axiosClient.post(`${basePath}/send-token`, { email })
-      return res.message
+      dispatch({ type: types.SEND_VERIFY_EMAIL, payload: res.message })
     } catch (err) {
       throw err
     }
@@ -38,35 +56,16 @@ export function AuthProvider({ children }) {
       const email = localStorage.getItem('email')
       await axiosClient.post(`${basePath}/verify-token`, { email, code })
 
-      localStorage.setItem('msg', "Congrats! You've successfully verified your email address")
-      localStorage.removeItem('email')
+      dispatch({ type: types.VERIFY_USER })
     } catch (err) {
       throw err
     }
   }
 
-  async function login(user) {
-    try {
-      const res = await axiosClient.post(`${basePath}/login`, user)
-      axiosClient.defaults.headers.common['Authorization'] = `Bearer ${res.accessToken}`
-      TokenService.setTokens(res)
-
-      localStorage.setItem('username', user.username)
-      localStorage.removeItem('msg')
-    } catch (err) {
-      throw err
-    }
-  }
-
-  async function requestResetPassword(email) {
+  async function requestPasswordReset(email) {
     try {
       await axiosClient.post(`${basePath}/forgot-password`, { email })
-      localStorage.setItem('email', email)
-      localStorage.setItem(
-        'msg',
-        `Verification code's been sent to your email. 
-        Input it here and type your new password`,
-      )
+      dispatch({ type: types.REQUEST_PASSWORD_RESET, payload: email })
     } catch (err) {
       throw err
     }
@@ -80,38 +79,31 @@ export function AuthProvider({ children }) {
         code,
         newPassword,
       })
-      localStorage.removeItem('email')
-      localStorage.setItem('msg', 'Congrats! Your password has been reset successfully')
+      dispatch({ type: types.RESET_PASSWORD })
     } catch (err) {
       throw err
     }
-  }
-
-  function sign_Out() {
-    TokenService.removeToken()
-    setCurrentUser(null)
   }
 
   useEffect(() => {
     const access_Token = TokenService.getLocalAccessToken()
     if (access_Token) {
       axiosClient.defaults.headers.common['Authorization'] = `Bearer ${access_Token}`
-      setCurrentUser(localStorage.getItem('username'))
+      dispatch({ type: types.SET_USER, payload: localStorage.getItem('username') })
     }
 
     setLoading(false)
   }, [])
 
   const value = {
-    currentUser,
+    userState,
     register,
     login,
+    sign_Out,
     verifyUserInfo,
     sendVerificationCode,
-    setCurrentUser,
-    requestResetPassword,
+    requestPasswordReset,
     resetPassword,
-    sign_Out,
   }
 
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>

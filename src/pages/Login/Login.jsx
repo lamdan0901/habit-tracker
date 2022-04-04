@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import isAlphanumeric from 'validator/lib/isAlphanumeric'
 import isLength from 'validator/lib/isLength'
 import clsx from 'clsx'
-import { useNavigate, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from 'contexts/AuthProvider'
 import './Login.scss'
 
@@ -15,8 +15,7 @@ export default function Login() {
   const usernameRef = useRef()
   const passwordRef = useRef()
 
-  let navigate = useNavigate()
-  const { login, setCurrentUser } = useAuth()
+  const { login } = useAuth()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [isEmailNeedVerifying, setIsEmailNeedVerifying] = useState(false)
@@ -30,17 +29,15 @@ export default function Login() {
           username: usernameRef.current.value,
           password: passwordRef.current.value,
         })
-        setCurrentUser(usernameRef.current.value)
-        navigate('/')
-      }
+      } else setLoading(false)
     } catch (error) {
-      setError('Failed to login: ' + error.response.data.message)
-      if (error.response.data.message === 'Please verify your email.') {
+      setError('Failed to login. ' + error?.response?.data?.message)
+      if (error?.response?.data?.message === 'Please verify your email.') {
         setIsEmailNeedVerifying(true)
       }
       passwordRef.current.value = ''
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   const allFieldsValid = () => {
@@ -48,8 +45,8 @@ export default function Login() {
       setError('Invalid username')
       return false
     }
-    if (!isLength(passwordRef.current.value, { min: 6 })) {
-      setError('Password must be at least 6 characters')
+    if (!isLength(passwordRef.current.value, { min: 8 })) {
+      setError('Password must be at least 8 characters')
       return false
     }
     return true
@@ -96,15 +93,17 @@ export default function Login() {
             />
           </div>
 
-          <div className="pretty p-default p-round p-smooth">
-            <input type="checkbox" defaultChecked={true} />
-            <div className="state p-primary">
-              <label>Remember me</label>
+          <div className="utilities">
+            <div className="pretty p-default p-round p-smooth">
+              <input type="checkbox" defaultChecked={true} />
+              <div className="state p-primary">
+                <label>Remember me</label>
+              </div>
             </div>
-          </div>
 
-          <div className="link forgot-pass">
-            <Link to="/forgot-password">Forgot password?</Link>
+            <div className="link">
+              <Link to="/forgot-password">Forgot password?</Link>
+            </div>
           </div>
 
           <button onClick={handleLogin} className={clsx('signin-btn', loading && 'disabled')}>

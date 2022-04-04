@@ -20,25 +20,25 @@ export default function EmailVerification() {
       await verifyUserInfo(codeRef.current.value)
       navigate('/login')
     } catch (error) {
-      setError('Failed to Verify email: ' + error.response.data.message)
+      setError('Failed to verify email. ' + error?.response?.data?.message)
       setLoading(false)
     }
   }
 
   async function handleResendVerificationCode() {
     try {
-      const msg = await sendVerificationCode()
-      setError(msg)
-    } catch (err) {
-      setError('Failed to Resend verification code: ' + err.response.data.message)
+      await sendVerificationCode()
+      setError('Verification code has been resent to your email')
+    } catch (error) {
+      setError('Failed to resend verification code: ' + error?.response?.data?.message)
     }
   }
 
   useEffect(() => {
     const email = localStorage.getItem('email')
     if (email)
-      setError(`A verification code's been sent to your email.
-              Enter it here to verify your email`)
+      setError(`Verification code has been sent to your email.
+                Enter it here to verify your email`)
   }, [])
 
   return (

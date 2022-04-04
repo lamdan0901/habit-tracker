@@ -24,16 +24,16 @@ export function SidebarProvider({ children }) {
       if (currentClockState !== clockState) {
         setClockState(currentClockState)
       }
-    }, 10000)
+    }, 5000)
     return () => clearInterval(interval)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function formatTime(time) {
-    if (time.slice(0, 1) === '1') {
-      return time.slice(0, 5) + ' ' + time.slice(9, 11)
+    if (time.slice(0, 2) === '10' || time.slice(0, 2) === '11' || time.slice(0, 2) === '12') {
+      return time.slice(0, 5) + ' ' + time.slice(9)
     } else {
-      return '0' + time.slice(0, 4) + ' ' + time.slice(8, 10)
+      return '0' + time.slice(0, 4) + ' ' + time.slice(8)
     }
   }
 
