@@ -18,12 +18,15 @@ export default function Home() {
   let today = new Date().toDateString()
   today = today.slice(0, 3) + ', ' + today.slice(3)
 
+  const fullName = localStorage.getItem('fullName')
+
   const currentHour = parseInt(new Date().toString().slice(16, 18))
-  let greetingText = 'Good morning'
+  let greetingText = 'Good morning, '
   if (currentHour >= 12) {
-    if (currentHour < 18) greetingText = 'Good afternoon'
-    else greetingText = 'Good evening'
+    if (currentHour < 18) greetingText = 'Good afternoon, '
+    else greetingText = 'Good evening, '
   }
+  greetingText += fullName !== null ? fullName + '!' : 'user!'
 
   const [loadingState, setLoadingState] = useState('pending')
 
@@ -99,7 +102,7 @@ export default function Home() {
           console.error(err)
         }),
     )
-    displayNotif(!msg ? 'New habit is added' : msg, notify)
+    displayNotif('Habit is saved', notify)
   }
 
   function handleEditHabit(id, habit) {
@@ -197,7 +200,7 @@ export default function Home() {
           <div className="header">
             <span>
               <h3>{today}</h3>
-              <h2>{greetingText}, Edward!</h2>
+              <h2>{greetingText}</h2>
             </span>
 
             <button

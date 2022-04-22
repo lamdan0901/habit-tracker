@@ -6,6 +6,7 @@ export const authReducer = (state, action) => {
   switch (action.type) {
     case types.REGISTER:
       localStorage.setItem('email', action.payload.email)
+      localStorage.setItem('fullName', action.payload.fullName)
       return state
 
     case types.LOGIN: {
