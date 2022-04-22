@@ -6,6 +6,7 @@ import { BsTrash } from 'react-icons/bs'
 import axiosClient from 'utils/axiosClient'
 import HabitModal from 'components/HabitModal/HabitModal'
 import { useClockState } from 'contexts/SidebarProvider'
+import { sendBrowserNotif } from 'utils/sendBrowserNotif'
 
 import * as habitColor from 'constants/habitColors'
 import aibLogo from '../../assets/img/aib-logo.jpg'
@@ -279,30 +280,6 @@ export default function HabitList(props) {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clockState, props.habitList])
-
-  function sendBrowserNotif(title, body, icon) {
-    if (!('Notification' in window)) {
-      console.warn('Your Browser does not support Chrome Notifications :(')
-    } else if (Notification.permission === 'granted') {
-      new Notification(title, {
-        icon,
-        body,
-      })
-    } else if (Notification.permission !== 'denied') {
-      Notification.requestPermission().then((permission) => {
-        if (permission === 'granted') {
-          new Notification(title, {
-            icon,
-            body,
-          })
-        } else {
-          console.warn(`Failed, Notification Permission is ${Notification.permission}`)
-        }
-      })
-    } else {
-      console.warn(`Failed, Notification Permission is ${Notification.permission}`)
-    }
-  }
 
   return (
     <>
