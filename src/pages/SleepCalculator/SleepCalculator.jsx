@@ -1,14 +1,20 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TextField from '@mui/material/TextField'
+import { toast, cssTransition } from 'react-toastify'
 import StaticTimePicker from '@mui/lab/StaticTimePicker'
 import MobileTimePicker from '@mui/lab/MobileTimePicker'
 
 import MainLayout from 'layouts/MainLayout'
+import { useClockState } from 'contexts/SidebarProvider'
+import { sendBrowserNotif } from 'utils/sendBrowserNotif'
+import aibLogo from '../../assets/img/aib-logo.jpg'
 import './SleepCalculator.scss'
 
 export default function SleepCalculator(props) {
   document.title = 'Sleep Time Calculator'
 
+  const clockState = useClockState()
+  const [notifyTime, setNotifyTime] = useState(null)
   const [resultsShowed, setResultsShowed] = useState(false)
   const [moreInfoShowed, setMoreInfoShowed] = useState(false)
 
@@ -90,6 +96,32 @@ export default function SleepCalculator(props) {
     setCalculatedTime(calSleepTime)
   }
 
+  function handleSetNotifySleepTime(time) {
+    setNotifyTime(time)
+    toast(`✅ Sleep time notification at ${time} saved!`, {
+      position: 'top-right',
+      hideProgressBar: true,
+      closeOnClick: true,
+      progress: undefined,
+      transition: cssTransition({
+        enter: 'animate__animated animate__fadeIn',
+        exit: 'animate__animated animate__fadeOut',
+      }),
+    })
+  }
+
+  useEffect(() => {
+    if (notifyTime) {
+      if (notifyTime.localeCompare(clockState) === 0) {
+        sendBrowserNotif(
+          'Habit Tracker',
+          `Hey! Now is ${clockState}. It's time to sleep.\nHave a good night! 😴😴😴`,
+          aibLogo,
+        )
+      }
+    }
+  }, [clockState, notifyTime])
+
   return (
     <MainLayout>
       <div className={resultsShowed ? 'sleep-container has-overflow' : 'sleep-container'}>
@@ -138,11 +170,19 @@ export default function SleepCalculator(props) {
           <div className="calculated-time">
             <div></div>
 
-            <div className="item">
+            <div
+              className="item"
+              onClick={() => {
+                handleSetNotifySleepTime(`${calculatedTime[0].hour}:${calculatedTime[0].minute}`)
+              }}>
               <h1>{`${calculatedTime[0].hour} : ${calculatedTime[0].minute}`}</h1>
               <p>(3 sleep cycles)</p>
             </div>
-            <div className="item">
+            <div
+              className="item"
+              onClick={() => {
+                handleSetNotifySleepTime(`${calculatedTime[1].hour}:${calculatedTime[1].minute}`)
+              }}>
               <h1>{`${calculatedTime[1].hour} : ${calculatedTime[1].minute}`}</h1>
               <p>(4 sleep cycles)</p>
             </div>
@@ -150,17 +190,29 @@ export default function SleepCalculator(props) {
             <div></div>
             <div></div>
 
-            <div className="item">
+            <div
+              className="item"
+              onClick={() => {
+                handleSetNotifySleepTime(`${calculatedTime[2].hour}:${calculatedTime[2].minute}`)
+              }}>
               <h1>{`${calculatedTime[2].hour} : ${calculatedTime[2].minute}`}</h1>
               <p>(5 sleep cycles)</p>
             </div>
-            <div className="item">
+            <div
+              className="item"
+              onClick={() => {
+                handleSetNotifySleepTime(`${calculatedTime[3].hour}:${calculatedTime[3].minute}`)
+              }}>
               <h1>{`${calculatedTime[3].hour} : ${calculatedTime[3].minute}`}</h1>
               <p>(6 sleep cycles)</p>
             </div>
 
             <div></div>
           </div>
+
+          <p className="reminder-text">
+            Select one of those to set a reminder to fall asleep at that time.
+          </p>
 
           <div className="more-info-wrapper">
             <button
