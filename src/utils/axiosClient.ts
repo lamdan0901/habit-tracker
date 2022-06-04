@@ -4,7 +4,7 @@ import TokenService from './tokenService'
 
 const axiosClient = axios.create({
   // baseURL: import.meta.env.VITE_APP_API_URL,
-  baseURL: process.env.VITE_APP_API_URL,
+  baseURL: process.env.REACT_APP_API_URL,
   headers: {
     'content-type': 'application/json',
   },
