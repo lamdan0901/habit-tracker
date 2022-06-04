@@ -50,7 +50,7 @@ export default function ForgotPassword() {
 
           <div className="link sign-up">
             Don't have an account?
-            <Link to="/register">Sign up</Link>
+            <Link to="/register">Register</Link>
           </div>
         </div>
       </div>

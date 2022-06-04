@@ -1,6 +1,5 @@
 # dependencies
 /node_modules
-/public
 /.pnp
 .pnp.js
 package-lock.json
@@ -8,6 +7,10 @@ package-lock.json
 # production
 /build
 /dist
+vite.config.ts
+favicon.ico
+index.html
+deploy.sh
 
 # misc
 .DS_Store
