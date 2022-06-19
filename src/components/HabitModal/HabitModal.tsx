@@ -58,28 +58,21 @@ export default function HabitModal(props: IHabitModalProps) {
   const [desError, setDesError] = useState('')
 
   function saveHabit() {
-    if (!habit.title) {
-      setDesError('')
-      setTitleError('Title is not left blank!')
-    } else if (!habit.description) {
-      setTitleError('')
-      setDesError('Description is not left blank!')
-    } else if (isHabitNameDuplicated(habit)) setTitleError('Title is duplicated!')
-    else {
-      let newHabit = habit
-      newHabit.reminderTime = formatTime()
+    if (isHabitInputsInvalid()) return
 
-      if (props.isEditMode) {
-        const id = newHabit.id as number
-        delete newHabit.id
-        delete newHabit.performances
+    let newHabit = habit
+    newHabit.reminderTime = formatTime()
 
-        props.onEditHabit(id, newHabit)
-      } else {
-        props.onAddHabit(newHabit, '')
-      }
-      handleCloseModal()
+    if (props.isEditMode) {
+      const id = newHabit.id as number
+      delete newHabit.id
+      delete newHabit.performances
+
+      props.onEditHabit(id, newHabit)
+    } else {
+      props.onAddHabit(newHabit, '')
     }
+    handleCloseModal()
   }
 
   function setTime(date: Date) {
@@ -99,19 +92,6 @@ export default function HabitModal(props: IHabitModalProps) {
     minute = ~~minute >= 10 ? minute : '0' + minute
 
     return hour + ':' + minute
-  }
-
-  const isHabitNameDuplicated = (currentHabit: IHabit) => {
-    let habitTitles
-
-    if (!props.isEditMode) habitTitles = props.habitList.map((habit: IHabit) => habit.title)
-    else
-      habitTitles = props.habitList
-        .filter((habit: IHabit) => habit.title !== initialHabitValues.title)
-        .map((habit: IHabit) => habit.title)
-
-    if (habitTitles.includes(currentHabit.title)) return true
-    return false
   }
 
   function handleChange(e: any) {
@@ -137,6 +117,35 @@ export default function HabitModal(props: IHabitModalProps) {
     setHabit(initialHabitValues)
     setTitleError('')
     setDesError('')
+  }
+
+  const isHabitInputsInvalid = () => {
+    if (!habit.title) {
+      setDesError('')
+      setTitleError('Title is not left blank!')
+      return true
+    } else if (!habit.description) {
+      setTitleError('')
+      setDesError('Description is not left blank!')
+      return true
+    } else if (isHabitNameDuplicated(habit)) {
+      setTitleError('Title is duplicated!')
+      return true
+    }
+    return false
+  }
+
+  const isHabitNameDuplicated = (currentHabit: IHabit) => {
+    let habitTitles
+
+    if (!props.isEditMode) habitTitles = props.habitList.map((habit: IHabit) => habit.title)
+    else
+      habitTitles = props.habitList
+        .filter((habit: IHabit) => habit.title !== initialHabitValues.title)
+        .map((habit: IHabit) => habit.title)
+
+    if (habitTitles.includes(currentHabit.title)) return true
+    return false
   }
 
   return (

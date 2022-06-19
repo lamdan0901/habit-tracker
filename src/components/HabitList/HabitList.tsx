@@ -23,18 +23,6 @@ import aibLogo from '../../assets/img/aib-logo.jpg'
 import './HabitList.scss'
 
 type THabitMainColor = { backgroundColor: string; color: string }
-// type TPerformance = { id: number; time: string; isChecked: boolean; habitId: number }
-
-// interface IHabit {
-//   id: number
-//   title: string
-//   description: string
-//   reminderTime: Date | string
-//   reminderDays: number[]
-//   performances: TPerformance[]
-//   createdAt?: Date
-//   checked?: boolean
-// }
 
 interface IHabitListProps {
   habitList: IHabit[]
@@ -186,12 +174,18 @@ export default function HabitList(props: IHabitListProps) {
     const resizeObserver = new ResizeObserver((entries) => {
       const habitsListElement = entries[0]
 
-      if (habitsListElement.contentRect.width < 530) {
+      if (
+        habitsListElement.contentRect.width < 530 &&
+        habitListStyle.gridTemplateColumns === 'auto auto'
+      ) {
         setHabitListStyle((prevState) => ({
           ...prevState,
           gridTemplateColumns: 'auto',
         }))
-      } else {
+      } else if (
+        habitsListElement.contentRect.width >= 530 &&
+        habitListStyle.gridTemplateColumns === 'auto'
+      ) {
         setHabitListStyle((prevState) => ({
           ...prevState,
           gridTemplateColumns: 'auto auto',
