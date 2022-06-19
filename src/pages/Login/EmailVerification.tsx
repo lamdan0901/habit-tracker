@@ -30,7 +30,13 @@ export default function EmailVerification() {
       await sendVerificationCode()
       setError('Verification code has been resent to your email')
     } catch (error: any) {
-      setError('Failed to resend verification code: ' + error?.response?.data?.message)
+      if (error?.response?.data?.message) {
+        setError('Failed to resend verification code: ' + error?.response?.data?.message)
+      } else {
+        setError(
+          'Failed to resend verification code. Server is busy or under maintenance, please come back in a few hours',
+        )
+      }
     }
   }
 

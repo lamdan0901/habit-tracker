@@ -33,7 +33,13 @@ export default function Login() {
         })
       } else setLoading(false)
     } catch (error: any) {
-      setError('Failed to login. ' + error?.response?.data?.message)
+      if (error?.response?.data?.message) {
+        setError('Failed to login. ' + error?.response?.data?.message)
+      } else {
+        setError(
+          'Failed to login. Server is busy or under maintenance, please come back in a few hours',
+        )
+      }
       if (error?.response?.data?.message === 'Please verify your email.') {
         setIsEmailNeedVerifying(true)
       }

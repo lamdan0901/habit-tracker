@@ -36,7 +36,13 @@ export default function Register() {
         navigate('/verify-email')
       } else setLoading(false)
     } catch (error: any) {
-      setError('Failed to create an account. ' + error?.response?.data?.message)
+      if (error?.response?.data?.message) {
+        setError('Failed to create an account. ' + error?.response?.data?.message)
+      } else {
+        setError(
+          'Failed to create an account. Server is busy or under maintenance, please come back in a few hours',
+        )
+      }
 
       if (passwordRef.current !== undefined && passwordConfirmRef.current !== undefined) {
         passwordRef.current.value = ''

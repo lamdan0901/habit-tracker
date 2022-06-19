@@ -20,7 +20,13 @@ export default function ResetPassword() {
       await resetPassword(codeRef.current?.value, newPasswordRef.current?.value)
       navigate('/login')
     } catch (error: any) {
-      setError('Failed to Reset password. ' + error?.response?.data?.message)
+      if (error?.response?.data?.message) {
+        setError('Failed to Reset password. ' + error?.response?.data?.message)
+      } else {
+        setError(
+          'Failed to Reset password. Server is busy or under maintenance, please come back in a few hours',
+        )
+      }
     }
     setLoading(false)
   }

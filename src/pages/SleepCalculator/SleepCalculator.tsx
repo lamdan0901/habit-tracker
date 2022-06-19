@@ -88,7 +88,7 @@ export default function SleepCalculator({ windowWidth }: { windowWidth: number }
   }
 
   function handleChangeCalculatedTime() {
-    setCalculatedTime(calSleepTime)
+    setCalculatedTime(calSleepTime())
   }
 
   function handleSetNotifySleepTime(time: string) {
@@ -154,7 +154,7 @@ export default function SleepCalculator({ windowWidth }: { windowWidth: number }
           </div>
         </div>
 
-        <div className={clsx('results', (!resultsShowed || notifyTime === '') && 'inactive')}>
+        <div className={clsx('results', !resultsShowed && 'inactive')}>
           <h3>You should try to fall asleep at one of these following times:</h3>
 
           <div className="calculated-time">
