@@ -48,15 +48,16 @@ export default function Login() {
       }
 
       if (passwordRef.current !== undefined) passwordRef.current.value = ''
-      //* another way to check before set: passwordRef.current!.value = '', but this way is risky
-
       setLoading(false)
     }
   }
 
   const allFieldsValid = () => {
-    if (!isAlphanumeric(usernameRef.current!.value)) {
-      setError('Invalid username')
+    if (
+      !isAlphanumeric(usernameRef.current!.value) ||
+      !isLength(usernameRef.current!.value, { min: 6 })
+    ) {
+      setError('Username must be at least 6 characters')
       return false
     }
     if (!isLength(passwordRef.current!.value, { min: 8 })) {
@@ -80,7 +81,7 @@ export default function Login() {
         <div className="logo"></div>
         <h3 className="title">Welcome</h3>
         <div className="sub-title">
-          {error !== '' && error}
+          {error !== '' ? error : ''}
           {isEmailNeedVerifying && (
             <Link to="/verify-email" className="verify-now">
               Verify now

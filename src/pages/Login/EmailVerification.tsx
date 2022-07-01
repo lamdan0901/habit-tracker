@@ -20,6 +20,10 @@ export default function EmailVerification() {
     try {
       setError('')
       setLoading(true)
+      if (!isCodeValid()) {
+        setLoading(false)
+        return
+      }
       await verifyUserInfo(codeRef.current?.value)
       navigate('/login')
     } catch (error: any) {
@@ -43,6 +47,14 @@ export default function EmailVerification() {
     }
   }
 
+  function isCodeValid() {
+    if (codeRef.current?.value.length !== 6) {
+      setError('Your code must have 6 numbers')
+      return false
+    }
+    return true
+  }
+
   useEffect(() => {
     const email = localStorage.getItem('email')
     if (email)
@@ -55,7 +67,7 @@ export default function EmailVerification() {
       <div className="login">
         <div className="logo"></div>
         <div className="title">Verify your email</div>
-        <div className="sub-title">{error !== '' && error}</div>
+        <div className="sub-title">{error !== '' ? error : ''}</div>
 
         <div className="fields">
           <AuthInput

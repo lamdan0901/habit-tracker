@@ -62,12 +62,15 @@ export default function Register() {
       setError('Invalid email')
       return false
     }
-    if (!isAlphanumeric(usernameRef.current!.value)) {
-      setError('Invalid username')
+    if (
+      !isAlphanumeric(usernameRef.current!.value) ||
+      !isLength(usernameRef.current!.value, { min: 6 })
+    ) {
+      setError('Username must be at least 6 characters')
       return false
     }
     if (isEmpty(fullNameRef.current!.value)) {
-      setError('Invalid full name')
+      setError('Full name not left blank')
       return false
     }
     if (!isLength(passwordRef.current!.value, { min: 8 })) {
@@ -90,7 +93,7 @@ export default function Register() {
       <div className="login">
         <div className="logo"></div>
         <div className="title">Register new account</div>
-        <div className="sub-title">{error !== '' && error}</div>
+        <div className="sub-title">{error !== '' ? error : ''}</div>
 
         <div className="fields">
           <AuthInput

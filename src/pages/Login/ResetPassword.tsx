@@ -1,5 +1,6 @@
 import { LegacyRef, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import isLength from 'validator/lib/isLength'
 import AuthInput from './common/AuthInput'
 import { useAuth } from '../../contexts/AuthProvider'
 import { LockIcon, PhoneIcon } from '../../assets/icon'
@@ -20,6 +21,10 @@ export default function ResetPassword() {
     try {
       setError('')
       setLoading(true)
+      if (!allFieldsValid()) {
+        setLoading(false)
+        return
+      }
       await resetPassword(codeRef.current?.value, newPasswordRef.current?.value)
       navigate('/login')
     } catch (error: any) {
@@ -32,6 +37,18 @@ export default function ResetPassword() {
       }
     }
     setLoading(false)
+  }
+
+  const allFieldsValid = () => {
+    if (codeRef.current?.value.length !== 6) {
+      setError('Your code must have 6 numbers')
+      return false
+    }
+    if (!isLength(newPasswordRef.current!.value, { min: 8 })) {
+      setError('Password must be at least 8 characters')
+      return false
+    }
+    return true
   }
 
   useEffect(() => {
@@ -47,7 +64,7 @@ export default function ResetPassword() {
       <div className="login">
         <div className="logo"></div>
         <div className="title">Reset Password</div>
-        <div className="sub-title">{error !== '' && error}</div>
+        <div className="sub-title">{error !== '' ? error : ''}</div>
 
         <div className="fields">
           <AuthInput

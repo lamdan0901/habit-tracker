@@ -32,8 +32,6 @@ interface IHabitModalProps {
 
 export default function HabitModal(props: IHabitModalProps) {
   const now = new Date()
-  let habitReminderTime =
-    now.toString().slice(0, 16) + props.habit.reminderTime + now.toString().slice(21)
 
   const initialHabitValues: IHabit = !props.isEditMode
     ? {
@@ -47,7 +45,9 @@ export default function HabitModal(props: IHabitModalProps) {
         id: props.habit.id,
         title: props.habit.title,
         description: props.habit.description,
-        reminderTime: new Date(habitReminderTime),
+        reminderTime: new Date(
+          now.toString().slice(0, 16) + props.habit.reminderTime + now.toString().slice(21),
+        ),
         reminderDays: props.habit.reminderDays,
         performances: props.habit.performances,
       }

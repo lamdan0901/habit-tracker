@@ -1,5 +1,6 @@
 import { LegacyRef, useRef, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import isEmail from 'validator/lib/isEmail'
 import { useAuth } from '../../contexts/AuthProvider'
 import AuthInput from './common/AuthInput'
 import { MailIcon } from '../../assets/icon'
@@ -19,6 +20,10 @@ export default function ForgotPassword() {
     try {
       setError('')
       setLoading(true)
+      if (!isEmailValid()) {
+        setLoading(false)
+        return
+      }
       await requestPasswordReset(emailRef.current?.value)
       navigate('/reset-password')
     } catch (error: any) {
@@ -29,8 +34,16 @@ export default function ForgotPassword() {
           'Failed to Reset password. Server is busy or under maintenance, please come back in a few hours',
         )
       }
+      setLoading(false)
     }
-    setLoading(false)
+  }
+
+  function isEmailValid() {
+    if (!isEmail(emailRef.current!.value)) {
+      setError('Invalid email')
+      return false
+    }
+    return true
   }
 
   return (
@@ -38,7 +51,7 @@ export default function ForgotPassword() {
       <div className="login">
         <div className="logo"></div>
         <div className="title">Forgot Password</div>
-        <div className="sub-title">{error !== '' && error}</div>
+        <div className="sub-title">{error !== '' ? error : ''}</div>
 
         <div className="fields">
           <AuthInput
