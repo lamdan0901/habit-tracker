@@ -1,16 +1,16 @@
-import { LegacyRef, useRef, useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import './Login.scss'
+
 import clsx from 'clsx'
+import { LegacyRef, useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import isAlphanumeric from 'validator/lib/isAlphanumeric'
 import isEmail from 'validator/lib/isEmail'
 import isEmpty from 'validator/lib/isEmpty'
 import isLength from 'validator/lib/isLength'
-import isAlphanumeric from 'validator/lib/isAlphanumeric'
 
-import AuthInput from './common/AuthInput'
+import { IdentityIcon, LockIcon, MailIcon, PeopleIcon } from '../../assets/icon'
 import { useAuth } from '../../contexts/AuthProvider'
-import { PeopleIcon, LockIcon, MailIcon, IdentityIcon } from '../../assets/icon'
-
-import './Login.scss'
+import AuthInput from './components/AuthInput'
 
 export default function Register() {
   document.title = 'Register - Habit App'
@@ -40,15 +40,15 @@ export default function Register() {
         navigate('/verify-email')
       } else setLoading(false)
     } catch (error: any) {
-      if (error?.response?.data?.message) {
-        setError('Failed to create an account. ' + error?.response?.data?.message)
+      if (error.response.data) {
+        setError('Failed to create an account. ' + error.response.data.message)
       } else {
         setError(
           'Failed to create an account. Server is busy or under maintenance, please come back in a few hours',
         )
       }
 
-      if (passwordRef.current !== undefined && passwordConfirmRef.current !== undefined) {
+      if (passwordRef.current && passwordConfirmRef.current) {
         passwordRef.current.value = ''
         passwordConfirmRef.current.value = ''
       }

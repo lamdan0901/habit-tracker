@@ -2,7 +2,7 @@ import { LegacyRef, useRef, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import isEmail from 'validator/lib/isEmail'
 import { useAuth } from '../../contexts/AuthProvider'
-import AuthInput from './common/AuthInput'
+import AuthInput from './components/AuthInput'
 import { MailIcon } from '../../assets/icon'
 
 import './Login.scss'
@@ -27,8 +27,8 @@ export default function ForgotPassword() {
       await requestPasswordReset(emailRef.current?.value)
       navigate('/reset-password')
     } catch (error: any) {
-      if (error?.response?.data?.message) {
-        setError('Failed to Reset password. ' + error?.response?.data?.message)
+      if (error.response.data) {
+        setError('Failed to Reset password. ' + error.response.data.message)
       } else {
         setError(
           'Failed to Reset password. Server is busy or under maintenance, please come back in a few hours',

@@ -1,8 +1,9 @@
-import { useReducer, createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useReducer, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+import { authReducer } from '../reducers/authReducer'
 import axiosClient from '../utils/axiosClient'
 import TokenService from '../utils/tokenService'
-import { useNavigate } from 'react-router-dom'
-import { authReducer } from '../reducers/authReducer'
 import * as types from './types'
 
 type TUser = {
@@ -20,7 +21,7 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: any) {
-  const [userState, dispatch] = useReducer(authReducer, null)
+  const [username, dispatch] = useReducer(authReducer, null)
   const [loading, setLoading] = useState(true)
   let navigate = useNavigate()
 
@@ -44,7 +45,7 @@ export function AuthProvider({ children }: any) {
   }
 
   function sign_Out() {
-    dispatch({ type: types.LOGOUT, payload: userState })
+    dispatch({ type: types.LOGOUT, payload: username })
   }
 
   async function sendVerificationCode() {
@@ -93,9 +94,9 @@ export function AuthProvider({ children }: any) {
   }
 
   useEffect(() => {
-    const access_Token = TokenService.getLocalAccessToken()
-    if (access_Token) {
-      axiosClient.defaults.headers.common['Authorization'] = `Bearer ${access_Token}`
+    const ACCESS_TOKEN = TokenService.getLocalAccessToken()
+    if (ACCESS_TOKEN) {
+      axiosClient.defaults.headers.common['Authorization'] = `Bearer ${ACCESS_TOKEN}`
       dispatch({ type: types.SET_USER, payload: localStorage.getItem('username') })
     }
 
@@ -103,7 +104,7 @@ export function AuthProvider({ children }: any) {
   }, [])
 
   const value = {
-    userState,
+    username,
     register,
     login,
     sign_Out,

@@ -1,25 +1,7 @@
-import { AppDispatch } from '../redux/store'
 import habitsApi from '../apis/habitsApi'
+import { DeletedHabit, Habit } from '../pages/Home/Home'
+import { AppDispatch } from '../redux/store'
 import * as types from './types'
-
-type TPerformance = { id: number; time: string; isChecked: boolean; habitId: number }
-
-interface IHabit {
-  id: number
-  title: string
-  description: string
-  reminderTime: Date | string
-  reminderDays: number[]
-  performances: TPerformance[]
-  createdAt?: Date
-}
-
-interface IDeletedHabit {
-  title: string
-  description: string
-  reminderTime: Date | string
-  reminderDays: number[]
-}
 
 export const getAllHabits = () => async (dispatch: AppDispatch) => {
   try {
@@ -34,7 +16,7 @@ export const getAllHabits = () => async (dispatch: AppDispatch) => {
   }
 }
 
-export const postHabit = (habit: IHabit | IDeletedHabit) => async (dispatch: AppDispatch) => {
+export const postHabit = (habit: Habit | DeletedHabit) => async (dispatch: AppDispatch) => {
   try {
     const res = await habitsApi.postHabit(habit)
     dispatch({
@@ -46,7 +28,7 @@ export const postHabit = (habit: IHabit | IDeletedHabit) => async (dispatch: App
   }
 }
 
-export const putHabit = (id: number, habit: IHabit) => async (dispatch: AppDispatch) => {
+export const putHabit = (id: number, habit: Habit) => async (dispatch: AppDispatch) => {
   try {
     await habitsApi.putHabit(id, habit)
     dispatch({

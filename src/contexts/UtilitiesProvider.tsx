@@ -44,8 +44,8 @@ export function UtilitiesProvider({ children }: any) {
   }, [clockState, notifyTime])
 
   function formatTime(time: string) {
+    // if hour >= 10
     if (~~time.slice(0, 2) >= 10) {
-      // if hour >= 10
       return time.slice(0, 5) + ' ' + time.slice(9)
     } else {
       return '0' + time.slice(0, 4) + ' ' + time.slice(8)

@@ -11,7 +11,7 @@ import aibLogo from '../../assets/img/aib-logo.jpg'
 import './Searchbox.scss'
 import './Sidebar.scss'
 
-interface IHabit {
+interface Habit {
   id?: number
   title: string
   description: string
@@ -21,24 +21,42 @@ interface IHabit {
   createdAt?: Date
 }
 
-type SidebarProps = {
-  habits: IHabit[]
-  setIsSearching: (isSearching: boolean) => void
-  onSetSearchHabits: (searchHabits: IHabit[]) => void
+interface SidebarProps {
+  habits: Habit[]
+  setIsSearching(isSearching: boolean): void
+  onSetSearchHabits(habits: Habit[]): void
 }
 
-export default function Sidebar(props: SidebarProps) {
+const navLinkItems = [
+  {
+    to: '/',
+    icon: <BsFillHouseDoorFill />,
+    text: 'Home',
+  },
+  {
+    to: '/sleep-calculator',
+    icon: <GiNightSleep />,
+    text: 'Sleep Calculator',
+  },
+  {
+    to: '/statistics',
+    icon: <AiFillPieChart />,
+    text: 'Statistics',
+  },
+]
+
+export default function Sidebar({ habits, setIsSearching, onSetSearchHabits }: SidebarProps) {
   const [sidebarOpen, toggleSidebar]: any = useSidebar()
   const debounced = useDebouncedCallback(handleTextChange, 500)
 
   function handleTextChange(searchTextBox: string) {
     if (searchTextBox) {
-      let filteredHabits = props.habits.filter((habit: IHabit) =>
+      let filteredHabits = habits.filter((habit: Habit) =>
         habit.title.toLowerCase().includes(searchTextBox.toLowerCase()),
       )
-      props.setIsSearching(true)
-      props.onSetSearchHabits(filteredHabits)
-    } else props.setIsSearching(false)
+      setIsSearching(true)
+      onSetSearchHabits(filteredHabits)
+    } else setIsSearching(false)
   }
 
   return (
@@ -71,26 +89,15 @@ export default function Sidebar(props: SidebarProps) {
         />
       </form>
 
-      <NavLink
-        to="/"
-        className={({ isActive }) => (isActive ? 'menu-item item-active' : 'menu-item')}>
-        <BsFillHouseDoorFill />
-        <span className="menu-text">Home</span>
-      </NavLink>
-
-      <NavLink
-        to="/sleep-calculator"
-        className={({ isActive }) => (isActive ? 'menu-item item-active' : 'menu-item')}>
-        <GiNightSleep />
-        <span className="menu-text">Sleep Calculator</span>
-      </NavLink>
-
-      <NavLink
-        to="/statistics"
-        className={({ isActive }) => (isActive ? 'menu-item item-active' : 'menu-item')}>
-        <AiFillPieChart />
-        <span className="menu-text">Statistics</span>
-      </NavLink>
+      {navLinkItems.map((item, index) => (
+        <NavLink
+          key={index}
+          to={item.to}
+          className={({ isActive }) => (isActive ? 'menu-item item-active' : 'menu-item')}>
+          {item.icon}
+          <span className="menu-text">{item.text}</span>
+        </NavLink>
+      ))}
     </div>
   )
 }

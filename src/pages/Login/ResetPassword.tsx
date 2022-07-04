@@ -1,7 +1,7 @@
 import { LegacyRef, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import isLength from 'validator/lib/isLength'
-import AuthInput from './common/AuthInput'
+import AuthInput from './components/AuthInput'
 import { useAuth } from '../../contexts/AuthProvider'
 import { LockIcon, PhoneIcon } from '../../assets/icon'
 
@@ -28,8 +28,8 @@ export default function ResetPassword() {
       await resetPassword(codeRef.current?.value, newPasswordRef.current?.value)
       navigate('/login')
     } catch (error: any) {
-      if (error?.response?.data?.message) {
-        setError('Failed to Reset password. ' + error?.response?.data?.message)
+      if (error.response.data) {
+        setError('Failed to Reset password. ' + error.response.data.message)
       } else {
         setError(
           'Failed to Reset password. Server is busy or under maintenance, please come back in a few hours',

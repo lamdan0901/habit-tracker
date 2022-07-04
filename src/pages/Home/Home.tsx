@@ -1,30 +1,30 @@
-import { useEffect, useState } from 'react'
-import { toast, cssTransition } from 'react-toastify'
-import { Loading } from '@nextui-org/react'
-import { useAppSelector, useAppDispatch } from '../../redux/hooks'
-
-import MainLayout from '../../layouts/MainLayout'
-import HabitList from '../../components/HabitList/HabitList'
-import HabitModal from '../../components/HabitModal/HabitModal'
-import * as actions from '../../actions/habitsActions'
-
-import 'react-toastify/dist/ReactToastify.css'
-import './animate.min.css'
 import './Home.scss'
 
-type TPerformance = { id: number; time: string; isChecked: boolean; habitId: number }
+import { Loading } from '@nextui-org/react'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
-interface IHabit {
-  id: number
+import * as actions from '../../actions/habitsActions'
+import HabitList from '../../components/HabitList/HabitList'
+import HabitModal from '../../components/HabitModal/HabitModal'
+import { useAuth } from '../../contexts/AuthProvider'
+import MainLayout from '../../layouts/MainLayout'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+
+export type Performance = { id: number; time: string; isChecked: boolean; habitId: number }
+
+export interface Habit {
+  id?: number
   title: string
   description: string
   reminderTime: Date | string
   reminderDays: number[]
-  performances: TPerformance[]
+  performances?: Performance[]
   createdAt?: Date
+  checked?: boolean
 }
 
-interface IDeletedHabit {
+export interface DeletedHabit {
   title: string
   description: string
   reminderTime: Date | string
@@ -37,7 +37,18 @@ export default function Home() {
   let today = new Date().toDateString()
   today = today.slice(0, 3) + ', ' + today.slice(3)
 
-  const fullName = localStorage.getItem('fullName')
+  const dispatch = useAppDispatch()
+  const { username }: any = useAuth()
+
+  const [loadingState, setLoadingState] = useState('idle')
+  const [isSearching, setIsSearching] = useState(false)
+
+  const habits: Habit[] = useAppSelector((state) => state.habits)
+  const [habitList, setHabitList] = useState(habits)
+  const [searchHabits, setSearchHabits] = useState(habits)
+  let deletedHabit: DeletedHabit
+
+  const [shouldDisplayAllHabits, setShouldDisplayAllHabits] = useState(false)
 
   const currentHour = parseInt(new Date().toString().slice(16, 18))
   let greetingText = 'Good morning, '
@@ -45,58 +56,42 @@ export default function Home() {
     if (currentHour < 18) greetingText = 'Good afternoon, '
     else greetingText = 'Good evening, '
   }
-  greetingText += fullName !== null ? fullName + '!' : 'user!'
-
-  const [loadingState, setLoadingState] = useState('pending')
-
-  const dispatch = useAppDispatch()
-  const habits: IHabit[] = useAppSelector((state) => state.habits)
-
-  const [isSearching, setIsSearching] = useState(false)
-  const [searchHabits, setSearchHabits] = useState(habits)
-
-  const [displayAllHabits, setDisplayAllHabits] = useState(false)
-  const [habitList, setHabitList] = useState(habits)
-  let deletedHabit: IDeletedHabit
-
-  function handleChangeHabitListDisplay() {
-    if (!displayAllHabits) {
-      setHabitList(habits)
-    } else {
-      const todayHabitList = setTodayHabitList(habits)
-      setHabitList(todayHabitList)
-    }
-  }
+  greetingText += username + '!'
 
   useEffect(() => {
     dispatchHabits('')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  function setTodayHabitList(habits: IHabit[]) {
-    let todayHabitList: IHabit[] = []
-    const thisDay = new Date().getDay()
+  function handleChangeHabitListDisplay() {
+    if (!shouldDisplayAllHabits) {
+      setHabitList(habits)
+    } else {
+      const habitsOfToday = setHabitsOfToday(habits)
+      setHabitList(habitsOfToday)
+    }
+  }
 
-    habits.forEach((habit: IHabit) => {
-      if (habit.reminderDays.includes(thisDay)) {
-        todayHabitList.push(habit)
+  function setHabitsOfToday(habits: Habit[]) {
+    let habitsOfToday: Habit[] = []
+    const today = new Date().getDay()
+
+    habits.forEach((habit: Habit) => {
+      if (habit.reminderDays.includes(today)) {
+        habitsOfToday.push(habit)
       }
     })
-    return todayHabitList
+    return habitsOfToday
   }
 
-  function handleSetSearchHabits(searchHabits: IHabit[]) {
-    setSearchHabits(searchHabits)
-  }
-
-  function dispatchHabits(commandText: string) {
+  async function dispatchHabits(commandText: string) {
     dispatch(actions.getAllHabits())
       // @ts-ignore
-      .then((res: IHabit[]) => {
+      .then((res: Habit[]) => {
         if (commandText === 'display all') {
           setHabitList(res)
         } else {
-          const todayHabitList = setTodayHabitList(res)
+          const todayHabitList = setHabitsOfToday(res)
           setHabitList(todayHabitList)
         }
         setLoadingState('resolved')
@@ -107,13 +102,13 @@ export default function Home() {
       })
   }
 
-  function handleAddHabit(habit: IHabit | IDeletedHabit, msg: string) {
+  function handleAddHabit(habit: Habit | DeletedHabit, msg: string) {
     const notify = new Promise<void>((resolve, reject) =>
       dispatch(actions.postHabit(habit))
         // @ts-ignore
         .then(() => {
           resolve()
-          if (!displayAllHabits) {
+          if (!shouldDisplayAllHabits) {
             dispatchHabits('')
           } else {
             dispatchHabits('display all')
@@ -127,13 +122,13 @@ export default function Home() {
     displayNotif(msg ? msg : 'Habit is saved', notify, '')
   }
 
-  function handleEditHabit(id: number, habit: IHabit) {
+  function handleEditHabit(id: number, habit: Habit) {
     const notify = new Promise<void>((resolve, reject) =>
       dispatch(actions.putHabit(id, habit))
         // @ts-ignore
         .then(() => {
           resolve()
-          if (!displayAllHabits) {
+          if (!shouldDisplayAllHabits) {
             dispatchHabits('')
           } else {
             dispatchHabits('display all')
@@ -148,14 +143,13 @@ export default function Home() {
     displayNotif('Habit is saved', notify, '')
   }
 
-  function handleDeleteHabit(habit: IHabit) {
-    deletedHabit = habit
+  function handleDeleteHabit(habit: Habit) {
     const notify = new Promise<void>((resolve, reject) =>
       dispatch(actions.deleteHabit(habit.id as number))
         // @ts-ignore
         .then(() => {
           resolve()
-          if (!displayAllHabits) {
+          if (!shouldDisplayAllHabits) {
             dispatchHabits('')
           } else {
             dispatchHabits('display all')
@@ -166,6 +160,11 @@ export default function Home() {
           console.error(err)
         }),
     )
+
+    delete habit.id
+    delete habit.performances
+    delete habit.createdAt
+    deletedHabit = habit
     displayNotif('Habit is deleted', notify, 'can undo delete')
   }
 
@@ -192,7 +191,6 @@ export default function Home() {
         hideProgressBar: true,
         closeOnClick: true,
         progress: undefined,
-        transition: bounce,
       },
       error: {
         render() {
@@ -201,21 +199,17 @@ export default function Home() {
         hideProgressBar: true,
         closeOnClick: true,
         progress: undefined,
-        transition: bounce,
       },
     })
   }
-
-  const bounce = cssTransition({
-    enter: 'animate__animated animate__fadeIn',
-    exit: 'animate__animated animate__fadeOut',
-  })
 
   return (
     <MainLayout
       habits={habitList}
       setIsSearching={setIsSearching}
-      onSetSearchHabits={handleSetSearchHabits}>
+      onSetSearchHabits={(habits: Habit[]) => {
+        setSearchHabits(habits)
+      }}>
       {loadingState === 'resolved' ? (
         <div>
           <div className="header">
@@ -227,10 +221,10 @@ export default function Home() {
             <button
               className={habits.length !== 0 ? 'btn show-all-btn' : 'btn show-all-btn disabled'}
               onClick={() => {
-                setDisplayAllHabits(!displayAllHabits)
+                setShouldDisplayAllHabits(!shouldDisplayAllHabits)
                 handleChangeHabitListDisplay()
               }}>
-              {!displayAllHabits ? 'All habits' : "Today's habits"}
+              {!shouldDisplayAllHabits ? 'All habits' : "Today's habits"}
             </button>
 
             <HabitModal

@@ -4,7 +4,7 @@ import isLength from 'validator/lib/isLength'
 import { Link } from 'react-router-dom'
 import clsx from 'clsx'
 
-import AuthInput from './common/AuthInput'
+import AuthInput from './components/AuthInput'
 import { useAuth } from '../../contexts/AuthProvider'
 import { PeopleIcon, LockIcon } from '../../assets/icon'
 
@@ -36,8 +36,8 @@ export default function Login() {
         })
       } else setLoading(false)
     } catch (error: any) {
-      if (error?.response?.data?.message) {
-        setError('Failed to login. ' + error?.response?.data?.message)
+      if (error.response.data) {
+        setError('Failed to login. ' + error.response.data.message)
       } else {
         setError(
           'Failed to login. Server is busy or under maintenance, please come back in a few hours',
@@ -47,7 +47,7 @@ export default function Login() {
         setIsEmailNeedVerifying(true)
       }
 
-      if (passwordRef.current !== undefined) passwordRef.current.value = ''
+      if (passwordRef.current) passwordRef.current.value = ''
       setLoading(false)
     }
   }

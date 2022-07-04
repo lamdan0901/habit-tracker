@@ -1,11 +1,12 @@
+import './Login.scss'
+
+import clsx from 'clsx'
 import { LegacyRef, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import clsx from 'clsx'
-import AuthInput from './common/AuthInput'
-import { useAuth } from '../../contexts/AuthProvider'
-import { PhoneIcon } from '../../assets/icon'
 
-import './Login.scss'
+import { PhoneIcon } from '../../assets/icon'
+import { useAuth } from '../../contexts/AuthProvider'
+import AuthInput from './components/AuthInput'
 
 export default function EmailVerification() {
   document.title = 'Verify your email'
@@ -20,12 +21,10 @@ export default function EmailVerification() {
     try {
       setError('')
       setLoading(true)
-      if (!isCodeValid()) {
-        setLoading(false)
-        return
-      }
-      await verifyUserInfo(codeRef.current?.value)
-      navigate('/login')
+      if (isCodeValid()) {
+        await verifyUserInfo(codeRef.current?.value)
+        navigate('/login')
+      } else setLoading(false)
     } catch (error: any) {
       setError('Failed to verify email. ' + error?.response?.data?.message)
       setLoading(false)
@@ -37,8 +36,8 @@ export default function EmailVerification() {
       await sendVerificationCode()
       setError('Verification code has been resent to your email')
     } catch (error: any) {
-      if (error?.response?.data?.message) {
-        setError('Failed to resend verification code: ' + error?.response?.data?.message)
+      if (error.response.data) {
+        setError('Failed to resend verification code. ' + error.response.data.message)
       } else {
         setError(
           'Failed to resend verification code. Server is busy or under maintenance, please come back in a few hours',

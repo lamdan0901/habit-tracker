@@ -2,7 +2,7 @@ import axiosClient from '../utils/axiosClient'
 import TokenService from '../utils/tokenService'
 import * as types from '../contexts/types'
 
-export const authReducer = (state: any, action: any) => {
+export const authReducer = (state: string, action: any) => {
   switch (action.type) {
     case types.REGISTER:
       localStorage.setItem('email', action.payload.email)

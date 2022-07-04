@@ -1,16 +1,7 @@
 import * as types from '../actions/types'
+import { Habit } from '../pages/Home/Home'
 
-interface IHabit {
-  id?: number
-  title: string
-  description: string
-  reminderTime: Date | string
-  reminderDays: number[]
-  performances?: { time: string; isChecked: boolean }[]
-  createdAt?: Date
-}
-
-const initialState: IHabit[] = []
+const initialState: Habit[] = []
 
 export default function habitsReducer(state = initialState, action: any) {
   switch (action.type) {

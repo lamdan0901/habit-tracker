@@ -1,39 +1,27 @@
-import { useState } from 'react'
-import Modal from 'react-modal'
-import TextField from '@mui/material/TextField'
-import MobileTimePicker from '@mui/lab/MobileTimePicker'
-import DayPicker from './DayPicker/DayPicker'
-
-import 'react-toastify/dist/ReactToastify.css'
 import './HabitModal.scss'
 
-export type TPerformance = { id: number; time: string; isChecked: boolean; habitId: number }
+import MobileTimePicker from '@mui/lab/MobileTimePicker'
+import TextField from '@mui/material/TextField'
+import { useState } from 'react'
+import Modal from 'react-modal'
 
-export interface IHabit {
-  id?: number
-  title: string
-  description: string
-  reminderTime: Date | string
-  reminderDays: number[]
-  performances?: TPerformance[]
-  createdAt?: Date
-  checked?: boolean
-}
+import { Habit } from '../../pages/Home/Home'
+import DayPicker from './DayPicker/DayPicker'
 
-interface IHabitModalProps {
-  habit: IHabit
-  habitList: IHabit[]
+interface HabitModalProps {
+  habit: Habit
+  habitList: Habit[]
   isEditMode?: boolean
   isEditModalOpened: boolean
-  onAddHabit(newHabit: IHabit, msg: string): void
-  onEditHabit(id: number, habit: IHabit): void
+  onAddHabit(newHabit: Habit, msg: string): void
+  onEditHabit(id: number, habit: Habit): void
   onCloseModal(): void
 }
 
-export default function HabitModal(props: IHabitModalProps) {
+export default function HabitModal(props: HabitModalProps) {
   const now = new Date()
 
-  const initialHabitValues: IHabit = !props.isEditMode
+  const initialHabitValues: Habit = !props.isEditMode
     ? {
         title: '',
         description: '',
@@ -66,7 +54,7 @@ export default function HabitModal(props: IHabitModalProps) {
     if (props.isEditMode) {
       const id = newHabit.id as number
       delete newHabit.id
-      delete newHabit.performances
+      delete newHabit?.performances
 
       props.onEditHabit(id, newHabit)
     } else {
@@ -135,14 +123,14 @@ export default function HabitModal(props: IHabitModalProps) {
     return false
   }
 
-  const isHabitNameDuplicated = (currentHabit: IHabit) => {
+  const isHabitNameDuplicated = (currentHabit: Habit) => {
     let habitTitles
 
-    if (!props.isEditMode) habitTitles = props.habitList.map((habit: IHabit) => habit.title)
+    if (!props.isEditMode) habitTitles = props.habitList.map((habit: Habit) => habit.title)
     else
       habitTitles = props.habitList
-        .filter((habit: IHabit) => habit.title !== initialHabitValues.title)
-        .map((habit: IHabit) => habit.title)
+        .filter((habit: Habit) => habit.title !== initialHabitValues.title)
+        .map((habit: Habit) => habit.title)
 
     if (habitTitles.includes(currentHabit.title)) return true
     return false

@@ -15,41 +15,41 @@ import HabitModal from '../../components/HabitModal/HabitModal'
 import { useClockState } from '../../contexts/UtilitiesProvider'
 import axiosClient from '../../utils/axiosClient'
 import { sendBrowserNotif } from '../../utils/sendBrowserNotif'
-import { TPerformance } from '../HabitModal/HabitModal'
-import { IHabit } from '../HabitModal/HabitModal'
 
 import * as habitColor from '../../constants/habitColors'
 import aibLogo from '../../assets/img/aib-logo.jpg'
 import './HabitList.scss'
+import { Habit, Performance } from '../../pages/Home/Home'
 
 type THabitMainColor = { backgroundColor: string; color: string }
 
-interface IHabitListProps {
-  habitList: IHabit[]
+interface HabitListProps {
+  habitList: Habit[]
   onGetHabits(commandText: string): void
-  onEditHabit(id: number, habit: IHabit): void
-  onDeleteHabit(habit: IHabit): void
+  onEditHabit(id: number, habit: Habit): void
+  onDeleteHabit(habit: Habit): void
 }
 
-export default function HabitList(props: IHabitListProps) {
-  const [habitModalOpened, setHabitModalOpened] = useState(false)
-  const [confirmDialogOpened, setConfirmDialogOpened] = useState(false)
-
-  const [currentHabit, setCurrentHabit] = useState<IHabit>()
-  const [tempHabit, setTempHabit] = useState<IHabit>() //habit that is saved before being deleted
+export default function HabitList(props: HabitListProps) {
   const now = new Date()
   const today = now.toISOString().slice(0, 10)
 
-  function handleChooseHabit(habit: IHabit) {
+  const [habitModalOpened, setHabitModalOpened] = useState(false)
+  const [confirmDialogOpened, setConfirmDialogOpened] = useState(false)
+
+  const [currentHabit, setCurrentHabit] = useState<Habit>()
+  const [tempHabit, setTempHabit] = useState<Habit>() //habit that is saved before being deleted
+
+  function handleChooseHabit(habit: Habit) {
     setCurrentHabit(habit)
     setHabitModalOpened(true)
   }
 
   function handleDeleteHabit() {
-    props.onDeleteHabit(tempHabit as IHabit)
+    props.onDeleteHabit(tempHabit as Habit)
   }
 
-  function handleOpenDialog(habit: IHabit) {
+  function handleOpenDialog(habit: Habit) {
     setTempHabit(habit)
     setConfirmDialogOpened(true)
   }
@@ -68,7 +68,7 @@ export default function HabitList(props: IHabitListProps) {
 
   useEffect(() => {
     sortedHabitList.current = props.habitList
-    sortedHabitList.current.sort((habit1: IHabit, habit2: IHabit) => {
+    sortedHabitList.current.sort((habit1: Habit, habit2: Habit) => {
       return habit1.reminderTime > habit2.reminderTime
         ? 1
         : habit2.reminderTime > habit1.reminderTime
@@ -79,18 +79,18 @@ export default function HabitList(props: IHabitListProps) {
 
   //**---- handle update habit checkboxes and habit check----**//
 
-  const habitIds = props.habitList.map((habit: IHabit) => habit.id)
+  const habitIds = props.habitList.map((habit: Habit) => habit.id)
   const [habitsCheck, setHabitsCheck] = useState<number[]>([])
   const [allHabitsCheck, setAllHabitsCheck] = useState(false)
 
   const updateHabitCheckBoxes = useCallback(() => {
     let habitCheckList: number[] = []
 
-    sortedHabitList.current.forEach((habit: IHabit) => {
-      const habitPerformances = habit.performances as TPerformance[]
+    sortedHabitList.current.forEach((habit: Habit) => {
+      const habiPerformances = habit.performances as Performance[]
 
-      for (let i = 0; i < habitPerformances.length; i++) {
-        if (habitPerformances[i].time === today && habitPerformances[i].isChecked === true) {
+      for (let i = 0; i < habiPerformances.length; i++) {
+        if (habiPerformances[i].time === today && habiPerformances[i].isChecked === true) {
           habitCheckList.push(habit.id as number)
           break
         }
@@ -111,17 +111,17 @@ export default function HabitList(props: IHabitListProps) {
     setHabitsCheck(updateHabitCheckBoxes)
   }, [updateHabitCheckBoxes])
 
-  async function handleCheckHabit(habit: IHabit) {
+  async function handleCheckHabit(habit: Habit) {
     if (habit.performances === undefined || habit.id === undefined) {
       return
     }
 
     let inspectId
-    const habitPerformance = habit.performances.find((perf: TPerformance) => perf.time === today)
+    const habiPerformance = habit.performances.find((perf: Performance) => perf.time === today)
 
-    if (habit.performances.length !== 0 && habitPerformance !== undefined) {
-      //* in case habitPerformance is not found, it will be undefined
-      inspectId = habitPerformance.id
+    if (habit.performances.length !== 0 && habiPerformance !== undefined) {
+      //* in case habiPerformance is not found, it will be undefined
+      inspectId = habiPerformance.id
     }
 
     // if performances (inspection list) is not created (performances.length==0), we create by POST request
@@ -141,7 +141,7 @@ export default function HabitList(props: IHabitListProps) {
     } else {
       if (
         habit.performances.length !== 0 &&
-        habit.performances.find((perf: TPerformance) => perf.time === today)
+        habit.performances.find((perf: Performance) => perf.time === today)
       ) {
         await axiosClient.patch(`/inspection/${inspectId}`, {
           time: today,
@@ -162,7 +162,7 @@ export default function HabitList(props: IHabitListProps) {
     }
   }
 
-  //**---- handle change 'gridTemplateColumns' of the habits list according to its width ----**//
+  //**---- handle changet the habits list's grid layout according to its width ----**//
 
   const habitListRef = useRef<HTMLUListElement>()
   const [habitListStyle, setHabitListStyle] = useState({
@@ -197,7 +197,7 @@ export default function HabitList(props: IHabitListProps) {
     return () => {
       resizeObserver.disconnect()
     }
-  }, [habitListRef])
+  }, [habitListRef, habitListStyle.gridTemplateColumns])
 
   //**---- handle display habit color according to clockState and habitTime ----**//
 
@@ -207,10 +207,10 @@ export default function HabitList(props: IHabitListProps) {
   useEffect(() => {
     const currentColorsList: THabitMainColor[] = []
 
-    sortedHabitList.current.forEach((habit: IHabit) => {
+    sortedHabitList.current.forEach((habit: Habit) => {
       if (
         !habit.performances?.find(
-          (perf: TPerformance) => perf.time === today && perf.isChecked === true,
+          (perf: Performance) => perf.time === today && perf.isChecked === true,
         ) ||
         habit.performances.length === 0
       ) {
@@ -278,7 +278,7 @@ export default function HabitList(props: IHabitListProps) {
     return habitTime
   }
 
-  //**---- handle change all done checkbox color ----**//
+  //**---- handle change all-done-checkbox's color ----**//
 
   const [allDoneColor, setAllDoneColor] = useState<THabitMainColor>()
 
@@ -302,11 +302,11 @@ export default function HabitList(props: IHabitListProps) {
   //**---- handle send browser notification ----**//
 
   useEffect(() => {
-    const currentHabitsList = props.habitList.filter((habit: IHabit) =>
+    const currentHabitsList = props.habitList.filter((habit: Habit) =>
       habit.reminderDays.includes(now.getDay()),
     )
 
-    currentHabitsList.forEach((habit: IHabit) => {
+    currentHabitsList.forEach((habit: Habit) => {
       if (!habit.checked) {
         const formattedHabitTime = formatHabitTime(habit.reminderTime as string)
         if (formattedHabitTime.localeCompare(clockState) === 0) {
@@ -323,7 +323,7 @@ export default function HabitList(props: IHabitListProps) {
         <HabitModal
           isEditMode={true}
           isEditModalOpened={habitModalOpened}
-          habit={currentHabit as IHabit}
+          habit={currentHabit as Habit}
           habitList={props.habitList}
           onEditHabit={props.onEditHabit}
           onAddHabit={() => {}}
@@ -347,7 +347,7 @@ export default function HabitList(props: IHabitListProps) {
           ref={habitListRef as LegacyRef<HTMLUListElement>}
           style={habitListStyle}>
           {sortedHabitList.current.length !== 0 ? (
-            props.habitList.map((habit: IHabit, index: number) => (
+            props.habitList.map((habit: Habit, index: number) => (
               <div key={index}>
                 <Checkbox
                   color="success"
@@ -391,31 +391,33 @@ export default function HabitList(props: IHabitListProps) {
         </ul>
       </div>
 
-      <Modal
-        className="confirm-dialog"
-        overlayClassName="confirm-dialog-overlay"
-        isOpen={confirmDialogOpened}
-        onRequestClose={handleCloseConfirmDialog}
-        shouldCloseOnOverlayClick={false}
-        closeTimeoutMS={200}>
-        <div className="confirm-dialog-content">
-          <h3>Delete Habit</h3>
-          <p>Are you sure you want to delete this habit?</p>
-          <div className="delete-btn-group">
-            <button
-              className="btn cancel-btn"
-              onClick={() => {
-                handleDeleteHabit()
-                handleCloseConfirmDialog()
-              }}>
-              DELETE
-            </button>
-            <button className="btn confirm-btn" onClick={handleCloseConfirmDialog}>
-              CANCEL
-            </button>
+      {confirmDialogOpened && (
+        <Modal
+          className="confirm-dialog"
+          overlayClassName="confirm-dialog-overlay"
+          isOpen={confirmDialogOpened}
+          onRequestClose={handleCloseConfirmDialog}
+          shouldCloseOnOverlayClick={false}
+          closeTimeoutMS={200}>
+          <div className="confirm-dialog-content">
+            <h3>Delete Habit</h3>
+            <p>Are you sure you want to delete this habit?</p>
+            <div className="delete-btn-group">
+              <button
+                className="btn cancel-btn"
+                onClick={() => {
+                  handleDeleteHabit()
+                  handleCloseConfirmDialog()
+                }}>
+                DELETE
+              </button>
+              <button className="btn confirm-btn" onClick={handleCloseConfirmDialog}>
+                CANCEL
+              </button>
+            </div>
           </div>
-        </div>
-      </Modal>
+        </Modal>
+      )}
     </>
   )
 }

@@ -1,23 +1,5 @@
+import { DeletedHabit, Habit } from '../pages/Home/Home'
 import axiosClient from '../utils/axiosClient'
-
-type TPerformance = { id: number; time: string; isChecked: boolean; habitId: number }
-
-interface IHabit {
-  id: number
-  title: string
-  description: string
-  reminderTime: Date | string
-  reminderDays: number[]
-  performances: TPerformance[]
-  createdAt?: Date
-}
-
-interface IDeletedHabit {
-  title: string
-  description: string
-  reminderTime: Date | string
-  reminderDays: number[]
-}
 
 const basePath = '/habit'
 
@@ -34,13 +16,13 @@ const habitsApi = {
     })
   },
 
-  postHabit: (params: IHabit | IDeletedHabit) => {
+  postHabit: (params: Habit | DeletedHabit) => {
     return axiosClient.post(basePath, params).catch((error) => {
       throw error.toJSON()
     })
   },
 
-  putHabit: (id: number, params: IHabit) => {
+  putHabit: (id: number, params: Habit) => {
     return axiosClient.patch(`${basePath}/${id}`, params).catch((error) => {
       throw error.toJSON()
     })
