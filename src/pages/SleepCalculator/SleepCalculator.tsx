@@ -104,15 +104,11 @@ export default function SleepCalculator({ windowWidth }: { windowWidth: number }
       hideProgressBar: true,
       closeOnClick: true,
       progress: undefined,
-      transition: cssTransition({
-        enter: 'animate__animated animate__fadeIn',
-        exit: 'animate__animated animate__fadeOut',
-      }),
     })
   }
 
   return (
-    <MainLayout>
+    <MainLayout habits={[]} setIsSearching={() => {}} onSetSearchHabits={() => {}}>
       <div
         className={clsx('sleep-container', (resultsShowed || notifyTime === '') && 'has-overflow')}>
         <div className="sleep-cal">
