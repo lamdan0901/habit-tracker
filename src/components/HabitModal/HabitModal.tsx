@@ -1,7 +1,7 @@
 import './HabitModal.scss'
 
 import MobileTimePicker from '@mui/lab/MobileTimePicker'
-import TextField from '@mui/material/TextField'
+import TextField, { TextFieldProps } from '@mui/material/TextField'
 import { useState } from 'react'
 import Modal from 'react-modal'
 
@@ -193,7 +193,7 @@ export default function HabitModal(props: HabitModalProps) {
                 onChange={(newValue: any) => {
                   setTime(newValue)
                 }}
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params: TextFieldProps) => <TextField {...params} />}
               />
             </div>
 

@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { useState } from 'react'
-import TextField from '@mui/material/TextField'
+import TextField, { TextFieldProps } from '@mui/material/TextField'
 import { toast, cssTransition } from 'react-toastify'
 import StaticTimePicker from '@mui/lab/StaticTimePicker'
 import MobileTimePicker from '@mui/lab/MobileTimePicker'
@@ -124,7 +124,7 @@ export default function SleepCalculator({ windowWidth }: { windowWidth: number }
                 onChange={(newValue: any) => {
                   setTime(newValue)
                 }}
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params: TextFieldProps) => <TextField {...params} />}
               />
             ) : (
               <MobileTimePicker
@@ -135,7 +135,7 @@ export default function SleepCalculator({ windowWidth }: { windowWidth: number }
                 onChange={(newValue: any) => {
                   setTime(newValue)
                 }}
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params: TextFieldProps) => <TextField {...params} />}
               />
             )}
 
