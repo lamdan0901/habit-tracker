@@ -1,4 +1,4 @@
-import { days } from '../../../constants/days'
+import { days } from '../../../constants'
 import { useState } from 'react'
 import './DayPicker.scss'
 

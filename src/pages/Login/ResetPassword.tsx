@@ -66,7 +66,7 @@ export default function ResetPassword() {
         <div className="title">Reset Password</div>
         <div className="sub-title">{error !== '' ? error : ''}</div>
 
-        <div className="fields">
+        <div className="auth-form">
           <AuthInput
             parentClass="username"
             inputClass="user-input"

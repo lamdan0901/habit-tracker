@@ -95,7 +95,7 @@ export default function Register() {
         <div className="title">Register new account</div>
         <div className="sub-title">{error !== '' ? error : ''}</div>
 
-        <div className="fields">
+        <div className="auth-form">
           <AuthInput
             parentClass="username"
             inputClass="user-input"

@@ -65,27 +65,27 @@
   &:nth-child(2),
   &:nth-child(4) {
     & > label {
-      transform: translate(-43px, -2px);
-    }
-  }
-  &:nth-child(7) {
-    & > label {
-      transform: translate(-41px, -2px);
+      transform: translate(-42px, -2px);
     }
   }
   &:nth-child(5) {
     & > label {
-      transform: translate(-42px, -2px);
+      transform: translate(-43px, -2px);
     }
   }
   &:nth-child(6) {
+    & > label {
+      transform: translate(-42px, -2px);
+    }
+  }
+  &:nth-child(7) {
     & > label {
       transform: translate(-38px, -2px);
     }
   }
   &:nth-child(8) {
     & > label {
-      transform: translate(-42px, -2px);
+      transform: translate(-41px, -2px);
     }
   }
 }

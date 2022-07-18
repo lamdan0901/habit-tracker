@@ -2,7 +2,7 @@ import { useState, useLayoutEffect } from 'react'
 import { Provider } from 'react-redux'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
-import store from '../redux/store'
+import { store } from '../redux/store'
 import PrivateRoute from '../utils/PrivateRoute'
 import { useSidebar } from '../contexts/SidebarProvider'
 import { AuthProvider } from '../contexts/AuthProvider'
@@ -15,7 +15,6 @@ import EmailVerification from '../pages/Login/EmailVerification'
 import ForgotPassword from '../pages/Login/ForgotPassword'
 import ResetPassword from '../pages/Login/ResetPassword'
 import NotFound from '../pages/NotFound/NotFound'
-import Profile from '../pages/Profile/Profile'
 import Statistics from '../pages/Statistics/Statistics'
 import SleepCalculator from '../pages/SleepCalculator/SleepCalculator'
 import './App.scss'
@@ -40,7 +39,7 @@ export default function App() {
   }, [windowWidth])
 
   // when the user logs out, we need to clear the redux store?
-  // when a guest visit the website, show homepage but the content is welcome only
+  // when a guest visit the website, show homepage but the content is welcome only?
 
   return (
     <Provider store={store}>
@@ -58,14 +57,6 @@ export default function App() {
                 element={
                   <PrivateRoute>
                     <Home />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/my-profile"
-                element={
-                  <PrivateRoute>
-                    <Profile />
                   </PrivateRoute>
                 }
               />

@@ -6,8 +6,8 @@ import Sidebar from '../components/Sidebar/Sidebar'
 import NavBar from '../components/NavBar/NavBar'
 import 'react-toastify/dist/ReactToastify.css'
 import './MainLayout.scss'
-import { Habit } from '../pages/Home/Home'
 import { Dispatch, SetStateAction } from 'react'
+import { Habit } from '../reducers/habitSlice'
 
 interface MainLayoutProps {
   habits: Habit[]

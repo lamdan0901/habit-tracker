@@ -1,35 +1,32 @@
-import { DeletedHabit, Habit } from '../pages/Home/Home'
+import { habitPath } from '../constants'
+import { DeletedHabit, Habit } from '../reducers/habitSlice'
 import axiosClient from '../utils/axiosClient'
 
-const basePath = '/habit'
+export interface ListResponse<T> {
+  data: T[]
+}
 
 const habitsApi = {
-  getAllHabits: () => {
-    return axiosClient.get(basePath).catch((error) => {
+  getAllHabits(): Promise<ListResponse<Habit>> {
+    return axiosClient.get(habitPath).catch((error) => {
       throw error.toJSON()
     })
   },
 
-  getHabitByID: (id: number) => {
-    return axiosClient.get(`${basePath}/${id}`).catch((error) => {
+  postHabit(habit: Habit | DeletedHabit): Promise<any> {
+    return axiosClient.post(habitPath, habit).catch((error) => {
       throw error.toJSON()
     })
   },
 
-  postHabit: (params: Habit | DeletedHabit) => {
-    return axiosClient.post(basePath, params).catch((error) => {
+  putHabit(id: number, habit: Habit): Promise<any> {
+    return axiosClient.patch(`${habitPath}/${id}`, habit).catch((error) => {
       throw error.toJSON()
     })
   },
 
-  putHabit: (id: number, params: Habit) => {
-    return axiosClient.patch(`${basePath}/${id}`, params).catch((error) => {
-      throw error.toJSON()
-    })
-  },
-
-  deleteHabit: (id: number) => {
-    return axiosClient.delete(`${basePath}/${id}`).catch((error) => {
+  deleteHabit(id: number): Promise<any> {
+    return axiosClient.delete(`${habitPath}/${id}`).catch((error) => {
       throw error.toJSON()
     })
   },
