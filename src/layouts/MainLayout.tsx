@@ -1,5 +1,5 @@
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import LocalizationProvider from '@mui/lab/LocalizationProvider'
+import { LocalizationProvider } from '@mui/x-date-pickers'
 import { ToastContainer } from 'react-toastify'
 
 import Sidebar from '../components/Sidebar/Sidebar'

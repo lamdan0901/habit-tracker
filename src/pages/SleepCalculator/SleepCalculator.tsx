@@ -1,9 +1,9 @@
 import clsx from 'clsx'
 import { useState } from 'react'
 import TextField, { TextFieldProps } from '@mui/material/TextField'
-import { toast, cssTransition } from 'react-toastify'
-import StaticTimePicker from '@mui/lab/StaticTimePicker'
-import MobileTimePicker from '@mui/lab/MobileTimePicker'
+import { toast } from 'react-toastify'
+import { StaticTimePicker } from '@mui/x-date-pickers'
+import { MobileTimePicker } from '@mui/x-date-pickers'
 
 import MainLayout from '../../layouts/MainLayout'
 import { useNotifTime } from '../../contexts/UtilitiesProvider'

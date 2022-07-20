@@ -1,6 +1,6 @@
 import './HabitModal.scss'
 
-import MobileTimePicker from '@mui/lab/MobileTimePicker'
+import { MobileTimePicker } from '@mui/x-date-pickers'
 import TextField, { TextFieldProps } from '@mui/material/TextField'
 import { useState } from 'react'
 import Modal from 'react-modal'
@@ -30,7 +30,7 @@ export default function HabitModal(props: HabitModalProps) {
         reminderTime: new Date(
           now.toString().slice(0, 16) + props.habit.reminderTime + now.toString().slice(21),
         ),
-        reminderDays: props.habit.reminderDays,
+        reminderDays: [...props.habit.reminderDays],
         performances: props.habit.performances,
       }
     : {

@@ -42,6 +42,7 @@
       height: 42px;
       margin-top: 8px;
       transition: all 0.2s;
+      color: #1976d2;
 
       &:hover {
         background-color: rgba(192, 192, 192, 0.3);
@@ -174,9 +175,19 @@
   border-radius: 10px;
 }
 
+// style for Mui Time Picker Dialog wrapper
+.css-xelq0e-MuiPickerStaticWrapper-content {
+  border-radius: 10px !important;
+}
+
 //selected number
 .css-1nql4ji-MuiTypography-root.Mui-selected {
   color: #000 !important;
+}
+
+// hide the buttons below Mui Time Picker Dialog
+.css-hlj6pa-MuiDialogActions-root {
+  display: none !important;
 }
 
 @media screen and (max-height: 530px) {

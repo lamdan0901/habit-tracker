@@ -18,6 +18,7 @@ import {
   updateHabit,
 } from '../../reducers/habitSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { sortHabits } from '../../utils/utilityFunctions'
 
 export default function Home() {
   document.title = 'Home - Habit App'
@@ -75,7 +76,7 @@ export default function Home() {
   function dispatchHabits(commandText: string) {
     dispatch(getHabits())
       .then((actionResult) => {
-        const habits = unwrapResult(actionResult)
+        const habits = sortHabits(unwrapResult(actionResult))
         if (commandText === 'display all') {
           setHabitList(habits)
         } else {
