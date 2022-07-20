@@ -25,6 +25,7 @@ export default function MainLayout({
   return (
     <main>
       <ToastContainer autoClose={2000} pauseOnFocusLoss={false} pauseOnHover />
+      {/* @ts-ignore */}
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <div className="main-layout">
           <Sidebar
