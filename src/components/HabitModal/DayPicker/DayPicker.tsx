@@ -1,4 +1,4 @@
-import { days } from '../../../constants/days'
+import { days } from '../../../constants'
 import { useState } from 'react'
 import './DayPicker.scss'
 
@@ -7,6 +7,8 @@ type TDayPickerProps = {
   daysCheck: number[]
   onDaysCheck: (daysCheck: number[]) => void
 }
+
+const weekDays = 7
 
 export default function DayPicker({ isEditMode, daysCheck, onDaysCheck }: TDayPickerProps) {
   const [allDaysChecked, setAllDaysChecked] = useState(() => {
@@ -36,7 +38,7 @@ export default function DayPicker({ isEditMode, daysCheck, onDaysCheck }: TDayPi
     } else {
       daysCheck.push(day)
       onDaysCheck([...daysCheck])
-      setAllDaysChecked(daysCheck.length === days.length)
+      setAllDaysChecked(daysCheck.length === weekDays)
     }
   }
 

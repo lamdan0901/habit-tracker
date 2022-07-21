@@ -19,6 +19,7 @@ export default function Login() {
 
   const usernameRef = useRef<HTMLInputElement>()
   const passwordRef = useRef<HTMLInputElement>()
+  const keepLoginRef = useRef<HTMLInputElement>()
 
   const { login }: any = useAuth()
   const [loading, setLoading] = useState(false)
@@ -30,21 +31,26 @@ export default function Login() {
       setError('')
       setLoading(true)
       if (allFieldsValid()) {
-        await login({
-          username: usernameRef.current?.value,
-          password: passwordRef.current?.value,
-        })
+        await login(
+          {
+            username: usernameRef.current?.value,
+            password: passwordRef.current?.value,
+          },
+          keepLoginRef.current?.checked,
+        )
       } else setLoading(false)
     } catch (error: any) {
       if (error.response.data) {
-        setError('Failed to login. ' + error.response.data.message)
+        const errorMsg = error.response.data.message
+        if (errorMsg === 'Please verify your email.') {
+          setIsEmailNeedVerifying(true)
+        } else {
+          setError('Failed to login. ' + errorMsg)
+        }
       } else {
         setError(
           'Failed to login. Server is busy or under maintenance, please come back in a few hours',
         )
-      }
-      if (error?.response?.data?.message === 'Please verify your email.') {
-        setIsEmailNeedVerifying(true)
       }
 
       if (passwordRef.current) passwordRef.current.value = ''
@@ -89,7 +95,7 @@ export default function Login() {
           )}
         </div>
 
-        <div className="fields">
+        <div className="auth-form">
           <AuthInput
             parentClass="username"
             inputClass="user-input"
@@ -109,7 +115,11 @@ export default function Login() {
 
           <div className="utilities">
             <div className="pretty p-default p-round p-smooth">
-              <input type="checkbox" defaultChecked={true} />
+              <input
+                type="checkbox"
+                ref={keepLoginRef as LegacyRef<HTMLInputElement>}
+                defaultChecked={true}
+              />
               <div className="state p-primary">
                 <label>Remember me</label>
               </div>

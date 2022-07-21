@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { sendBrowserNotif } from '../utils/sendBrowserNotif'
+import { sendBrowserNotif } from '../utils/utilityFunctions'
 import aibLogo from '../assets/img/aib-logo.jpg'
 
 const TimeContext = React.createContext('')

@@ -10,11 +10,14 @@ export const authReducer = (state: string, action: any) => {
       return state
 
     case types.LOGIN: {
-      const { res, username } = action.payload
+      const { res, username, shouldKeepLogin } = action.payload
       axiosClient.defaults.headers.common['Authorization'] = `Bearer ${res.accessToken}`
-      TokenService.setTokens(res)
       localStorage.setItem('username', username)
       localStorage.removeItem('msg')
+
+      if (shouldKeepLogin) {
+        TokenService.setTokens(res)
+      }
       return username
     }
 

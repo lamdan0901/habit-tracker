@@ -1,20 +1,20 @@
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import LocalizationProvider from '@mui/lab/LocalizationProvider'
+import AdapterDateFns from '@date-io/date-fns'
+import { LocalizationProvider } from '@mui/x-date-pickers'
 import { ToastContainer } from 'react-toastify'
 
 import Sidebar from '../components/Sidebar/Sidebar'
 import NavBar from '../components/NavBar/NavBar'
 import 'react-toastify/dist/ReactToastify.css'
 import './MainLayout.scss'
-import { Habit } from '../pages/Home/Home'
 import { Dispatch, SetStateAction } from 'react'
+import { Habit } from '../reducers/habitSlice'
 
 interface MainLayoutProps {
   habits: Habit[]
   setIsSearching: Dispatch<SetStateAction<boolean>>
   onSetSearchHabits(habits: Habit[]): void
   children: React.ReactNode
-}
+} //
 
 export default function MainLayout({
   habits,
@@ -25,6 +25,7 @@ export default function MainLayout({
   return (
     <main>
       <ToastContainer autoClose={2000} pauseOnFocusLoss={false} pauseOnHover />
+      {/* @ts-ignore */}
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <div className="main-layout">
           <Sidebar

@@ -1,21 +1,21 @@
 import { createContext, useContext, useEffect, useReducer, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { authPath } from '../constants'
 
 import { authReducer } from '../reducers/authReducer'
 import axiosClient from '../utils/axiosClient'
 import TokenService from '../utils/tokenService'
 import * as types from './types'
 
-type TUser = {
+type User = {
   username: string
   password: string
   fullName?: string
   email?: string
 }
 
-const basePath = '/auth'
-
 const AuthContext = createContext(null)
+
 export function useAuth() {
   return useContext(AuthContext)
 }
@@ -25,33 +25,34 @@ export function AuthProvider({ children }: any) {
   const [loading, setLoading] = useState(true)
   let navigate = useNavigate()
 
-  async function register(user: TUser) {
+  async function register(user: User) {
     try {
-      await axiosClient.post(`${basePath}/register`, user)
+      await axiosClient.post(`${authPath}/register`, user)
       dispatch({ type: types.REGISTER, payload: user })
     } catch (err) {
       throw err
     }
   }
 
-  async function login(user: TUser) {
+  async function login(user: User, shouldKeepLogin: boolean) {
     try {
-      const res = await axiosClient.post(`${basePath}/login`, user)
-      dispatch({ type: types.LOGIN, payload: { res, username: user.username } })
+      const res = await axiosClient.post(`${authPath}/login`, user)
+      dispatch({ type: types.LOGIN, payload: { res, username: user.username, shouldKeepLogin } })
       navigate('/')
     } catch (err) {
       throw err
     }
   }
 
-  function sign_Out() {
+  function signOut() {
     dispatch({ type: types.LOGOUT, payload: username })
+    navigate('/login')
   }
 
   async function sendVerificationCode() {
     try {
       const email = localStorage.getItem('email')
-      const res = await axiosClient.post(`${basePath}/send-token`, { email })
+      const res = await axiosClient.post(`${authPath}/send-token`, { email })
       // @ts-ignore
       dispatch({ type: types.SEND_VERIFY_EMAIL, payload: res.message })
     } catch (err) {
@@ -62,7 +63,7 @@ export function AuthProvider({ children }: any) {
   async function verifyUserInfo(code: string) {
     try {
       const email = localStorage.getItem('email')
-      await axiosClient.post(`${basePath}/verify-token`, { email, code })
+      await axiosClient.post(`${authPath}/verify-token`, { email, code })
 
       dispatch({ type: types.VERIFY_USER })
     } catch (err) {
@@ -72,7 +73,7 @@ export function AuthProvider({ children }: any) {
 
   async function requestPasswordReset(email: string) {
     try {
-      await axiosClient.post(`${basePath}/forgot-password`, { email })
+      await axiosClient.post(`${authPath}/forgot-password`, { email })
       dispatch({ type: types.REQUEST_PASSWORD_RESET, payload: email })
     } catch (err) {
       throw err
@@ -82,7 +83,7 @@ export function AuthProvider({ children }: any) {
   async function resetPassword(code: string, newPassword: string) {
     try {
       const email = localStorage.getItem('email')
-      await axiosClient.post(`${basePath}/reset-password`, {
+      await axiosClient.post(`${authPath}/reset-password`, {
         email,
         code,
         newPassword,
@@ -107,7 +108,7 @@ export function AuthProvider({ children }: any) {
     username,
     register,
     login,
-    sign_Out,
+    signOut,
     verifyUserInfo,
     sendVerificationCode,
     requestPasswordReset,

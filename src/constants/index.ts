@@ -10,3 +10,8 @@ export const expirationColor = {
   backgroundColor: '#FE3535',
   color: '#eee',
 }
+
+export const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+export const habitPath = '/habit'
+export const authPath = '/auth'

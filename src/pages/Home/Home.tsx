@@ -1,35 +1,24 @@
 import './Home.scss'
 
 import { Loading } from '@nextui-org/react'
+import { unwrapResult } from '@reduxjs/toolkit'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import * as actions from '../../actions/habitsActions'
 import HabitList from '../../components/HabitList/HabitList'
 import HabitModal from '../../components/HabitModal/HabitModal'
 import { useAuth } from '../../contexts/AuthProvider'
 import MainLayout from '../../layouts/MainLayout'
+import {
+  createHabit,
+  DeletedHabit,
+  deleteHabit,
+  getHabits,
+  Habit,
+  updateHabit,
+} from '../../reducers/habitSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-
-export type Performance = { id: number; time: string; isChecked: boolean; habitId: number }
-
-export interface Habit {
-  id?: number
-  title: string
-  description: string
-  reminderTime: Date | string
-  reminderDays: number[]
-  performances?: Performance[]
-  createdAt?: Date
-  checked?: boolean
-}
-
-export interface DeletedHabit {
-  title: string
-  description: string
-  reminderTime: Date | string
-  reminderDays: number[]
-}
+import { sortHabits } from '../../utils/utilityFunctions'
 
 export default function Home() {
   document.title = 'Home - Habit App'
@@ -43,7 +32,7 @@ export default function Home() {
   const [loadingState, setLoadingState] = useState('idle')
   const [isSearching, setIsSearching] = useState(false)
 
-  const habits: Habit[] = useAppSelector((state) => state.habits)
+  const habits: Habit[] = useAppSelector((state) => state.habits.value)
   const [habitList, setHabitList] = useState(habits)
   const [searchHabits, setSearchHabits] = useState(habits)
   let deletedHabit: DeletedHabit
@@ -84,28 +73,28 @@ export default function Home() {
     return habitsOfToday
   }
 
-  async function dispatchHabits(commandText: string) {
-    dispatch(actions.getAllHabits())
-      // @ts-ignore
-      .then((res: Habit[]) => {
+  function dispatchHabits(commandText: string) {
+    dispatch(getHabits())
+      .then((actionResult) => {
+        const habits = sortHabits(unwrapResult(actionResult))
         if (commandText === 'display all') {
-          setHabitList(res)
+          setHabitList(habits)
         } else {
-          const todayHabitList = setHabitsOfToday(res)
+          const todayHabitList = setHabitsOfToday(habits)
           setHabitList(todayHabitList)
         }
+        setShouldDisplayAllHabits(false)
         setLoadingState('resolved')
       })
       .catch((err: any) => {
         setLoadingState('rejected')
-        console.error(err)
+        console.error(err.message)
       })
   }
 
   function handleAddHabit(habit: Habit | DeletedHabit, msg: string) {
     const notify = new Promise<void>((resolve, reject) =>
-      dispatch(actions.postHabit(habit))
-        // @ts-ignore
+      dispatch(createHabit(habit))
         .then(() => {
           resolve()
           if (!shouldDisplayAllHabits) {
@@ -116,7 +105,7 @@ export default function Home() {
         })
         .catch((err: any) => {
           reject()
-          console.error(err)
+          console.error(err.message)
         }),
     )
     displayNotif(msg ? msg : 'Habit is saved', notify, '')
@@ -124,8 +113,7 @@ export default function Home() {
 
   function handleEditHabit(id: number, habit: Habit) {
     const notify = new Promise<void>((resolve, reject) =>
-      dispatch(actions.putHabit(id, habit))
-        // @ts-ignore
+      dispatch(updateHabit({ id, habit }))
         .then(() => {
           resolve()
           if (!shouldDisplayAllHabits) {
@@ -136,17 +124,15 @@ export default function Home() {
         })
         .catch((err: any) => {
           reject()
-          console.error(err)
+          console.error(err.message)
         }),
     )
-
     displayNotif('Habit is saved', notify, '')
   }
 
   function handleDeleteHabit(habit: Habit) {
     const notify = new Promise<void>((resolve, reject) =>
-      dispatch(actions.deleteHabit(habit.id as number))
-        // @ts-ignore
+      dispatch(deleteHabit(habit.id as number))
         .then(() => {
           resolve()
           if (!shouldDisplayAllHabits) {
@@ -157,14 +143,16 @@ export default function Home() {
         })
         .catch((err: any) => {
           reject()
-          console.error(err)
+          console.error(err.message)
         }),
     )
 
-    delete habit.id
-    delete habit.performances
-    delete habit.createdAt
-    deletedHabit = habit
+    deletedHabit = {
+      title: habit.title,
+      description: habit.description,
+      reminderTime: habit.reminderTime,
+      reminderDays: habit.reminderDays,
+    }
     displayNotif('Habit is deleted', notify, 'can undo delete')
   }
 

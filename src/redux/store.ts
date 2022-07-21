@@ -1,11 +1,21 @@
-import { createStore, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
-import reducer from '../reducers/index'
+import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit'
+import habitsReducer from '../reducers/habitSlice'
 
-const initialState = {}
+export const store = configureStore({
+  reducer: {
+    habits: habitsReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+})
 
-const store = createStore(reducer, initialState, applyMiddleware(thunk))
-
-export default store
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>

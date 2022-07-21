@@ -1,27 +1,27 @@
-import {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  useLayoutEffect,
-  MutableRefObject,
-  LegacyRef,
-} from 'react'
-import Modal from 'react-modal'
-import { BsTrash } from 'react-icons/bs'
-import { Checkbox } from '@nextui-org/react'
-
-import HabitModal from '../../components/HabitModal/HabitModal'
-import { useClockState } from '../../contexts/UtilitiesProvider'
-import axiosClient from '../../utils/axiosClient'
-import { sendBrowserNotif } from '../../utils/sendBrowserNotif'
-
-import * as habitColor from '../../constants/habitColors'
-import aibLogo from '../../assets/img/aib-logo.jpg'
 import './HabitList.scss'
-import { Habit, Performance } from '../../pages/Home/Home'
 
-type THabitMainColor = { backgroundColor: string; color: string }
+import { Checkbox } from '@nextui-org/react'
+import {
+  LegacyRef,
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
+import { BsTrash } from 'react-icons/bs'
+import Modal from 'react-modal'
+
+import aibLogo from '../../assets/img/aib-logo.jpg'
+import HabitModal from '../../components/HabitModal/HabitModal'
+import { normalColor, checkColor, expirationColor } from '../../constants'
+import { useClockState } from '../../contexts/UtilitiesProvider'
+import { Habit, Performance } from '../../reducers/habitSlice'
+import axiosClient from '../../utils/axiosClient'
+import { sendBrowserNotif } from '../../utils/utilityFunctions'
+
+type HabitMainColor = { backgroundColor: string; color: string }
 
 interface HabitListProps {
   habitList: Habit[]
@@ -30,7 +30,12 @@ interface HabitListProps {
   onDeleteHabit(habit: Habit): void
 }
 
-export default function HabitList(props: HabitListProps) {
+export default function HabitList({
+  habitList,
+  onGetHabits,
+  onEditHabit,
+  onDeleteHabit,
+}: HabitListProps) {
   const now = new Date()
   const today = now.toISOString().slice(0, 10)
 
@@ -46,7 +51,7 @@ export default function HabitList(props: HabitListProps) {
   }
 
   function handleDeleteHabit() {
-    props.onDeleteHabit(tempHabit as Habit)
+    onDeleteHabit(tempHabit as Habit)
   }
 
   function handleOpenDialog(habit: Habit) {
@@ -62,72 +67,52 @@ export default function HabitList(props: HabitListProps) {
     setHabitModalOpened(false)
   }
 
-  //**---- handle sort habits by habit.reminderTime ----**/
-  // we can give more options to sort by name, by being checked or not later
-  let sortedHabitList = useRef(props.habitList)
-
-  useEffect(() => {
-    sortedHabitList.current = props.habitList
-    sortedHabitList.current.sort((habit1: Habit, habit2: Habit) => {
-      return habit1.reminderTime > habit2.reminderTime
-        ? 1
-        : habit2.reminderTime > habit1.reminderTime
-        ? -1
-        : 0
-    })
-  }, [props.habitList])
-
   //**---- handle update habit checkboxes and habit check----**//
 
-  const habitIds = props.habitList.map((habit: Habit) => habit.id)
+  const habitIds = habitList.map((habit: Habit) => habit.id)
   const [habitsCheck, setHabitsCheck] = useState<number[]>([])
   const [allHabitsCheck, setAllHabitsCheck] = useState(false)
 
   const updateHabitCheckBoxes = useCallback(() => {
     let habitCheckList: number[] = []
 
-    sortedHabitList.current.forEach((habit: Habit) => {
-      const habiPerformances = habit.performances as Performance[]
+    habitList.forEach((habit: Habit) => {
+      const habitPerformances = habit.performances as Performance[]
 
-      for (let i = 0; i < habiPerformances.length; i++) {
-        if (habiPerformances[i].time === today && habiPerformances[i].isChecked === true) {
+      for (const perf of habitPerformances) {
+        if (perf.time === today && perf.isChecked === true) {
           habitCheckList.push(habit.id as number)
           break
         }
       }
     })
 
-    setAllHabitsCheck(() =>
-      habitCheckList.length === props.habitList.length && props.habitList.length !== 0
-        ? true
-        : false,
-    )
+    setAllHabitsCheck(() => habitList.length !== 0 && habitCheckList.length === habitList.length)
 
     return habitCheckList
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortedHabitList])
+  }, [habitList])
 
   useEffect(() => {
     setHabitsCheck(updateHabitCheckBoxes)
   }, [updateHabitCheckBoxes])
 
   async function handleCheckHabit(habit: Habit) {
-    if (habit.performances === undefined || habit.id === undefined) {
+    if (!habit.performances || !habit.id) {
       return
     }
 
     let inspectId
-    const habiPerformance = habit.performances.find((perf: Performance) => perf.time === today)
+    const habitPerformance = habit.performances.find((perf: Performance) => perf.time === today)
 
-    if (habit.performances.length !== 0 && habiPerformance !== undefined) {
-      //* in case habiPerformance is not found, it will be undefined
-      inspectId = habiPerformance.id
+    if (habitPerformance && habit.performances.length !== 0) {
+      inspectId = habitPerformance.id
     }
 
-    // if performances (inspection list) is not created (performances.length==0), we create by POST request
-    // if performances is created (performances.length>0):
-    // + if today is not in performances, we create by POST request
-    // + else we update by PATCH request
+    //* if performances (inspection list) is not created (performances.length==0), we make a POST request
+    //* if performances is created (performances.length>0):
+    //***  if today is not in performances, we make a POST request
+    //***  else we update by making a PATCH request
 
     if (habitsCheck.includes(habit.id)) {
       await axiosClient.patch(`/inspection/${inspectId}`, {
@@ -137,7 +122,7 @@ export default function HabitList(props: HabitListProps) {
 
       setHabitsCheck(habitsCheck.filter((checked_ID) => checked_ID !== habit.id))
       setAllHabitsCheck(false)
-      props.onGetHabits('')
+      onGetHabits('')
     } else {
       if (
         habit.performances.length !== 0 &&
@@ -158,7 +143,7 @@ export default function HabitList(props: HabitListProps) {
       habitsCheck.push(habit.id)
       setHabitsCheck([...habitsCheck])
       setAllHabitsCheck(habitsCheck.length === habitIds.length)
-      props.onGetHabits('')
+      onGetHabits('')
     }
   }
 
@@ -197,17 +182,17 @@ export default function HabitList(props: HabitListProps) {
     return () => {
       resizeObserver.disconnect()
     }
-  }, [habitListRef, habitListStyle.gridTemplateColumns])
+  }, [habitListRef, habitListStyle])
 
   //**---- handle display habit color according to clockState and habitTime ----**//
 
   const clockState: string = useClockState()
-  const [habitMainColors, setHabitMainColors] = useState<THabitMainColor[]>([])
+  const [habitMainColors, setHabitMainColors] = useState<HabitMainColor[]>([])
 
   useEffect(() => {
-    const currentColorsList: THabitMainColor[] = []
+    const currentColorsList: HabitMainColor[] = []
 
-    sortedHabitList.current.forEach((habit: Habit) => {
+    habitList.forEach((habit: Habit) => {
       if (
         !habit.performances?.find(
           (perf: Performance) => perf.time === today && perf.isChecked === true,
@@ -227,37 +212,37 @@ export default function HabitList(props: HabitListProps) {
 
           if (formattedTimeHour === clockStateHour) {
             if (formattedTimeMinute < clockStateMinute) {
-              currentColorsList.push(habitColor.expirationColor)
+              currentColorsList.push(expirationColor)
             } else {
-              currentColorsList.push(habitColor.normalColor)
+              currentColorsList.push(normalColor)
             }
           } else if (formattedTimeHour !== 12 && clockStateHour !== 12) {
             if (formattedTimeHour < clockStateHour) {
-              currentColorsList.push(habitColor.expirationColor)
+              currentColorsList.push(expirationColor)
             } else {
-              currentColorsList.push(habitColor.normalColor)
+              currentColorsList.push(normalColor)
             }
           } else if (formattedTimeHour === 12) {
-            currentColorsList.push(habitColor.expirationColor)
+            currentColorsList.push(expirationColor)
           } else {
-            currentColorsList.push(habitColor.normalColor)
+            currentColorsList.push(normalColor)
           }
         }
         //PM-AM
         else if (am_pmCompareRes === 1) {
-          currentColorsList.push(habitColor.expirationColor)
+          currentColorsList.push(expirationColor)
         }
         //AM-PM
         else {
-          currentColorsList.push(habitColor.normalColor)
+          currentColorsList.push(normalColor)
         }
       } else {
-        currentColorsList.push(habitColor.checkColor)
+        currentColorsList.push(checkColor)
       }
     })
 
     setHabitMainColors(currentColorsList)
-  }, [clockState, props.habitList, today])
+  }, [clockState, habitList, today])
 
   function formatHabitTime(habitTime: string) {
     const hour = ~~habitTime.slice(0, 2)
@@ -280,29 +265,26 @@ export default function HabitList(props: HabitListProps) {
 
   //**---- handle change all-done-checkbox's color ----**//
 
-  const [allDoneColor, setAllDoneColor] = useState<THabitMainColor>()
+  const [allDoneColor, setAllDoneColor] = useState<HabitMainColor>()
 
   useLayoutEffect(() => {
     setAllDoneColor(() => {
       if (habitsCheck.length !== 0) {
-        return allHabitsCheck ? habitColor.checkColor : habitColor.normalColor
+        return allHabitsCheck ? checkColor : normalColor
       }
 
-      if (
-        !habitMainColors.includes(habitColor.checkColor) &&
-        !habitMainColors.includes(habitColor.normalColor)
-      ) {
-        return habitColor.expirationColor
+      if (!habitMainColors.includes(checkColor) && !habitMainColors.includes(normalColor)) {
+        return expirationColor
       }
 
-      return habitColor.normalColor
+      return normalColor
     })
   }, [allHabitsCheck, habitsCheck, habitMainColors])
 
   //**---- handle send browser notification ----**//
 
   useEffect(() => {
-    const currentHabitsList = props.habitList.filter((habit: Habit) =>
+    const currentHabitsList = habitList.filter((habit: Habit) =>
       habit.reminderDays.includes(now.getDay()),
     )
 
@@ -315,7 +297,7 @@ export default function HabitList(props: HabitListProps) {
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clockState, props.habitList])
+  }, [clockState, habitList])
 
   return (
     <>
@@ -324,8 +306,8 @@ export default function HabitList(props: HabitListProps) {
           isEditMode={true}
           isEditModalOpened={habitModalOpened}
           habit={currentHabit as Habit}
-          habitList={props.habitList}
-          onEditHabit={props.onEditHabit}
+          habitList={habitList}
+          onEditHabit={onEditHabit}
           onAddHabit={() => {}}
           onCloseModal={handleCloseHabitModal}
         />
@@ -335,7 +317,7 @@ export default function HabitList(props: HabitListProps) {
         <div>
           <Checkbox
             color="primary"
-            className="check-all_done-box"
+            className="all_done-checkbox"
             checked={allHabitsCheck}
             style={allDoneColor}>
             All done
@@ -346,8 +328,8 @@ export default function HabitList(props: HabitListProps) {
           className="habits-list"
           ref={habitListRef as LegacyRef<HTMLUListElement>}
           style={habitListStyle}>
-          {sortedHabitList.current.length !== 0 ? (
-            props.habitList.map((habit: Habit, index: number) => (
+          {habitList.length !== 0 ? (
+            habitList.map((habit: Habit, index: number) => (
               <div key={index}>
                 <Checkbox
                   color="success"

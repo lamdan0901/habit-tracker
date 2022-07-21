@@ -68,7 +68,7 @@ export default function EmailVerification() {
         <div className="title">Verify your email</div>
         <div className="sub-title">{error !== '' ? error : ''}</div>
 
-        <div className="fields">
+        <div className="auth-form">
           <AuthInput
             parentClass="username"
             inputClass="user-input"

@@ -1,3 +1,5 @@
+import { Habit } from '../reducers/habitSlice'
+
 export const sendBrowserNotif = (title: string, body: string, icon: string) => {
   if (!('Notification' in window)) {
     console.warn('Your Browser does not support Chrome Notifications :(')
@@ -20,4 +22,16 @@ export const sendBrowserNotif = (title: string, body: string, icon: string) => {
   } else {
     console.warn(`Failed, Notification Permission is ${Notification.permission}`)
   }
+}
+
+export const sortHabits = (habits: Habit[]) => {
+  let sortedHabits = [...habits]
+  sortedHabits.sort((habit1: Habit, habit2: Habit) => {
+    return habit1.reminderTime > habit2.reminderTime
+      ? 1
+      : habit2.reminderTime > habit1.reminderTime
+      ? -1
+      : 0
+  })
+  return sortedHabits
 }

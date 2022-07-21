@@ -1,12 +1,13 @@
 import './HabitModal.scss'
 
-import MobileTimePicker from '@mui/lab/MobileTimePicker'
-import TextField from '@mui/material/TextField'
+import { MobileTimePicker } from '@mui/x-date-pickers'
+import TextField, { TextFieldProps } from '@mui/material/TextField'
 import { useState } from 'react'
 import Modal from 'react-modal'
 
-import { Habit } from '../../pages/Home/Home'
 import DayPicker from './DayPicker/DayPicker'
+import { Habit } from '../../reducers/habitSlice'
+import { IoAddSharp } from 'react-icons/io5'
 
 interface HabitModalProps {
   habit: Habit
@@ -21,23 +22,23 @@ interface HabitModalProps {
 export default function HabitModal(props: HabitModalProps) {
   const now = new Date()
 
-  const initialHabitValues: Habit = !props.isEditMode
+  const initialHabitValues: Habit = props.isEditMode
     ? {
-        title: '',
-        description: '',
-        reminderTime: now,
-        reminderDays: [0, 1, 2, 3, 4, 5, 6],
-        performances: [],
-      }
-    : {
         id: props.habit.id,
         title: props.habit.title,
         description: props.habit.description,
         reminderTime: new Date(
           now.toString().slice(0, 16) + props.habit.reminderTime + now.toString().slice(21),
         ),
-        reminderDays: props.habit.reminderDays,
+        reminderDays: [...props.habit.reminderDays],
         performances: props.habit.performances,
+      }
+    : {
+        title: '',
+        description: '',
+        reminderTime: now,
+        reminderDays: [0, 1, 2, 3, 4, 5, 6],
+        performances: [],
       }
 
   const [habitModalOpened, setHabitModalOpened] = useState(!!props.isEditModalOpened)
@@ -144,7 +145,7 @@ export default function HabitModal(props: HabitModalProps) {
           onClick={() => {
             setHabitModalOpened(true)
           }}>
-          +
+          <IoAddSharp />
         </button>
       ) : null}
 
@@ -192,7 +193,7 @@ export default function HabitModal(props: HabitModalProps) {
                 onChange={(newValue: any) => {
                   setTime(newValue)
                 }}
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params: TextFieldProps) => <TextField {...params} />}
               />
             </div>
 

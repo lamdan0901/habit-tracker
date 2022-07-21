@@ -53,7 +53,7 @@ export default function ForgotPassword() {
         <div className="title">Forgot Password</div>
         <div className="sub-title">{error !== '' ? error : ''}</div>
 
-        <div className="fields">
+        <div className="auth-form">
           <AuthInput
             parentClass="username"
             inputClass="user-input"

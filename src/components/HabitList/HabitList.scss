@@ -5,7 +5,7 @@
   margin: auto;
   overflow: auto;
 
-  .check-all_done-box {
+  .all_done-checkbox {
     position: absolute;
     top: 150px;
     z-index: 2;
@@ -181,7 +181,7 @@ span.jsx-3904811003.text {
 @media screen and (max-width: $mobile) {
   .habits-view {
     // height: calc(100vh - 280px);
-    .check-all_done-box {
+    .all_done-checkbox {
       top: 160px !important;
     }
 
@@ -205,7 +205,7 @@ span.jsx-3904811003.text {
 
 @media screen and (max-width: 410px) {
   .habits-view {
-    .check-all_done-box {
+    .all_done-checkbox {
       top: 220px !important;
     }
   }
