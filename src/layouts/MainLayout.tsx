@@ -1,4 +1,4 @@
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
+import AdapterDateFns from '@date-io/date-fns'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { ToastContainer } from 'react-toastify'
 
@@ -14,7 +14,7 @@ interface MainLayoutProps {
   setIsSearching: Dispatch<SetStateAction<boolean>>
   onSetSearchHabits(habits: Habit[]): void
   children: React.ReactNode
-}
+} //
 
 export default function MainLayout({
   habits,
