@@ -49,6 +49,14 @@
         border: none;
       }
     }
+
+    // hide the buttons below Mui Time Picker Dialog
+    &.css-hlj6pa-MuiDialogActions-root {
+      display: none !important;
+    }
+    &.css-14b29qc {
+      display: none !important;
+    }
   }
 }
 
@@ -183,14 +191,6 @@
 //selected number
 .css-1nql4ji-MuiTypography-root.Mui-selected {
   color: #000 !important;
-}
-
-// hide the buttons below Mui Time Picker Dialog
-.css-hlj6pa-MuiDialogActions-root {
-  display: none !important;
-}
-.css-14b29qc {
-  display: none !important;
 }
 
 @media screen and (max-height: 530px) {
