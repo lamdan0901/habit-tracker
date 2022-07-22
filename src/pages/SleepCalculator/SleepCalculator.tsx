@@ -121,8 +121,8 @@ export default function SleepCalculator({ windowWidth }: { windowWidth: number }
                 orientation={windowWidth > 768 ? 'landscape' : 'portrait'}
                 openTo="hours"
                 value={time}
-                onChange={(newValue: any) => {
-                  setTime(newValue)
+                onChange={(val: any) => {
+                  setTime(val)
                 }}
                 renderInput={(params: TextFieldProps) => <TextField {...params} />}
               />
@@ -132,8 +132,8 @@ export default function SleepCalculator({ windowWidth }: { windowWidth: number }
                 orientation="portrait"
                 ampm
                 value={time}
-                onChange={(newValue: any) => {
-                  setTime(newValue)
+                onChange={(val: any) => {
+                  setTime(val)
                 }}
                 renderInput={(params: TextFieldProps) => <TextField {...params} />}
               />

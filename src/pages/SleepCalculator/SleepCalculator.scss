@@ -45,7 +45,7 @@
       color: #1976d2;
 
       &:hover {
-        background-color: rgba(192, 192, 192, 0.3);
+        background-color: rgba(25, 118, 210, 0.04);
         border: none;
       }
     }
@@ -187,6 +187,10 @@
 
 // hide the buttons below Mui Time Picker Dialog
 .css-hlj6pa-MuiDialogActions-root {
+  display: none !important;
+}
+.MuiDialogActions-root .MuiDialogActions-spacing,
+.css-14b29qc {
   display: none !important;
 }
 
