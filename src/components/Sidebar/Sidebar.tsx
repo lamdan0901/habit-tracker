@@ -1,25 +1,16 @@
-import { NavLink } from 'react-router-dom'
-import { useDebouncedCallback } from 'use-debounce'
-import { useSidebar } from '../../contexts/SidebarProvider'
-
-import { BsFillHouseDoorFill } from 'react-icons/bs'
-import { AiOutlineMenuFold, AiOutlineMenuUnfold, AiFillPieChart } from 'react-icons/ai'
-import { GiNightSleep } from 'react-icons/gi'
-import { BiSearch } from 'react-icons/bi'
-
-import aibLogo from '../../assets/img/aib-logo.jpg'
 import './Searchbox.scss'
 import './Sidebar.scss'
 
-interface Habit {
-  id?: number
-  title: string
-  description: string
-  reminderTime: Date | string
-  reminderDays: number[]
-  performances?: { time: string; isChecked: boolean }[]
-  createdAt?: Date
-}
+import { AiOutlineMenuFold, AiOutlineMenuUnfold } from 'react-icons/ai'
+import { BiSearch } from 'react-icons/bi'
+import { BsFillHouseDoorFill } from 'react-icons/bs'
+import { GiNightSleep } from 'react-icons/gi'
+import { NavLink } from 'react-router-dom'
+import { useDebouncedCallback } from 'use-debounce'
+
+import aibLogo from '../../assets/img/aib-logo.jpg'
+import { useSidebar } from '../../contexts/SidebarProvider'
+import { Habit } from '../../reducers/habitSlice'
 
 interface SidebarProps {
   habits: Habit[]
@@ -38,11 +29,11 @@ const navLinkItems = [
     icon: <GiNightSleep />,
     text: 'Sleep Calculator',
   },
-  {
-    to: '/statistics',
-    icon: <AiFillPieChart />,
-    text: 'Statistics',
-  },
+  // {
+  //   to: '/statistics',
+  //   icon: <AiFillPieChart />,
+  //   text: 'Statistics',
+  // },
 ]
 
 export default function Sidebar({ habits, setIsSearching, onSetSearchHabits }: SidebarProps) {

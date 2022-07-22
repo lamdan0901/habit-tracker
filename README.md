@@ -1,20 +1,23 @@
-# Habit Tracker Website
-
-## Name
-Habit Tracker
+# Habit Tracker Webapp
 
 ## Description
-This website help you create, view, follow your habits
 
-Some functionalities: 
-habit CRUD, sleep time calculator, habit name searching,
+**_This website help you create, view, follow your habits_**
 
-login/register with email and auth with JWT,
+## Some functionalities
 
-check a habit to set it done by day,...
+- create, view, update, delete your habits
+- sleep time calculator, habit name searching
+- login/register with email and auth with JWT
+- check a habit to set it done by day
 
-Note: this website doesn't have full features yet. 
-Future updates will complete all features soon.
+## Tech
 
-## Product site
+- ReactJS
+- SCSS
+- Redux
+- MUI
+
+## Production site
+
 http://habit-trkr.pages.dev/
