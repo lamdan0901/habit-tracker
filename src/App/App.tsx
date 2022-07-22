@@ -15,7 +15,6 @@ import EmailVerification from '../pages/Login/EmailVerification'
 import ForgotPassword from '../pages/Login/ForgotPassword'
 import ResetPassword from '../pages/Login/ResetPassword'
 import NotFound from '../pages/NotFound/NotFound'
-import Statistics from '../pages/Statistics/Statistics'
 import SleepCalculator from '../pages/SleepCalculator/SleepCalculator'
 import './App.scss'
 
@@ -65,14 +64,6 @@ export default function App() {
                 element={
                   <PrivateRoute>
                     <SleepCalculator windowWidth={windowWidth} />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/statistics"
-                element={
-                  <PrivateRoute>
-                    <Statistics />
                   </PrivateRoute>
                 }
               />

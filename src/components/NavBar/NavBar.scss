@@ -37,6 +37,10 @@
       margin-right: 10px;
     }
 
+    .user-name {
+      pointer-events: none;
+    }
+
     &:hover {
       border-color: #eee;
     }
