@@ -26,7 +26,9 @@ export default function Register() {
 
   const { register }: any = useAuth()
 
-  async function handleRegister() {
+  async function handleRegister(e: any) {
+    e.preventDefault()
+
     try {
       setMessage('')
       setLoading(true)
@@ -121,7 +123,7 @@ export default function Register() {
       parentClass: 'username',
       inputClass: 'user-input',
       inputType: 'text',
-      placeHolder: 'full nam',
+      placeHolder: 'full name',
       icon: <IdentityIcon />,
       ref: fullNameRef,
     },
@@ -137,57 +139,15 @@ export default function Register() {
         <form className="auth-form">
           {authInputItems.map((authInput, i) => (
             <AuthInput
-              parentClass="username"
-              inputClass="user-input"
-              inputType="email"
-              placeHolder="email"
-              icon={<MailIcon />}
-              inputRef={emailRef}
+              parentClass={authInput.parentClass}
+              inputClass={authInput.inputClass}
+              inputType={authInput.inputType}
+              placeHolder={authInput.placeHolder}
+              icon={authInput.icon}
+              inputRef={authInput.ref}
+              key={i}
             />
           ))}
-          <AuthInput
-            parentClass="username"
-            inputClass="user-input"
-            inputType="email"
-            placeHolder="email"
-            icon={<MailIcon />}
-            inputRef={emailRef}
-          />
-
-          <AuthInput
-            parentClass="username"
-            inputClass="user-input"
-            inputType="text"
-            placeHolder="username"
-            icon={<PeopleIcon />}
-            inputRef={usernameRef}
-          />
-
-          <AuthInput
-            parentClass="password"
-            inputClass="pass-input"
-            inputType="password"
-            placeHolder="password"
-            icon={<LockIcon />}
-            inputRef={passwordRef}
-          />
-          <AuthInput
-            parentClass="password"
-            inputClass="pass-input"
-            inputType="password"
-            placeHolder="confirm password"
-            icon={<LockIcon />}
-            inputRef={passwordConfirmRef}
-          />
-
-          <AuthInput
-            parentClass="username"
-            inputClass="user-input"
-            inputType="text"
-            placeHolder="full name"
-            icon={<IdentityIcon />}
-            inputRef={fullNameRef}
-          />
 
           <button onClick={handleRegister} className={clsx('auth-btn', loading && 'disabled')}>
             Register

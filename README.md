@@ -1,7 +1,5 @@
 # Habit Tracker Webapp
 
-## Description
-
 **_This website help you create, view, follow your habits_**
 
 ## Some functionalities
@@ -13,7 +11,7 @@
 
 ## Tech
 
-- ReactJS
+- ReactJS + Typescript
 - SCSS
 - Redux
 - MUI

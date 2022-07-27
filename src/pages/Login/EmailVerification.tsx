@@ -16,7 +16,9 @@ export default function EmailVerification() {
 
   const { sendVerificationCode, verifyUserInfo }: any = useAuth()
 
-  async function handleVerifyEmail() {
+  async function handleVerifyEmail(e: any) {
+    e.preventDefault()
+
     try {
       setMessage('')
       setLoading(true)

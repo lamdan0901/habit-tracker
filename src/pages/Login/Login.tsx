@@ -26,7 +26,9 @@ export default function Login() {
   const [message, setMessage] = useState('')
   const [isEmailNeedVerifying, setIsEmailNeedVerifying] = useState(false)
 
-  async function handleLogin() {
+  async function handleLogin(e: any) {
+    e.preventDefault()
+
     try {
       setMessage('')
       setLoading(true)
