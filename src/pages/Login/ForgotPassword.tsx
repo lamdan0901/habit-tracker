@@ -1,36 +1,38 @@
-import { LegacyRef, useRef, useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import './Login.scss'
+
+import clsx from 'clsx'
+import { useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import isEmail from 'validator/lib/isEmail'
+
+import { MailIcon } from '../../assets/icon'
 import { useAuth } from '../../contexts/AuthProvider'
 import AuthInput from './components/AuthInput'
-import { MailIcon } from '../../assets/icon'
-
-import './Login.scss'
 
 export default function ForgotPassword() {
   document.title = 'Forgot Password'
 
-  const emailRef = useRef<HTMLInputElement>()
+  const emailRef = useRef('')
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
   const { requestPasswordReset }: any = useAuth()
-  let navigate = useNavigate()
 
-  async function handleSubmit() {
+  async function handleSubmit(e: any) {
+    e.preventDefault()
+
     try {
-      setError('')
+      setMessage('')
       setLoading(true)
       if (!isEmailValid()) {
         setLoading(false)
         return
       }
-      await requestPasswordReset(emailRef.current?.value)
-      navigate('/reset-password')
+      await requestPasswordReset(emailRef.current)
     } catch (error: any) {
       if (error.response.data) {
-        setError('Failed to Reset password. ' + error.response.data.message)
+        setMessage('Failed to Reset password. ' + error.response.data.message)
       } else {
-        setError(
+        setMessage(
           'Failed to Reset password. Server is busy or under maintenance, please come back in a few hours',
         )
       }
@@ -39,8 +41,8 @@ export default function ForgotPassword() {
   }
 
   function isEmailValid() {
-    if (!isEmail(emailRef.current!.value)) {
-      setError('Invalid email')
+    if (!isEmail(emailRef.current)) {
+      setMessage('Invalid email')
       return false
     }
     return true
@@ -51,27 +53,27 @@ export default function ForgotPassword() {
       <div className="login">
         <div className="logo"></div>
         <div className="title">Forgot Password</div>
-        <div className="sub-title">{error !== '' ? error : ''}</div>
+        {message && <div className="message">{message}</div>}
 
-        <div className="auth-form">
+        <form className="auth-form">
           <AuthInput
             parentClass="username"
             inputClass="user-input"
             inputType="email"
             placeHolder="email"
             icon={<MailIcon />}
-            inputRef={emailRef as LegacyRef<HTMLInputElement>}
+            inputRef={emailRef}
           />
 
-          <button onClick={handleSubmit} className={loading ? 'signin-btn disabled' : 'signin-btn'}>
+          <button onClick={handleSubmit} className={clsx('auth-btn', loading && 'disabled')}>
             Reset
           </button>
 
-          <div className="link sign-up">
+          <div className="link suggestion">
             Don't have an account?
             <Link to="/register">Register</Link>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   )

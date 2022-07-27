@@ -1,51 +1,54 @@
-import { LegacyRef, useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
 import isLength from 'validator/lib/isLength'
 import AuthInput from './components/AuthInput'
 import { useAuth } from '../../contexts/AuthProvider'
 import { LockIcon, PhoneIcon } from '../../assets/icon'
 
 import './Login.scss'
+import clsx from 'clsx'
 
 export default function ResetPassword() {
   document.title = 'Reset Password'
 
-  const codeRef = useRef<HTMLInputElement>()
-  const newPasswordRef = useRef<HTMLInputElement>()
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const { resetPassword }: any = useAuth()
-  let navigate = useNavigate()
+  const codeRef = useRef('')
+  const newPasswordRef = useRef('')
 
-  async function handleSubmit() {
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
+
+  const { resetPassword }: any = useAuth()
+
+  async function handleSubmit(e: any) {
+    e.preventDefault()
+
     try {
-      setError('')
+      setMessage('')
       setLoading(true)
       if (!allFieldsValid()) {
         setLoading(false)
         return
       }
-      await resetPassword(codeRef.current?.value, newPasswordRef.current?.value)
-      navigate('/login')
+      await resetPassword(codeRef.current, newPasswordRef.current)
+      setLoading(false)
     } catch (error: any) {
       if (error.response.data) {
-        setError('Failed to Reset password. ' + error.response.data.message)
+        setMessage('Failed to Reset password. ' + error.response.data.message)
       } else {
-        setError(
+        setMessage(
           'Failed to Reset password. Server is busy or under maintenance, please come back in a few hours',
         )
       }
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   const allFieldsValid = () => {
-    if (codeRef.current?.value.length !== 6) {
-      setError('Your code must have 6 numbers')
+    if (codeRef.current.length !== 6) {
+      setMessage('Your code must have 6 numbers')
       return false
     }
-    if (!isLength(newPasswordRef.current!.value, { min: 8 })) {
-      setError('Password must be at least 8 characters')
+    if (!isLength(newPasswordRef.current, { min: 8 })) {
+      setMessage('Password must be at least 8 characters')
       return false
     }
     return true
@@ -54,7 +57,7 @@ export default function ResetPassword() {
   useEffect(() => {
     const msg = localStorage.getItem('msg')
     if (msg) {
-      setError(msg)
+      setMessage(msg)
       localStorage.removeItem('msg')
     }
   }, [])
@@ -64,16 +67,16 @@ export default function ResetPassword() {
       <div className="login">
         <div className="logo"></div>
         <div className="title">Reset Password</div>
-        <div className="sub-title">{error !== '' ? error : ''}</div>
+        {message && <div className="message">{message}</div>}
 
-        <div className="auth-form">
+        <form className="auth-form">
           <AuthInput
             parentClass="username"
             inputClass="user-input"
             inputType="number"
             placeHolder="your code"
             icon={<PhoneIcon />}
-            inputRef={codeRef as LegacyRef<HTMLInputElement>}
+            inputRef={codeRef}
           />
 
           <AuthInput
@@ -82,20 +85,20 @@ export default function ResetPassword() {
             inputType="password"
             placeHolder="password"
             icon={<LockIcon />}
-            inputRef={newPasswordRef as LegacyRef<HTMLInputElement>}
+            inputRef={newPasswordRef}
           />
 
-          <button onClick={handleSubmit} className={loading ? 'signin-btn disabled' : 'signin-btn'}>
+          <button onClick={handleSubmit} className={clsx('auth-btn', loading && 'disabled')}>
             Reset
           </button>
 
-          <div className="link sign-up">
+          <div className="link suggestion">
             Don't receive the code or it's expired?
             <br />
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a style={{ cursor: 'pointer' }}>Resend code</a>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   )

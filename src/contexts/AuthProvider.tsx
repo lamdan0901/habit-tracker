@@ -7,7 +7,7 @@ import axiosClient from '../utils/axiosClient'
 import TokenService from '../utils/tokenService'
 import * as types from './types'
 
-type User = {
+interface User {
   username: string
   password: string
   fullName?: string
@@ -29,6 +29,7 @@ export function AuthProvider({ children }: any) {
     try {
       await axiosClient.post(`${authPath}/register`, user)
       dispatch({ type: types.REGISTER, payload: user })
+      navigate('/verify-email')
     } catch (err) {
       throw err
     }
@@ -64,8 +65,8 @@ export function AuthProvider({ children }: any) {
     try {
       const email = localStorage.getItem('email')
       await axiosClient.post(`${authPath}/verify-token`, { email, code })
-
       dispatch({ type: types.VERIFY_USER })
+      navigate('/login')
     } catch (err) {
       throw err
     }
@@ -75,6 +76,7 @@ export function AuthProvider({ children }: any) {
     try {
       await axiosClient.post(`${authPath}/forgot-password`, { email })
       dispatch({ type: types.REQUEST_PASSWORD_RESET, payload: email })
+      navigate('/reset-password')
     } catch (err) {
       throw err
     }
@@ -89,6 +91,7 @@ export function AuthProvider({ children }: any) {
         newPassword,
       })
       dispatch({ type: types.RESET_PASSWORD })
+      navigate('/login')
     } catch (err) {
       throw err
     }

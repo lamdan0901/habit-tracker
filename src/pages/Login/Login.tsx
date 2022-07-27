@@ -17,24 +17,27 @@ import './Login.scss'
 export default function Login() {
   document.title = 'Login - Habit App'
 
-  const usernameRef = useRef<HTMLInputElement>()
-  const passwordRef = useRef<HTMLInputElement>()
+  const usernameRef = useRef('')
+  const passwordRef = useRef('')
   const keepLoginRef = useRef<HTMLInputElement>()
 
   const { login }: any = useAuth()
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
   const [isEmailNeedVerifying, setIsEmailNeedVerifying] = useState(false)
 
-  async function handleLogin() {
+  async function handleLogin(e: any) {
+    e.preventDefault()
+
     try {
-      setError('')
+      setMessage('')
       setLoading(true)
+      console.log(usernameRef.current, passwordRef.current)
       if (allFieldsValid()) {
         await login(
           {
-            username: usernameRef.current?.value,
-            password: passwordRef.current?.value,
+            username: usernameRef.current,
+            password: passwordRef.current,
           },
           keepLoginRef.current?.checked,
         )
@@ -45,29 +48,26 @@ export default function Login() {
         if (errorMsg === 'Please verify your email.') {
           setIsEmailNeedVerifying(true)
         } else {
-          setError('Failed to login. ' + errorMsg)
+          setMessage('Failed to login. ' + errorMsg)
         }
       } else {
-        setError(
+        setMessage(
           'Failed to login. Server is busy or under maintenance, please come back in a few hours',
         )
       }
 
-      if (passwordRef.current) passwordRef.current.value = ''
+      if (passwordRef.current) passwordRef.current = ''
       setLoading(false)
     }
   }
 
   const allFieldsValid = () => {
-    if (
-      !isAlphanumeric(usernameRef.current!.value) ||
-      !isLength(usernameRef.current!.value, { min: 6 })
-    ) {
-      setError('Username must be at least 6 characters')
+    if (!isAlphanumeric(usernameRef.current) || !isLength(usernameRef.current, { min: 6 })) {
+      setMessage('Username must be at least 6 characters')
       return false
     }
-    if (!isLength(passwordRef.current!.value, { min: 8 })) {
-      setError('Password must be at least 8 characters')
+    if (!isLength(passwordRef.current, { min: 8 })) {
+      setMessage('Password must be at least 8 characters')
       return false
     }
     return true
@@ -76,7 +76,7 @@ export default function Login() {
   useEffect(() => {
     const msg = localStorage.getItem('msg')
     if (msg) {
-      setError(msg)
+      setMessage(msg)
       localStorage.removeItem('msg')
     }
   }, [])
@@ -86,8 +86,8 @@ export default function Login() {
       <div className="login">
         <div className="logo"></div>
         <h3 className="title">Welcome</h3>
-        <div className="sub-title">
-          {error !== '' ? error : ''}
+        <div className="message">
+          {message !== '' ? message : ''}
           {isEmailNeedVerifying && (
             <Link to="/verify-email" className="verify-now">
               Verify now
@@ -95,14 +95,14 @@ export default function Login() {
           )}
         </div>
 
-        <div className="auth-form">
+        <form className="auth-form">
           <AuthInput
             parentClass="username"
             inputClass="user-input"
             inputType="text"
             placeHolder="username"
             icon={<PeopleIcon />}
-            inputRef={usernameRef as LegacyRef<HTMLInputElement>}
+            inputRef={usernameRef}
           />
           <AuthInput
             parentClass="password"
@@ -110,7 +110,7 @@ export default function Login() {
             inputType="password"
             placeHolder="password"
             icon={<LockIcon />}
-            inputRef={passwordRef as LegacyRef<HTMLInputElement>}
+            inputRef={passwordRef}
           />
 
           <div className="utilities">
@@ -132,15 +132,15 @@ export default function Login() {
             </div>
           </div>
 
-          <button onClick={handleLogin} className={clsx('signin-btn', loading && 'disabled')}>
+          <button onClick={handleLogin} className={clsx('auth-btn', loading && 'disabled')}>
             Login
           </button>
 
-          <div className="link sign-up">
+          <div className="link suggestion">
             Don't have an account?
             <Link to="/register">Register</Link>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   )
