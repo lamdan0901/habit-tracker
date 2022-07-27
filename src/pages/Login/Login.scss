@@ -39,7 +39,7 @@
     letter-spacing: 0.5px;
   }
 
-  .sub-title {
+  .message {
     text-align: center;
     font-size: 15px;
     padding-top: 5px;
@@ -91,7 +91,7 @@
       margin: 0px 8px -3px 25px;
     }
 
-    .signin-btn {
+    .auth-btn {
       border: none;
       outline: none;
       cursor: pointer;
@@ -128,7 +128,7 @@
       text-align: center;
       color: #444;
 
-      &.sign-up {
+      &.suggestion {
         margin-top: 20px;
       }
 

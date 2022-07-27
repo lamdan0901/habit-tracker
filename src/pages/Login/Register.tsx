@@ -1,8 +1,8 @@
 import './Login.scss'
 
 import clsx from 'clsx'
-import { LegacyRef, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import isAlphanumeric from 'validator/lib/isAlphanumeric'
 import isEmail from 'validator/lib/isEmail'
 import isEmpty from 'validator/lib/isEmpty'
@@ -15,42 +15,41 @@ import AuthInput from './components/AuthInput'
 export default function Register() {
   document.title = 'Register - Habit App'
 
-  const emailRef = useRef<HTMLInputElement>()
-  const usernameRef = useRef<HTMLInputElement>()
-  const fullNameRef = useRef<HTMLInputElement>()
-  const passwordRef = useRef<HTMLInputElement>()
-  const passwordConfirmRef = useRef<HTMLInputElement>()
+  const emailRef = useRef('')
+  const usernameRef = useRef('')
+  const fullNameRef = useRef('')
+  const passwordRef = useRef('')
+  const passwordConfirmRef = useRef('')
 
-  let navigate = useNavigate()
-  const { register }: any = useAuth()
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
+
+  const { register }: any = useAuth()
 
   async function handleRegister() {
     try {
-      setError('')
+      setMessage('')
       setLoading(true)
       if (allFieldsValid()) {
         await register({
-          email: emailRef.current?.value,
-          username: usernameRef.current?.value,
-          password: passwordRef.current?.value,
-          fullName: fullNameRef.current?.value,
+          email: emailRef.current,
+          username: usernameRef.current,
+          password: passwordRef.current,
+          fullName: fullNameRef.current,
         })
-        navigate('/verify-email')
       } else setLoading(false)
     } catch (error: any) {
       if (error.response.data) {
-        setError('Failed to create an account. ' + error.response.data.message)
+        setMessage('Failed to create an account. ' + error.response.data.message)
       } else {
-        setError(
+        setMessage(
           'Failed to create an account. Server is busy or under maintenance, please come back in a few hours',
         )
       }
 
       if (passwordRef.current && passwordConfirmRef.current) {
-        passwordRef.current.value = ''
-        passwordConfirmRef.current.value = ''
+        passwordRef.current = ''
+        passwordConfirmRef.current = ''
       }
 
       setLoading(false)
@@ -58,51 +57,101 @@ export default function Register() {
   }
 
   const allFieldsValid = () => {
-    if (!isEmail(emailRef.current!.value)) {
-      setError('Invalid email')
+    if (!isEmail(emailRef.current)) {
+      setMessage('Invalid email')
       return false
     }
-    if (
-      !isAlphanumeric(usernameRef.current!.value) ||
-      !isLength(usernameRef.current!.value, { min: 6 })
-    ) {
-      setError('Username must be at least 6 characters')
+    if (!isAlphanumeric(usernameRef.current) || !isLength(usernameRef.current, { min: 6 })) {
+      setMessage('Username must be at least 6 characters')
       return false
     }
-    if (isEmpty(fullNameRef.current!.value)) {
-      setError('Full name not left blank')
+    if (isEmpty(fullNameRef.current)) {
+      setMessage('Full name not left blank')
       return false
     }
-    if (!isLength(passwordRef.current!.value, { min: 8 })) {
-      setError('Password must be at least 8 characters')
+    if (!isLength(passwordRef.current, { min: 8 })) {
+      setMessage('Password must be at least 8 characters')
       return false
     }
-    if (passwordRef.current!.value !== passwordConfirmRef.current!.value) {
-      setError("Passwords don't match")
+    if (passwordRef.current !== passwordConfirmRef.current) {
+      setMessage("Passwords don't match")
       if (passwordRef.current !== undefined && passwordConfirmRef.current !== undefined) {
-        passwordRef.current.value = ''
-        passwordConfirmRef.current.value = ''
+        passwordRef.current = ''
+        passwordConfirmRef.current = ''
       }
       return false
     }
     return true
   }
 
+  const authInputItems = [
+    {
+      parentClass: 'username',
+      inputClass: 'user-input',
+      inputType: 'email',
+      placeHolder: 'email',
+      icon: <MailIcon />,
+      ref: emailRef,
+    },
+    {
+      parentClass: 'username',
+      inputClass: 'user-input',
+      inputType: 'text',
+      placeHolder: 'username',
+      icon: <PeopleIcon />,
+      ref: usernameRef,
+    },
+    {
+      parentClass: 'password',
+      inputClass: 'pass-input',
+      inputType: 'password',
+      placeHolder: 'password',
+      icon: <LockIcon />,
+      ref: passwordRef,
+    },
+    {
+      parentClass: 'password',
+      inputClass: 'pass-input',
+      inputType: 'password',
+      placeHolder: 'confirm password',
+      icon: <LockIcon />,
+      ref: passwordConfirmRef,
+    },
+    {
+      parentClass: 'username',
+      inputClass: 'user-input',
+      inputType: 'text',
+      placeHolder: 'full nam',
+      icon: <IdentityIcon />,
+      ref: fullNameRef,
+    },
+  ]
+
   return (
     <div className="login-container">
       <div className="login">
         <div className="logo"></div>
         <div className="title">Register new account</div>
-        <div className="sub-title">{error !== '' ? error : ''}</div>
+        {message && <div className="message">{message}</div>}
 
-        <div className="auth-form">
+        <form className="auth-form">
+          {authInputItems.map((authInput, i) => (
+            <AuthInput
+              parentClass="username"
+              inputClass="user-input"
+              inputType="email"
+              placeHolder="email"
+              icon={<MailIcon />}
+              inputRef={emailRef}
+            />
+          ))}
           <AuthInput
             parentClass="username"
             inputClass="user-input"
             inputType="email"
             placeHolder="email"
             icon={<MailIcon />}
-            inputRef={emailRef as LegacyRef<HTMLInputElement>}
+            inputRef={emailRef}
           />
 
           <AuthInput
@@ -111,7 +160,7 @@ export default function Register() {
             inputType="text"
             placeHolder="username"
             icon={<PeopleIcon />}
-            inputRef={usernameRef as LegacyRef<HTMLInputElement>}
+            inputRef={usernameRef}
           />
 
           <AuthInput
@@ -120,7 +169,7 @@ export default function Register() {
             inputType="password"
             placeHolder="password"
             icon={<LockIcon />}
-            inputRef={passwordRef as LegacyRef<HTMLInputElement>}
+            inputRef={passwordRef}
           />
           <AuthInput
             parentClass="password"
@@ -128,7 +177,7 @@ export default function Register() {
             inputType="password"
             placeHolder="confirm password"
             icon={<LockIcon />}
-            inputRef={passwordConfirmRef as LegacyRef<HTMLInputElement>}
+            inputRef={passwordConfirmRef}
           />
 
           <AuthInput
@@ -137,18 +186,18 @@ export default function Register() {
             inputType="text"
             placeHolder="full name"
             icon={<IdentityIcon />}
-            inputRef={fullNameRef as LegacyRef<HTMLInputElement>}
+            inputRef={fullNameRef}
           />
 
-          <button onClick={handleRegister} className={clsx('signin-btn', loading && 'disabled')}>
+          <button onClick={handleRegister} className={clsx('auth-btn', loading && 'disabled')}>
             Register
           </button>
 
-          <div className="link sign-up">
+          <div className="link suggestion">
             Already have an account?
             <Link to="/login">Login</Link>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   )

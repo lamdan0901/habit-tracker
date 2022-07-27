@@ -1,8 +1,7 @@
 import './Login.scss'
 
 import clsx from 'clsx'
-import { LegacyRef, useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
 
 import { PhoneIcon } from '../../assets/icon'
 import { useAuth } from '../../contexts/AuthProvider'
@@ -11,22 +10,21 @@ import AuthInput from './components/AuthInput'
 export default function EmailVerification() {
   document.title = 'Verify your email'
 
-  let navigate = useNavigate()
-  const codeRef = useRef<HTMLInputElement>()
-  const { sendVerificationCode, verifyUserInfo }: any = useAuth()
+  const codeRef = useRef('')
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
+
+  const { sendVerificationCode, verifyUserInfo }: any = useAuth()
 
   async function handleVerifyEmail() {
     try {
-      setError('')
+      setMessage('')
       setLoading(true)
       if (isCodeValid()) {
-        await verifyUserInfo(codeRef.current?.value)
-        navigate('/login')
+        await verifyUserInfo(codeRef.current)
       } else setLoading(false)
     } catch (error: any) {
-      setError('Failed to verify email. ' + error?.response?.data?.message)
+      setMessage('Failed to verify email. ' + error?.response?.data?.message)
       setLoading(false)
     }
   }
@@ -34,12 +32,12 @@ export default function EmailVerification() {
   async function handleResendVerificationCode() {
     try {
       await sendVerificationCode()
-      setError('Verification code has been resent to your email')
+      setMessage('Verification code has been resent to your email')
     } catch (error: any) {
       if (error.response.data) {
-        setError('Failed to resend verification code. ' + error.response.data.message)
+        setMessage('Failed to resend verification code. ' + error.response.data.message)
       } else {
-        setError(
+        setMessage(
           'Failed to resend verification code. Server is busy or under maintenance, please come back in a few hours',
         )
       }
@@ -47,8 +45,8 @@ export default function EmailVerification() {
   }
 
   function isCodeValid() {
-    if (codeRef.current?.value.length !== 6) {
-      setError('Your code must have 6 numbers')
+    if (codeRef.current?.length !== 6) {
+      setMessage('Your code must have 6 numbers')
       return false
     }
     return true
@@ -57,7 +55,7 @@ export default function EmailVerification() {
   useEffect(() => {
     const email = localStorage.getItem('email')
     if (email)
-      setError(`Verification code has been sent to your email.
+      setMessage(`Verification code has been sent to your email.
                 Enter it here to verify your email`)
   }, [])
 
@@ -66,23 +64,23 @@ export default function EmailVerification() {
       <div className="login">
         <div className="logo"></div>
         <div className="title">Verify your email</div>
-        <div className="sub-title">{error !== '' ? error : ''}</div>
+        {message && <div className="message">{message}</div>}
 
-        <div className="auth-form">
+        <form className="auth-form">
           <AuthInput
             parentClass="username"
             inputClass="user-input"
             inputType="number"
             placeHolder="your code"
             icon={<PhoneIcon />}
-            inputRef={codeRef as LegacyRef<HTMLInputElement>}
+            inputRef={codeRef}
           />
 
-          <button onClick={handleVerifyEmail} className={clsx('signin-btn', loading && 'disabled')}>
+          <button onClick={handleVerifyEmail} className={clsx('auth-btn', loading && 'disabled')}>
             Verify
           </button>
 
-          <div className="link sign-up">
+          <div className="link suggestion">
             Don't receive the code or it's expired?
             <br />
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
@@ -90,7 +88,7 @@ export default function EmailVerification() {
               Resend code
             </a>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   )
