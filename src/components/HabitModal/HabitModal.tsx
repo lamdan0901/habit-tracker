@@ -109,12 +109,13 @@ export default function HabitModal(props: HabitModalProps) {
   }
 
   const isHabitInputsInvalid = () => {
+    setDesError('')
+    setTitleError('')
+
     if (!habit.title) {
-      setDesError('')
       setTitleError('Title is not left blank!')
       return true
     } else if (!habit.description) {
-      setTitleError('')
       setDesError('Description is not left blank!')
       return true
     } else if (isHabitNameDuplicated(habit)) {
@@ -125,16 +126,13 @@ export default function HabitModal(props: HabitModalProps) {
   }
 
   const isHabitNameDuplicated = (currentHabit: Habit) => {
-    let habitTitles
-
-    if (!props.isEditMode) habitTitles = props.habitList.map((habit: Habit) => habit.title)
-    else
-      habitTitles = props.habitList
+    if (!props.isEditMode) {
+      return props.habitList.find((habit: Habit) => habit.title === currentHabit.title)
+    } else {
+      return props.habitList
         .filter((habit: Habit) => habit.title !== initialHabitValues.title)
-        .map((habit: Habit) => habit.title)
-
-    if (habitTitles.includes(currentHabit.title)) return true
-    return false
+        .find((habit: Habit) => habit.title === currentHabit.title)
+    }
   }
 
   return (
@@ -205,9 +203,10 @@ export default function HabitModal(props: HabitModalProps) {
           </form>
 
           <footer className="modal-footer">
-            {titleError === '' && desError === '' && <div className="error-message"></div>}
-            {titleError !== '' && <div className="error-message">{titleError}</div>}
-            {desError !== '' && <div className="error-message">{desError}</div>}
+            <div className="error-message">
+              {titleError !== '' ? titleError : ''}
+              {desError !== '' ? desError : ''}
+            </div>
             <div>
               <button className="btn confirm-btn" onClick={saveHabit}>
                 {props.isEditMode ? 'EDIT' : 'ADD'}

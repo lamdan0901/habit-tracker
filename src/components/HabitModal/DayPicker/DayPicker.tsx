@@ -2,7 +2,7 @@ import { days } from '../../../constants'
 import { useState } from 'react'
 import './DayPicker.scss'
 
-type TDayPickerProps = {
+interface DayPickerProps {
   isEditMode?: boolean
   daysCheck: number[]
   onDaysCheck: (daysCheck: number[]) => void
@@ -10,7 +10,7 @@ type TDayPickerProps = {
 
 const weekDays = 7
 
-export default function DayPicker({ isEditMode, daysCheck, onDaysCheck }: TDayPickerProps) {
+export default function DayPicker({ isEditMode, daysCheck, onDaysCheck }: DayPickerProps) {
   const [allDaysChecked, setAllDaysChecked] = useState(() => {
     if (!isEditMode || (isEditMode && daysCheck.length === 7)) {
       return true
@@ -33,7 +33,7 @@ export default function DayPicker({ isEditMode, daysCheck, onDaysCheck }: TDayPi
     let day: number = ~~name
 
     if (daysCheck.includes(day)) {
-      onDaysCheck(daysCheck.filter((checked_day: number) => checked_day !== day))
+      onDaysCheck(daysCheck.filter((checkedDay: number) => checkedDay !== day))
       setAllDaysChecked(false)
     } else {
       daysCheck.push(day)
@@ -53,7 +53,7 @@ export default function DayPicker({ isEditMode, daysCheck, onDaysCheck }: TDayPi
         </div>
 
         {days.map((day, index) => (
-          <div className="day-checkbox" key={index}>
+          <div className="day-checkbox" key={day}>
             <input
               type="checkbox"
               name={index.toString()}

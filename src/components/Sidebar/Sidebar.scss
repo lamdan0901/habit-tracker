@@ -149,6 +149,55 @@ a.menu-item.item-active {
   }
 }
 
+form.search-box {
+  box-sizing: border-box;
+  position: relative;
+  width: 10.6rem;
+  margin-bottom: 10px;
+  background: rgba($color: #fff, $alpha: 0.8);
+  border-radius: $rad;
+  transition: width 0.5s;
+
+  & > button.trigger-search-btn {
+    position: absolute;
+    z-index: 2;
+    border-radius: $rad;
+    width: 46px;
+    height: 46px;
+    font-size: 20px;
+    cursor: pointer;
+    display: none;
+    background-color: transparent;
+
+    svg {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+    }
+  }
+
+  & > input {
+    height: $height;
+    border: 0;
+    color: $color-dark;
+    font-size: 1rem;
+  }
+
+  & > input[type='search'] {
+    outline: 0;
+    background: transparent;
+    border-radius: $rad;
+    appearance: none; //for iOS input[type="search"] roundedness issue. border-radius alone doesn't work
+    transition: all $dur cubic-bezier(0, 0, 0.43, 1.49);
+    transition-property: width, border-radius;
+
+    width: 100%;
+    z-index: 1;
+    padding: 0 1rem;
+    position: relative;
+  }
+}
+
 @media (max-width: $mobile) {
   .menu {
     padding-left: 10px;
