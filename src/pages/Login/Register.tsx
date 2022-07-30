@@ -77,10 +77,8 @@ export default function Register() {
     }
     if (passwordRef.current !== passwordConfirmRef.current) {
       setMessage("Passwords don't match")
-      if (passwordRef.current !== undefined && passwordConfirmRef.current !== undefined) {
-        passwordRef.current = ''
-        passwordConfirmRef.current = ''
-      }
+      passwordRef.current = ''
+      passwordConfirmRef.current = ''
       return false
     }
     return true

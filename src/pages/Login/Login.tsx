@@ -32,7 +32,6 @@ export default function Login() {
     try {
       setMessage('')
       setLoading(true)
-      console.log(usernameRef.current, passwordRef.current)
       if (allFieldsValid()) {
         await login(
           {

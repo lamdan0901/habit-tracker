@@ -1,4 +1,3 @@
-import './Searchbox.scss'
 import './Sidebar.scss'
 
 import { AiOutlineMenuFold, AiOutlineMenuUnfold } from 'react-icons/ai'

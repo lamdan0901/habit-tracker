@@ -60,10 +60,9 @@ axiosClient.interceptors.response.use(
           error.response.message === 'Invalid refresh token.') &&
         !originalConfig._retry
       ) {
-        console.error('Refresh token expired')
-        console.error(error.response)
-        localStorage.setItem('msg', 'Your session has expired. Please login again.')
+        console.error('Refresh token expired!!1 ', error.response)
         localStorage.clear()
+        localStorage.setItem('msg', 'Your session has expired. Please login again.')
         window.location.href = '/login'
       }
     }

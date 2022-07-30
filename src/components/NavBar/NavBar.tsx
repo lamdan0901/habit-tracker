@@ -3,7 +3,7 @@ import useDropdownMenu from 'react-accessible-dropdown-menu-hook'
 import { useClockState } from '../../contexts/UtilitiesProvider'
 import { useAuth } from '../../contexts/AuthProvider'
 
-import { AiTwotoneSetting } from 'react-icons/ai'
+// import { AiTwotoneSetting } from 'react-icons/ai'
 import { MdDarkMode } from 'react-icons/md'
 import { GoSignOut } from 'react-icons/go'
 import './NavBar.scss'
@@ -11,7 +11,7 @@ import './NavBar.scss'
 export default function NavBar() {
   const clockState = useClockState()
   const { signOut, username }: any = useAuth()
-  const { buttonProps, itemProps, isOpen } = useDropdownMenu(3) //3 is the number of items in the dropdown menu
+  const { buttonProps, isOpen } = useDropdownMenu(3) //3 is the number of items in the dropdown menu
 
   return (
     <nav className="navbar">
@@ -23,7 +23,7 @@ export default function NavBar() {
       </div>
 
       <div className={isOpen ? 'visible' : ''} role="menu">
-        <Link
+        {/* <Link
           {...itemProps[0]}
           to="/#"
           className="dropdown-item"
@@ -32,9 +32,8 @@ export default function NavBar() {
           }}>
           <AiTwotoneSetting />
           My profile
-        </Link>
+        </Link> */}
         <Link
-          {...itemProps[1]}
           to="/#"
           className="dropdown-item"
           onClick={(e: any) => {
@@ -44,7 +43,6 @@ export default function NavBar() {
           Dark theme
         </Link>
         <Link
-          {...itemProps[2]}
           to="/#"
           className="dropdown-item"
           onClick={(e: any) => {

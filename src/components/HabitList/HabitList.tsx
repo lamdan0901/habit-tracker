@@ -147,7 +147,7 @@ export default function HabitList({
     }
   }
 
-  //**---- handle changet the habits list's grid layout according to its width ----**//
+  //**---- handle change the habits list's grid layout according to its width ----**//
 
   const habitListRef = useRef<HTMLUListElement>()
   const [habitListStyle, setHabitListStyle] = useState({
