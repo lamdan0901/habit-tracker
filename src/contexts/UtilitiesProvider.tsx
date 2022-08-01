@@ -32,7 +32,7 @@ export function UtilitiesProvider({ children }: any) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const currentClockState = formatTime(new Date().toLocaleTimeString('en-US'))
+      const currentClockState = formatTime(new Date().toLocaleTimeString())
       if (currentClockState !== clockState) {
         setClockState(currentClockState)
       }
@@ -42,8 +42,8 @@ export function UtilitiesProvider({ children }: any) {
   }, [])
 
   function formatTime(time: string) {
-    // if hour >= 10
-    if (~~time.slice(0, 2) >= 10) {
+    const currHour = ~~time.slice(0, 2)
+    if (currHour >= 10) {
       return time.slice(0, 5) + ' ' + time.slice(9)
     } else {
       return '0' + time.slice(0, 4) + ' ' + time.slice(8)

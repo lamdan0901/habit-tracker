@@ -38,6 +38,7 @@ export default function HabitList({
   onDeleteHabit,
 }: HabitListProps) {
   const now = new Date()
+  const convertedClockState = useRef('')
   const today = now.toISOString().slice(0, 10)
 
   const [habitModalOpened, setHabitModalOpened] = useState(false)
@@ -207,7 +208,7 @@ export default function HabitList({
         ) ||
         habit.performances.length === 0
       ) {
-        const formattedHabitTime = formatHabitTime(habit.reminderTime as string)
+        const formattedHabitTime = convertHabitTime24To12(habit.reminderTime as string)
         const am_pmCompareRes = clockState.slice(6, 8).localeCompare(formattedHabitTime.slice(6, 8))
 
         //PM-PM || AM-AM
@@ -252,7 +253,7 @@ export default function HabitList({
     setHabitMainColors(currentColorsList)
   }, [clockState, habitList, today])
 
-  function formatHabitTime(habitTime: string) {
+  function convertHabitTime24To12(habitTime: string) {
     const hour = ~~habitTime.slice(0, 2)
     const minute = habitTime.slice(3, 5)
 
@@ -269,6 +270,20 @@ export default function HabitList({
     }
 
     return habitTime
+  }
+
+  function convertHabitTime12To24(time12h: string) {
+    const [time, modifier] = time12h.split(' ')
+    let [hours, minutes] = time.split(':')
+
+    if (hours === '12') {
+      hours = '00'
+    }
+    if (modifier === 'PM') {
+      hours = String(parseInt(hours, 10) + 12)
+    }
+
+    return `${hours}:${minutes}`
   }
 
   //**---- handle change all-done-checkbox's color ----**//
@@ -292,20 +307,19 @@ export default function HabitList({
   //**---- handle send browser notification ----**//
 
   useEffect(() => {
-    const currentHabitsList = habitList.filter((habit: Habit) =>
-      habit.reminderDays.includes(now.getDay()),
-    )
+    convertedClockState.current = convertHabitTime12To24(clockState)
 
-    currentHabitsList.forEach((habit: Habit) => {
-      if (!habit.checked) {
-        const formattedHabitTime = formatHabitTime(habit.reminderTime as string)
-        if (formattedHabitTime.localeCompare(clockState) === 0) {
-          sendBrowserNotif('Habit Tracker', "It's time you did this habit: " + habit.title, aibLogo)
-        }
+    const unCheckedHabitsOfToday = habitList.filter(
+      (habit: Habit) =>
+        habit.reminderDays.includes(now.getDay()) && !habitsCheck.includes(habit.id as number),
+    )
+    unCheckedHabitsOfToday.forEach((habit: Habit) => {
+      if ((habit.reminderTime as string).localeCompare(convertedClockState.current) === 0) {
+        sendBrowserNotif('Habit Tracker', "It's time you did this habit: " + habit.title, aibLogo)
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clockState, habitList])
+  }, [clockState, habitsCheck, habitList])
 
   return (
     <>
@@ -357,7 +371,9 @@ export default function HabitList({
                   }}>
                   <p className="habit-name">{habit.title}</p>
 
-                  <div className="habit-time">{formatHabitTime(habit.reminderTime as string)}</div>
+                  <div className="habit-time">
+                    {convertHabitTime24To12(habit.reminderTime as string)}
+                  </div>
 
                   <div
                     title="Delete this habit"
