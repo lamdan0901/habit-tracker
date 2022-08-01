@@ -1,10 +1,8 @@
-import { useState, useLayoutEffect } from 'react'
 import { Provider } from 'react-redux'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 import { store } from '../redux/store'
 import PrivateRoute from '../utils/PrivateRoute'
-import { useSidebar } from '../contexts/SidebarProvider'
 import { AuthProvider } from '../contexts/AuthProvider'
 import { UtilitiesProvider } from '../contexts/UtilitiesProvider'
 
@@ -19,27 +17,6 @@ import SleepCalculator from '../pages/SleepCalculator/SleepCalculator'
 import './App.scss'
 
 export default function App() {
-  const [sidebarOpen, toggleSidebar]: any = useSidebar()
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-
-  const resizeWindow = () => {
-    setWindowWidth(window.innerWidth)
-  }
-
-  useLayoutEffect(() => {
-    if ((windowWidth <= 768 && sidebarOpen) || (windowWidth > 768 && !sidebarOpen)) {
-      toggleSidebar()
-    }
-
-    resizeWindow()
-    window.addEventListener('resize', resizeWindow)
-    return () => window.removeEventListener('resize', resizeWindow)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [windowWidth])
-
-  // when the user logs out, we need to clear the redux store?
-  // when a guest visit the website, show homepage but the content is welcome only?
-
   return (
     <Provider store={store}>
       <BrowserRouter>
@@ -63,7 +40,7 @@ export default function App() {
                 path="/sleep-calculator"
                 element={
                   <PrivateRoute>
-                    <SleepCalculator windowWidth={windowWidth} />
+                    <SleepCalculator />
                   </PrivateRoute>
                 }
               />

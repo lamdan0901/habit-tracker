@@ -3,7 +3,6 @@ import useDropdownMenu from 'react-accessible-dropdown-menu-hook'
 import { useClockState } from '../../contexts/UtilitiesProvider'
 import { useAuth } from '../../contexts/AuthProvider'
 
-// import { AiTwotoneSetting } from 'react-icons/ai'
 import { MdDarkMode } from 'react-icons/md'
 import { GoSignOut } from 'react-icons/go'
 import './NavBar.scss'
@@ -23,16 +22,6 @@ export default function NavBar() {
       </div>
 
       <div className={isOpen ? 'visible' : ''} role="menu">
-        {/* <Link
-          {...itemProps[0]}
-          to="/#"
-          className="dropdown-item"
-          onClick={(e: any) => {
-            e.stopPropagation()
-          }}>
-          <AiTwotoneSetting />
-          My profile
-        </Link> */}
         <Link
           to="/#"
           className="dropdown-item"

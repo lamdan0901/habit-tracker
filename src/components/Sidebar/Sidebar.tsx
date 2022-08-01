@@ -8,7 +8,7 @@ import { NavLink } from 'react-router-dom'
 import { useDebouncedCallback } from 'use-debounce'
 
 import aibLogo from '../../assets/img/aib-logo.jpg'
-import { useSidebar } from '../../contexts/SidebarProvider'
+import { useSidebar } from '../../contexts/UtilitiesProvider'
 import { Habit } from '../../reducers/habitSlice'
 
 interface SidebarProps {

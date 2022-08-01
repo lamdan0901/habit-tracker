@@ -11,10 +11,10 @@ import './SleepCalculator.scss'
 
 type CalculatingTimeType = Array<{ hour: number | string; minute: number | string }>
 
-export default function SleepCalculator({ windowWidth }: { windowWidth: number }) {
+export default function SleepCalculator() {
   document.title = 'Sleep Time Calculator'
 
-  const [notifyTime, handleSetNotifyTime]: any = useNotifTime()
+  const [notifyTime, windowWidth, handleSetNotifyTime]: any = useNotifTime()
   const [resultsShowed, setResultsShowed] = useState(false)
   const [moreInfoShowed, setMoreInfoShowed] = useState(false)
   const [time, setTime] = useState(new Date())

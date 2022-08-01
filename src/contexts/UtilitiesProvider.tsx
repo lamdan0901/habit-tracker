@@ -3,10 +3,14 @@ import { sendBrowserNotif } from '../utils/utilityFunctions'
 import aibLogo from '../assets/img/aib-logo.jpg'
 
 const TimeContext = React.createContext('')
+const SidebarContext = React.createContext([{}, () => {}])
 const NotifTimeContext = React.createContext([{}, () => {}])
 
 export function useClockState() {
   return useContext(TimeContext)
+}
+export function useSidebar() {
+  return useContext(SidebarContext)
 }
 export function useNotifTime() {
   return useContext(NotifTimeContext)
@@ -14,10 +18,16 @@ export function useNotifTime() {
 
 export function UtilitiesProvider({ children }: any) {
   const [notifyTime, setNotifyTime] = useState('')
-  const [clockState, setClockState] = useState(formatTime(new Date().toLocaleTimeString()))
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+  const [clockState, setClockState] = useState(() => formatTime(new Date().toLocaleTimeString()))
 
   function handleSetNotifyTime(time: string) {
     setNotifyTime(time)
+  }
+
+  function toggleSidebar() {
+    setSidebarOpen(!sidebarOpen)
   }
 
   useEffect(() => {
@@ -31,18 +41,6 @@ export function UtilitiesProvider({ children }: any) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    if (notifyTime) {
-      if (notifyTime.localeCompare(clockState) === 0) {
-        sendBrowserNotif(
-          'Habit Tracker',
-          `Hey! Now is ${clockState}. It's time to sleep.\nHave a good night! 😴😴😴`,
-          aibLogo,
-        )
-      }
-    }
-  }, [clockState, notifyTime])
-
   function formatTime(time: string) {
     // if hour >= 10
     if (~~time.slice(0, 2) >= 10) {
@@ -52,11 +50,42 @@ export function UtilitiesProvider({ children }: any) {
     }
   }
 
+  /**------------------------------------------------ */
+
+  useEffect(() => {
+    if (notifyTime && notifyTime.localeCompare(clockState) === 0) {
+      sendBrowserNotif(
+        'Habit Tracker',
+        `Hey! Now is ${clockState}. It's time to sleep.\nHave a good night! 😴😴😴`,
+        aibLogo,
+      )
+    }
+  }, [clockState, notifyTime])
+
+  /**------------------------------------------------ */
+
+  function resizeWindow() {
+    setWindowWidth(window.innerWidth)
+  }
+
+  useEffect(() => {
+    if ((windowWidth <= 768 && sidebarOpen) || (windowWidth > 768 && !sidebarOpen)) {
+      toggleSidebar()
+    }
+
+    resizeWindow()
+    window.addEventListener('resize', resizeWindow)
+    return () => window.removeEventListener('resize', resizeWindow)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [windowWidth])
+
   return (
     <TimeContext.Provider value={clockState}>
-      <NotifTimeContext.Provider value={[notifyTime, handleSetNotifyTime]}>
-        {children}
-      </NotifTimeContext.Provider>
+      <SidebarContext.Provider value={[sidebarOpen, toggleSidebar]}>
+        <NotifTimeContext.Provider value={[notifyTime, windowWidth, handleSetNotifyTime]}>
+          {children}
+        </NotifTimeContext.Provider>
+      </SidebarContext.Provider>
     </TimeContext.Provider>
   )
 }
