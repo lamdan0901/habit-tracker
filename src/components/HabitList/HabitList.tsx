@@ -13,19 +13,20 @@ import {
 import { BsTrash } from 'react-icons/bs'
 import Modal from 'react-modal'
 
+import habitsInspectionApi from '../../apis/habitsInspectionApi'
 import aibLogo from '../../assets/img/aib-logo.jpg'
 import HabitModal from '../../components/HabitModal/HabitModal'
-import { normalColor, checkColor, expirationColor } from '../../constants'
+import { checkColor, expirationColor, normalColor } from '../../constants'
 import { useClockState } from '../../contexts/UtilitiesProvider'
+import { HabitActions } from '../../pages/Home/Home'
 import { Habit, Performance } from '../../reducers/habitSlice'
-import axiosClient from '../../utils/axiosClient'
 import { sendBrowserNotif } from '../../utils/utilityFunctions'
 
 type HabitMainColor = { backgroundColor: string; color: string }
 
 interface HabitListProps {
   habitList: Habit[]
-  onGetHabits(commandText: string): void
+  onGetHabits(action?: HabitActions): void
   onEditHabit(id: number, habit: Habit): void
   onDeleteHabit(habit: Habit): void
 }
@@ -111,29 +112,36 @@ export default function HabitList({
 
     //* if performances (inspection list) is not created (performances.length==0), we make a POST request
     //* if performances is created (performances.length>0):
-    //***  if today is not in performances, we make a POST request
+    //***  if performances doesn't include today , we make a POST request
     //***  else we update by making a PATCH request
 
-    if (habitsCheck.includes(habit.id)) {
-      await axiosClient.patch(`/inspection/${inspectId}`, {
-        time: today,
-        isChecked: false,
-      })
+    if (habitsCheck.includes(habit.id) && inspectId) {
+      await habitsInspectionApi.patchInspection(
+        {
+          time: today,
+          isChecked: false,
+        },
+        inspectId,
+      )
 
       setHabitsCheck(habitsCheck.filter((checked_ID) => checked_ID !== habit.id))
       setAllHabitsCheck(false)
-      onGetHabits('')
+      onGetHabits()
     } else {
       if (
+        inspectId &&
         habit.performances.length !== 0 &&
         habit.performances.find((perf: Performance) => perf.time === today)
       ) {
-        await axiosClient.patch(`/inspection/${inspectId}`, {
-          time: today,
-          isChecked: true,
-        })
+        await habitsInspectionApi.patchInspection(
+          {
+            time: today,
+            isChecked: true,
+          },
+          inspectId,
+        )
       } else {
-        await axiosClient.post('/inspection', {
+        await habitsInspectionApi.postInspection({
           time: today,
           isChecked: true,
           habitId: habit.id,
@@ -143,7 +151,7 @@ export default function HabitList({
       habitsCheck.push(habit.id)
       setHabitsCheck([...habitsCheck])
       setAllHabitsCheck(habitsCheck.length === habitIds.length)
-      onGetHabits('')
+      onGetHabits()
     }
   }
 

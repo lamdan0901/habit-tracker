@@ -20,6 +20,11 @@ import {
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { sortHabits } from '../../utils/utilityFunctions'
 
+export enum HabitActions {
+  DisplayAll,
+  CanUndoDelete,
+}
+
 export default function Home() {
   document.title = 'Home - Habit App'
 
@@ -48,12 +53,15 @@ export default function Home() {
   greetingText += username + '!'
 
   useEffect(() => {
-    dispatchHabits('')
+    dispatchHabits()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function handleChangeHabitListDisplay() {
-    if (!shouldDisplayAllHabits) {
+    const shouldDisplayAll = !shouldDisplayAllHabits
+    setShouldDisplayAllHabits(shouldDisplayAll)
+
+    if (shouldDisplayAll) {
       setHabitList(habits)
     } else {
       const habitsOfToday = setHabitsOfToday(habits)
@@ -73,11 +81,11 @@ export default function Home() {
     return habitsOfToday
   }
 
-  function dispatchHabits(commandText: string) {
+  function dispatchHabits(action?: HabitActions) {
     dispatch(getHabits())
       .then((actionResult) => {
         const habits = sortHabits(unwrapResult(actionResult))
-        if (commandText === 'display all') {
+        if (action === HabitActions.DisplayAll) {
           setHabitList(habits)
         } else {
           const todayHabitList = setHabitsOfToday(habits)
@@ -98,9 +106,9 @@ export default function Home() {
         .then(() => {
           resolve()
           if (!shouldDisplayAllHabits) {
-            dispatchHabits('')
+            dispatchHabits()
           } else {
-            dispatchHabits('display all')
+            dispatchHabits(HabitActions.DisplayAll)
           }
         })
         .catch((err: any) => {
@@ -108,7 +116,7 @@ export default function Home() {
           console.error(err.message)
         }),
     )
-    displayNotif(msg ? msg : 'Habit is saved', notify, '')
+    displayNotif(msg ? msg : 'Habit is saved', notify)
   }
 
   function handleEditHabit(id: number, habit: Habit) {
@@ -117,9 +125,9 @@ export default function Home() {
         .then(() => {
           resolve()
           if (!shouldDisplayAllHabits) {
-            dispatchHabits('')
+            dispatchHabits()
           } else {
-            dispatchHabits('display all')
+            dispatchHabits(HabitActions.DisplayAll)
           }
         })
         .catch((err: any) => {
@@ -127,7 +135,7 @@ export default function Home() {
           console.error(err.message)
         }),
     )
-    displayNotif('Habit is saved', notify, '')
+    displayNotif('Habit is saved', notify)
   }
 
   function handleDeleteHabit(habit: Habit) {
@@ -136,9 +144,9 @@ export default function Home() {
         .then(() => {
           resolve()
           if (!shouldDisplayAllHabits) {
-            dispatchHabits('')
+            dispatchHabits()
           } else {
-            dispatchHabits('display all')
+            dispatchHabits(HabitActions.DisplayAll)
           }
         })
         .catch((err: any) => {
@@ -153,10 +161,10 @@ export default function Home() {
       reminderTime: habit.reminderTime,
       reminderDays: habit.reminderDays,
     }
-    displayNotif('Habit is deleted', notify, 'can undo delete')
+    displayNotif('Habit is deleted', notify, HabitActions.CanUndoDelete)
   }
 
-  function displayNotif(msg: string, notify: Promise<void>, deleteAction: string) {
+  function displayNotif(msg: string, notify: Promise<void>, action?: HabitActions) {
     toast.promise(notify, {
       pending: 'Working on it...',
       success: {
@@ -164,7 +172,7 @@ export default function Home() {
           return (
             <div>
               <span>{msg}</span>
-              {deleteAction === 'can undo delete' && (
+              {action === HabitActions.CanUndoDelete && (
                 <button
                   className="btn undo_delete-btn"
                   onClick={() => {
@@ -208,11 +216,8 @@ export default function Home() {
 
             <button
               className={habits.length !== 0 ? 'btn show-all-btn' : 'btn show-all-btn disabled'}
-              onClick={() => {
-                setShouldDisplayAllHabits(!shouldDisplayAllHabits)
-                handleChangeHabitListDisplay()
-              }}>
-              {!shouldDisplayAllHabits ? 'All habits' : "Today's habits"}
+              onClick={handleChangeHabitListDisplay}>
+              {!shouldDisplayAllHabits ? 'View all habits' : "View today's habits"}
             </button>
 
             <HabitModal

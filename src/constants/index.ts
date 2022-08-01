@@ -15,3 +15,4 @@ export const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 export const habitPath = '/habit'
 export const authPath = '/auth'
+export const inspectionPath = '/inspection'
