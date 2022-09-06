@@ -200,10 +200,16 @@ form.search-box {
 
 @media (max-width: $mobile) {
   .menu {
+    min-width: 130px;
+    max-width: 130px;
     padding-left: 10px;
 
     .aib-logo {
       left: 3px;
+    }
+
+    form.search-box {
+      width: 7rem;
     }
 
     &.minimized {

@@ -15,7 +15,7 @@ export default function ForgotPassword() {
   const emailRef = useRef('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
-  const { requestPasswordReset }: any = useAuth()
+  const { requestPasswordReset } = useAuth()
 
   async function handleSubmit(e: any) {
     e.preventDefault()

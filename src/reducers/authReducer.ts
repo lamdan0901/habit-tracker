@@ -1,6 +1,6 @@
+import { types } from '../constants'
 import axiosClient from '../utils/axiosClient'
 import TokenService from '../utils/tokenService'
-import * as types from '../contexts/types'
 
 export const authReducer = (state: string, action: any) => {
   switch (action.type) {

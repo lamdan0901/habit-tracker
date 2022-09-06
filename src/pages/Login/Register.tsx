@@ -23,8 +23,7 @@ export default function Register() {
 
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
-
-  const { register }: any = useAuth()
+  const { register } = useAuth()
 
   async function handleRegister(e: any) {
     e.preventDefault()

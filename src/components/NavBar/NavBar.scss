@@ -31,11 +31,11 @@
     outline: none;
     cursor: pointer;
 
-    img.user-avatar {
-      width: 30px;
-      height: 30px;
-      margin-right: 10px;
-    }
+    // img.user-avatar {
+    //   width: 30px;
+    //   height: 30px;
+    //   margin-right: 10px;
+    // }
 
     .user-name {
       pointer-events: none;
@@ -88,29 +88,23 @@
   }
 }
 
-@media screen and (min-width: 1366px) {
+@media screen and (min-width: $desktop) {
   .navbar {
     width: 1070px;
   }
 }
 
-@media screen and (max-width: 1366px) {
+@media screen and (max-width: $desktop) {
   .navbar {
     margin: 0 30px;
   }
 }
 
 @media screen and (max-width: $mobile) {
-  .navbar .user-info {
-    // width: 41px;
-    // border-radius: 50%;
-
-    img.user-avatar {
-      margin-right: 0px;
-    }
-
-    // .user-name {
-    //   display: none;
-    // }
+  .navbar .digi-clock {
+    font-size: 1em;
   }
+  // .user-info img.user-avatar {
+  //   margin-right: 0px;
+  // }
 }

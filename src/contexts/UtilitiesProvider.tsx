@@ -2,18 +2,17 @@ import React, { useContext, useEffect, useState } from 'react'
 import { sendBrowserNotif } from '../utils/utilityFunctions'
 import aibLogo from '../assets/img/aib-logo.jpg'
 
-const TimeContext = React.createContext('')
-const SidebarContext = React.createContext([{}, () => {}])
-const NotifTimeContext = React.createContext([{}, () => {}])
+const UtilitiesContext = React.createContext({
+  clockState: '',
+  sidebarOpen: false,
+  toggleSidebar() {},
+  notifyTime: '',
+  windowWidth: 0,
+  handleSetNotifyTime(_time: string) {},
+})
 
-export function useClockState() {
-  return useContext(TimeContext)
-}
-export function useSidebar() {
-  return useContext(SidebarContext)
-}
-export function useNotifTime() {
-  return useContext(NotifTimeContext)
+export function useUtilities() {
+  return useContext(UtilitiesContext)
 }
 
 export function UtilitiesProvider({ children }: any) {
@@ -79,13 +78,14 @@ export function UtilitiesProvider({ children }: any) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [windowWidth])
 
-  return (
-    <TimeContext.Provider value={clockState}>
-      <SidebarContext.Provider value={[sidebarOpen, toggleSidebar]}>
-        <NotifTimeContext.Provider value={[notifyTime, windowWidth, handleSetNotifyTime]}>
-          {children}
-        </NotifTimeContext.Provider>
-      </SidebarContext.Provider>
-    </TimeContext.Provider>
-  )
+  const value = {
+    clockState,
+    sidebarOpen,
+    toggleSidebar,
+    notifyTime,
+    windowWidth,
+    handleSetNotifyTime,
+  }
+
+  return <UtilitiesContext.Provider value={value}>{children}</UtilitiesContext.Provider>
 }

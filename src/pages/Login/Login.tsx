@@ -11,9 +11,6 @@ import { PeopleIcon, LockIcon } from '../../assets/icon'
 import 'pretty-checkbox/src/pretty-checkbox.scss'
 import './Login.scss'
 
-// in profile page, we keep navbar and remove sidebar
-// in login page is the same but remove user-info
-
 export default function Login() {
   document.title = 'Login - Habit App'
 
@@ -21,7 +18,7 @@ export default function Login() {
   const passwordRef = useRef('')
   const keepLoginRef = useRef<HTMLInputElement>()
 
-  const { login }: any = useAuth()
+  const { login } = useAuth()
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [isEmailNeedVerifying, setIsEmailNeedVerifying] = useState(false)
@@ -38,7 +35,7 @@ export default function Login() {
             username: usernameRef.current,
             password: passwordRef.current,
           },
-          keepLoginRef.current?.checked,
+          keepLoginRef.current!.checked,
         )
       } else setLoading(false)
     } catch (error: any) {

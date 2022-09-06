@@ -9,10 +9,11 @@ import habitsInspectionApi from '../../apis/habitsInspectionApi'
 import aibLogo from '../../assets/img/aib-logo.jpg'
 import HabitModal from '../../components/HabitModal/HabitModal'
 import { checkColor, expirationColor, normalColor } from '../../constants'
-import { useClockState } from '../../contexts/UtilitiesProvider'
+import { useUtilities } from '../../contexts/UtilitiesProvider'
 import { HabitActions } from '../../pages/Home/Home'
 import { Habit, Performance } from '../../reducers/habitSlice'
 import { sendBrowserNotif } from '../../utils/utilityFunctions'
+import clsx from 'clsx'
 
 type HabitMainColor = { backgroundColor: string; color: string }
 
@@ -32,6 +33,7 @@ export default function HabitList({
   const now = new Date()
   const convertedClockState = useRef('')
   const today = now.toISOString().slice(0, 10)
+  const { sidebarOpen, windowWidth } = useUtilities()
 
   const [isChecking, setIsChecking] = useState(false)
   const [habitModalOpened, setHabitModalOpened] = useState(false)
@@ -187,7 +189,7 @@ export default function HabitList({
 
   //**---- handle display habit color according to clockState and habitTime ----**//
 
-  const clockState: string = useClockState()
+  const { clockState } = useUtilities()
   const [habitMainColors, setHabitMainColors] = useState<HabitMainColor[]>([])
 
   useEffect(() => {
@@ -318,7 +320,11 @@ export default function HabitList({
         <div>
           <Checkbox
             color="primary"
-            className="all_done-checkbox"
+            className={clsx(
+              'all_done-checkbox',
+              windowWidth <= 480 && 'lower-1',
+              sidebarOpen && windowWidth <= 480 && 'lower-2',
+            )}
             checked={allHabitsChecked}
             style={allDoneColor}>
             All done
