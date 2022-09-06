@@ -1,19 +1,19 @@
 # Habit Tracker Webapp
 
-**_This website help you create, view, follow your habits_**
+**_This web application help you create, view, follow your habits_**
 
 ## Some functionalities
 
-- create, view, update, delete your habits
-- sleep time calculator, habit name searching
-- login/register with email and auth with JWT
-- check a habit to set it done by day
+- Create, view, update, delete habits
+- Calculate sleep time, habit name searching
+- User authentication with JWT
+- Check a habit to set it done
 
 ## Tech
 
 - ReactJS + Typescript
 - SCSS
-- Redux
+- Redux Toolkit
 - MUI
 
 ## Production site

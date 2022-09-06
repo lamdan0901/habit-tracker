@@ -14,7 +14,7 @@ interface MainLayoutProps {
   setIsSearching: Dispatch<SetStateAction<boolean>>
   onSetSearchHabits(habits: Habit[]): void
   children: React.ReactNode
-} //
+}
 
 export default function MainLayout({
   habits,

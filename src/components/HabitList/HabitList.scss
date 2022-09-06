@@ -8,7 +8,7 @@
   .all_done-checkbox {
     position: absolute;
     top: 150px;
-    z-index: 2;
+    z-index: 0;
     margin: 0px 0 10px 5px;
     padding: 10px 15px;
     height: 45px;
@@ -166,47 +166,28 @@
   }
 }
 
+.lower-1 {
+  top: 160px !important;
+}
+
+.lower-2 {
+  top: 220px !important;
+}
+
 // override the checkbox's text color
 span.jsx-2293672674.text,
 span.jsx-3904811003.text {
   color: inherit;
 }
 
-@media screen and (min-width: 1366px) {
+@media screen and (min-width: $desktop) {
   .habits-view {
     max-width: 1095px;
   }
 }
 
-@media screen and (max-width: $mobile) {
-  .habits-view {
-    // height: calc(100vh - 280px);
-    .all_done-checkbox {
-      top: 160px !important;
-    }
-
-    .habits-list li {
-      height: 100px;
-
-      .habit-name {
-        transform: translateY(-12.5px);
-      }
-
-      .habit-time {
-        top: 55px;
-      }
-
-      .delete-btn {
-        transform: translateY(30px);
-      }
-    }
-  }
-}
-
-@media screen and (max-width: 410px) {
-  .habits-view {
-    .all_done-checkbox {
-      top: 220px !important;
-    }
+@media screen and (max-width: $mobile_s) {
+  .habits-view .all_done-checkbox {
+    top: 220px !important;
   }
 }

@@ -6,7 +6,7 @@ import { StaticTimePicker } from '@mui/x-date-pickers'
 import { MobileTimePicker } from '@mui/x-date-pickers'
 
 import MainLayout from '../../layouts/MainLayout'
-import { useNotifTime } from '../../contexts/UtilitiesProvider'
+import { useUtilities } from '../../contexts/UtilitiesProvider'
 import './SleepCalculator.scss'
 
 type CalculatingTimeType = Array<{ hour: number | string; minute: number | string }>
@@ -14,7 +14,7 @@ type CalculatingTimeType = Array<{ hour: number | string; minute: number | strin
 export default function SleepCalculator() {
   document.title = 'Sleep Time Calculator'
 
-  const [notifyTime, windowWidth, handleSetNotifyTime]: any = useNotifTime()
+  const { notifyTime, windowWidth, handleSetNotifyTime } = useUtilities()
   const [resultsShowed, setResultsShowed] = useState(false)
   const [moreInfoShowed, setMoreInfoShowed] = useState(false)
   const [time, setTime] = useState(new Date())

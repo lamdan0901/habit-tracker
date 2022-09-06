@@ -13,8 +13,7 @@ export default function EmailVerification() {
   const codeRef = useRef('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
-
-  const { sendVerificationCode, verifyUserInfo }: any = useAuth()
+  const { sendVerificationCode, verifyUserInfo } = useAuth()
 
   async function handleVerifyEmail(e: any) {
     e.preventDefault()

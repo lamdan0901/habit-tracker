@@ -1,11 +1,10 @@
 import { createContext, useContext, useEffect, useReducer, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { authPath } from '../constants'
+import { authPath, types } from '../constants'
 
 import { authReducer } from '../reducers/authReducer'
 import axiosClient from '../utils/axiosClient'
 import TokenService from '../utils/tokenService'
-import * as types from './types'
 
 interface User {
   username: string
@@ -14,7 +13,16 @@ interface User {
   email?: string
 }
 
-const AuthContext = createContext(null)
+const AuthContext = createContext({
+  username: '',
+  signOut() {},
+  async register(_user: User) {},
+  async login(_user: User, _shouldKeepLogin: boolean) {},
+  async verifyUserInfo(_code: string) {},
+  async sendVerificationCode() {},
+  async requestPasswordReset(_email: string) {},
+  async resetPassword(_code: string, _newPassword: string) {},
+})
 
 export function useAuth() {
   return useContext(AuthContext)
@@ -118,6 +126,5 @@ export function AuthProvider({ children }: any) {
     resetPassword,
   }
 
-  // @ts-ignore
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>
 }

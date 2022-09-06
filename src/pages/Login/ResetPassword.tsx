@@ -15,8 +15,7 @@ export default function ResetPassword() {
 
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
-
-  const { resetPassword }: any = useAuth()
+  const { resetPassword } = useAuth()
 
   async function handleSubmit(e: any) {
     e.preventDefault()

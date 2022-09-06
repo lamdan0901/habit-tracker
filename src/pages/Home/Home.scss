@@ -22,7 +22,6 @@
     margin: 0px 15px 10px 5px;
     padding: 10px 15px;
     width: fit-content;
-    height: 45px;
     border-radius: 5px;
     color: #333;
     font-weight: 400;
@@ -77,24 +76,40 @@
     height: 170px;
 
     .show-all-btn {
-      top: 90px;
+      top: 90px !important;
     }
   }
 }
 
-@media screen and (max-width: 410px) {
+@media screen and (max-width: $mobile_s) {
   .header {
     height: 225px;
 
     h3 {
-      font-size: 16px;
+      font-size: 14px;
     }
     h2 {
-      font-size: 20px;
+      font-size: 18px;
     }
 
     .show-all-btn {
       left: 0;
+      top: 70px !important;
     }
   }
+}
+
+// @media screen and (max-width: 309px) {
+//   .header .show-all-btn {
+//     top: 70px !important;
+//   }
+// }
+
+.left-zero {
+  left: 0;
+  top: 70px !important;
+}
+
+.bigger-header {
+  height: 225px;
 }

@@ -223,7 +223,7 @@
   }
 }
 
-@media (min-width: 1366px) {
+@media (min-width: $desktop) {
   .more-info-wrapper {
     transform: translateX(25%);
   }

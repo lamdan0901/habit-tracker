@@ -8,7 +8,7 @@ import { NavLink } from 'react-router-dom'
 import { useDebouncedCallback } from 'use-debounce'
 
 import aibLogo from '../../assets/img/aib-logo.jpg'
-import { useSidebar } from '../../contexts/UtilitiesProvider'
+import { useUtilities } from '../../contexts/UtilitiesProvider'
 import { Habit } from '../../reducers/habitSlice'
 
 interface SidebarProps {
@@ -26,7 +26,7 @@ const navLinkItems = [
   {
     to: '/sleep-calculator',
     icon: <GiNightSleep />,
-    text: 'Sleep Calculator',
+    text: 'Sleep Time',
   },
   // {
   //   to: '/statistics',
@@ -36,7 +36,7 @@ const navLinkItems = [
 ]
 
 export default function Sidebar({ habits, setIsSearching, onSetSearchHabits }: SidebarProps) {
-  const [sidebarOpen, toggleSidebar]: any = useSidebar()
+  const { sidebarOpen, toggleSidebar } = useUtilities()
   const debounced = useDebouncedCallback(handleTextChange, 500)
 
   function handleTextChange(searchTextBox: string) {
@@ -55,7 +55,7 @@ export default function Sidebar({ habits, setIsSearching, onSetSearchHabits }: S
 
       <div className="sidebar-top">
         <div></div>
-        <span className="show-sidebar-btn" onClick={toggleSidebar}>
+        <span className="show-sidebar-btn" onClick={() => toggleSidebar()}>
           {sidebarOpen ? <AiOutlineMenuFold /> : <AiOutlineMenuUnfold />}
         </span>
       </div>
@@ -63,7 +63,7 @@ export default function Sidebar({ habits, setIsSearching, onSetSearchHabits }: S
       <form className="search-box">
         <button
           className="trigger-search-btn"
-          onClick={(e: any) => {
+          onClick={(e) => {
             e.stopPropagation()
             e.preventDefault()
             toggleSidebar()

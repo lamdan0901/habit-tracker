@@ -2,12 +2,14 @@ import './Home.scss'
 
 import { Loading } from '@nextui-org/react'
 import { unwrapResult } from '@reduxjs/toolkit'
+import clsx from 'clsx'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import HabitList from '../../components/HabitList/HabitList'
 import HabitModal from '../../components/HabitModal/HabitModal'
 import { useAuth } from '../../contexts/AuthProvider'
+import { useUtilities } from '../../contexts/UtilitiesProvider'
 import MainLayout from '../../layouts/MainLayout'
 import {
   createHabit,
@@ -32,7 +34,8 @@ export default function Home() {
   today = today.slice(0, 3) + ', ' + today.slice(3)
 
   const dispatch = useAppDispatch()
-  const { username }: any = useAuth()
+  const { username } = useAuth()
+  const { sidebarOpen, windowWidth } = useUtilities()
 
   const [loadingState, setLoadingState] = useState('idle')
   const [isSearching, setIsSearching] = useState(false)
@@ -208,14 +211,18 @@ export default function Home() {
       }}>
       {loadingState === 'resolved' ? (
         <div>
-          <div className="header">
+          <div className={clsx('header', sidebarOpen && windowWidth <= 480 && 'bigger-header')}>
             <span>
               <h3>{today}</h3>
               <h2>{greetingText}</h2>
             </span>
 
             <button
-              className={habits.length !== 0 ? 'btn show-all-btn' : 'btn show-all-btn disabled'}
+              className={clsx(
+                'btn show-all-btn',
+                habits.length === 0 && 'disabled',
+                sidebarOpen && windowWidth <= 480 && 'left-zero',
+              )}
               onClick={handleChangeHabitListDisplay}>
               {!shouldDisplayAllHabits ? 'View all habits' : "View today's habits"}
             </button>
