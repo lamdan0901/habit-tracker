@@ -4,11 +4,11 @@ import axiosClient from '../utils/axiosClient'
 interface Inspection {
   time: string
   isChecked: boolean
-  habitId?: number
+  habitId?: string
 }
 
 const habitsInspectionApi = {
-  patchInspection(inspection: Inspection, inspectId: number): Promise<any> {
+  patchInspection(inspection: Inspection, inspectId: string): Promise<any> {
     return axiosClient.patch(`${inspectionPath}/${inspectId}`, inspection).catch((error) => {
       throw error.toJSON()
     })

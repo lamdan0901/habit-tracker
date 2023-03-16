@@ -1,7 +1,6 @@
 import './Home.scss'
 
 import { Loading } from '@nextui-org/react'
-import { unwrapResult } from '@reduxjs/toolkit'
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
@@ -20,10 +19,8 @@ import {
   updateHabit,
 } from '../../reducers/habitSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { sortHabits } from '../../utils/utilityFunctions'
 
 export enum HabitActions {
-  DisplayAll,
   CanUndoDelete,
 }
 
@@ -76,25 +73,24 @@ export default function Home() {
     let habitsOfToday: Habit[] = []
     const today = new Date().getDay()
 
-    habits.forEach((habit: Habit) => {
-      if (habit.reminderDays.includes(today)) {
-        habitsOfToday.push(habit)
-      }
-    })
+    try {
+      habits.forEach((habit: Habit) => {
+        if (habit.reminderDays.includes(today)) {
+          habitsOfToday.push(habit)
+        }
+      })
+    } catch (err) {
+      console.log('err: ', err)
+    }
     return habitsOfToday
   }
 
-  function dispatchHabits(action?: HabitActions) {
+  function dispatchHabits() {
     dispatch(getHabits())
       .then((actionResult) => {
-        const habits = sortHabits(unwrapResult(actionResult))
-        if (action === HabitActions.DisplayAll) {
-          setHabitList(habits)
-        } else {
-          const todayHabitList = setHabitsOfToday(habits)
-          setHabitList(todayHabitList)
-        }
-        setShouldDisplayAllHabits(false)
+        // @ts-ignore
+        const habits = actionResult.payload.data
+        setHabitList(habits)
         setLoadingState('resolved')
       })
       .catch((err: any) => {
@@ -108,30 +104,22 @@ export default function Home() {
       dispatch(createHabit(habit))
         .then(() => {
           resolve()
-          if (!shouldDisplayAllHabits) {
-            dispatchHabits()
-          } else {
-            dispatchHabits(HabitActions.DisplayAll)
-          }
+          dispatchHabits()
+          displayNotif(msg ?? 'Habit is saved', notify)
         })
         .catch((err: any) => {
+          console.error(err)
+          displayNotif(msg ?? 'Habit is saved', notify)
           reject()
-          console.error(err.message)
         }),
     )
-    displayNotif(msg ? msg : 'Habit is saved', notify)
   }
-
-  function handleEditHabit(id: number, habit: Habit) {
+  function handleEditHabit(id: string, habit: Habit) {
     const notify = new Promise<void>((resolve, reject) =>
       dispatch(updateHabit({ id, habit }))
         .then(() => {
           resolve()
-          if (!shouldDisplayAllHabits) {
-            dispatchHabits()
-          } else {
-            dispatchHabits(HabitActions.DisplayAll)
-          }
+          dispatchHabits()
         })
         .catch((err: any) => {
           reject()
@@ -143,14 +131,10 @@ export default function Home() {
 
   function handleDeleteHabit(habit: Habit) {
     const notify = new Promise<void>((resolve, reject) =>
-      dispatch(deleteHabit(habit.id as number))
+      dispatch(deleteHabit(habit._id ?? ''))
         .then(() => {
           resolve()
-          if (!shouldDisplayAllHabits) {
-            dispatchHabits()
-          } else {
-            dispatchHabits(HabitActions.DisplayAll)
-          }
+          dispatchHabits()
         })
         .catch((err: any) => {
           reject()

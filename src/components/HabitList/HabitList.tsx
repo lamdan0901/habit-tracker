@@ -20,7 +20,7 @@ type HabitMainColor = { backgroundColor: string; color: string }
 interface HabitListProps {
   habitList: Habit[]
   onGetHabits(action?: HabitActions): void
-  onEditHabit(id: number, habit: Habit): void
+  onEditHabit(id: string, habit: Habit): void
   onDeleteHabit(habit: Habit): void
 }
 
@@ -66,16 +66,16 @@ export default function HabitList({
 
   //**---- handle update habit checkboxes and habit check----**//
 
-  const habitIds = habitList.map((habit: Habit) => habit.id)
-  const [habitsCheck, setHabitsCheck] = useState<number[]>([])
+  const habitIds = habitList.map((habit: Habit) => habit._id)
+  const [habitsCheck, setHabitsCheck] = useState<string[]>([])
   const [allHabitsChecked, setAllHabitsChecked] = useState(false)
 
   const updateHabitCheckBoxes = useCallback(() => {
-    let habitCheckList: number[] = []
+    let habitCheckList: string[] = []
 
     habitList.forEach((habit: Habit) => {
       if (isHabitCheckedToday(habit)) {
-        habitCheckList.push(habit.id as number)
+        habitCheckList.push(habit._id ?? '')
       }
     })
 
@@ -90,7 +90,7 @@ export default function HabitList({
   }, [updateHabitCheckBoxes])
 
   async function handleCheckHabit(habit: Habit) {
-    if (!habit.performances || !habit.id) {
+    if (!habit.performances || !habit._id) {
       return
     }
 
@@ -98,7 +98,7 @@ export default function HabitList({
     const todayPerformance = habit.performances.find((perf: Performance) => perf.time === today)
 
     if (todayPerformance) {
-      inspectionId = todayPerformance.id
+      inspectionId = todayPerformance._id
     }
 
     setIsChecking(true)
@@ -108,7 +108,7 @@ export default function HabitList({
     //***  if performances doesn't include today , we make a POST request
     //***  else we update by making a PATCH request
 
-    if (habitsCheck.includes(habit.id) && inspectionId) {
+    if (habitsCheck.includes(habit._id) && inspectionId) {
       await habitsInspectionApi.patchInspection(
         {
           time: today,
@@ -117,7 +117,7 @@ export default function HabitList({
         inspectionId,
       )
 
-      setHabitsCheck(habitsCheck.filter((checked_ID) => checked_ID !== habit.id))
+      setHabitsCheck(habitsCheck.filter((checked_ID) => checked_ID !== habit._id))
       setAllHabitsChecked(false)
       setIsChecking(false)
       onGetHabits()
@@ -138,11 +138,11 @@ export default function HabitList({
         await habitsInspectionApi.postInspection({
           time: today,
           isChecked: true,
-          habitId: habit.id,
+          habitId: habit._id,
         })
       }
 
-      habitsCheck.push(habit.id)
+      habitsCheck.push(habit._id)
       setHabitsCheck([...habitsCheck])
       setAllHabitsChecked(habitsCheck.length === habitIds.length)
       setIsChecking(false)
@@ -250,7 +250,7 @@ export default function HabitList({
 
     const unCheckedHabitsOfToday = habitList.filter(
       (habit: Habit) =>
-        habit.reminderDays.includes(now.getDay()) && !habitsCheck.includes(habit.id as number),
+        habit.reminderDays.includes(now.getDay()) && !habitsCheck.includes(habit._id ?? ''),
     )
     unCheckedHabitsOfToday.forEach((habit: Habit) => {
       if ((habit.reminderTime as string).localeCompare(convertedClockState.current) === 0) {
@@ -343,7 +343,7 @@ export default function HabitList({
                   color="success"
                   className="check-habit-box"
                   title="Click to check this habit"
-                  checked={habitsCheck.includes(habit.id as number)}
+                  checked={habitsCheck.includes(habit._id ?? '')}
                   onChange={() => {
                     handleCheckHabit(habit)
                   }}

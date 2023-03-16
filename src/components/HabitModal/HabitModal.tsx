@@ -15,7 +15,7 @@ interface HabitModalProps {
   isEditMode?: boolean
   isEditModalOpened: boolean
   onAddHabit(newHabit: Habit, msg: string): void
-  onEditHabit(id: number, habit: Habit): void
+  onEditHabit(id: string, habit: Habit): void
   onCloseModal(): void
 }
 
@@ -24,7 +24,7 @@ export default function HabitModal(props: HabitModalProps) {
 
   const initialHabitValues: Habit = props.isEditMode
     ? {
-        id: props.habit.id,
+        _id: props.habit._id,
         title: props.habit.title,
         description: props.habit.description,
         reminderTime: new Date(
@@ -53,11 +53,11 @@ export default function HabitModal(props: HabitModalProps) {
     newHabit.reminderTime = formatTime()
 
     if (props.isEditMode) {
-      const id = newHabit.id as number
-      delete newHabit.id
+      const id = newHabit._id
+      delete newHabit._id
       delete newHabit?.performances
 
-      props.onEditHabit(id, newHabit)
+      if (id) props.onEditHabit(id, newHabit)
     } else {
       props.onAddHabit(newHabit, '')
     }
@@ -115,24 +115,8 @@ export default function HabitModal(props: HabitModalProps) {
     if (!habit.title) {
       setTitleError('Title is not left blank!')
       return true
-    } else if (!habit.description) {
-      setDesError('Description is not left blank!')
-      return true
-    } else if (isHabitNameDuplicated(habit)) {
-      setTitleError('Title is duplicated!')
-      return true
     }
     return false
-  }
-
-  const isHabitNameDuplicated = (currentHabit: Habit) => {
-    if (!props.isEditMode) {
-      return props.habitList.find((habit: Habit) => habit.title === currentHabit.title)
-    } else {
-      return props.habitList
-        .filter((habit: Habit) => habit.title !== initialHabitValues.title)
-        .find((habit: Habit) => habit.title === currentHabit.title)
-    }
   }
 
   return (
@@ -204,8 +188,8 @@ export default function HabitModal(props: HabitModalProps) {
 
           <footer className="modal-footer">
             <div className="error-message">
-              {titleError !== '' ? titleError : ''}
-              {desError !== '' ? desError : ''}
+              {titleError ?? ''}
+              {desError ?? ''}
             </div>
             <div>
               <button className="btn confirm-btn" onClick={saveHabit}>

@@ -36,7 +36,8 @@ export default function Register() {
           email: emailRef.current,
           username: usernameRef.current,
           password: passwordRef.current,
-          fullName: fullNameRef.current,
+          firstName: fullNameRef.current,
+          lastName: fullNameRef.current,
         })
       } else setLoading(false)
     } catch (error: any) {
@@ -48,38 +49,38 @@ export default function Register() {
         )
       }
 
-      if (passwordRef.current && passwordConfirmRef.current) {
-        passwordRef.current = ''
-        passwordConfirmRef.current = ''
-      }
+      // if (passwordRef.current && passwordConfirmRef.current) {
+      //   passwordRef.current = ''
+      //   passwordConfirmRef.current = ''
+      // }
 
       setLoading(false)
     }
   }
 
   const allFieldsValid = () => {
-    if (!isEmail(emailRef.current)) {
-      setMessage('Invalid email')
-      return false
-    }
-    if (!isAlphanumeric(usernameRef.current) || !isLength(usernameRef.current, { min: 6 })) {
-      setMessage('Username must be at least 6 characters')
-      return false
-    }
-    if (isEmpty(fullNameRef.current)) {
-      setMessage('Full name not left blank')
-      return false
-    }
-    if (!isLength(passwordRef.current, { min: 8 })) {
-      setMessage('Password must be at least 8 characters')
-      return false
-    }
-    if (passwordRef.current !== passwordConfirmRef.current) {
-      setMessage("Passwords don't match")
-      passwordRef.current = ''
-      passwordConfirmRef.current = ''
-      return false
-    }
+    // if (!isEmail(emailRef.current)) {
+    //   setMessage('Invalid email')
+    //   return false
+    // }
+    // if (!isAlphanumeric(usernameRef.current) || !isLength(usernameRef.current, { min: 6 })) {
+    //   setMessage('Username must be at least 6 characters')
+    //   return false
+    // }
+    // if (isEmpty(fullNameRef.current)) {
+    //   setMessage('Full name not left blank')
+    //   return false
+    // }
+    // if (!isLength(passwordRef.current, { min: 8 })) {
+    //   setMessage('Password must be at least 8 characters')
+    //   return false
+    // }
+    // if (passwordRef.current !== passwordConfirmRef.current) {
+    //   setMessage("Passwords don't match")
+    //   passwordRef.current = ''
+    //   passwordConfirmRef.current = ''
+    //   return false
+    // }
     return true
   }
 

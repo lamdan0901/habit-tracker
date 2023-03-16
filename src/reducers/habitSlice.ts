@@ -1,12 +1,11 @@
 import { createSlice, SerializedError, createAsyncThunk } from '@reduxjs/toolkit'
 
 import habitsApi from '../apis/habitsApi'
-import { sortHabits } from '../utils/utilityFunctions'
 
-export type Performance = { id: number; time: string; isChecked: boolean; habitId: number }
+export type Performance = { _id: string; time: string; isChecked: boolean; habitId: number }
 
 export interface Habit {
-  id?: number
+  _id?: string
   title: string
   description: string
   reminderTime: Date | string
@@ -24,7 +23,7 @@ export interface DeletedHabit {
 }
 
 interface UpdateHabitPayload {
-  id: number
+  id: string
   habit: Habit
 }
 
@@ -45,7 +44,11 @@ export const getHabits = createAsyncThunk('getHabits', async () => {
 })
 
 export const createHabit = createAsyncThunk('postHabit', async (habit: Habit | DeletedHabit) => {
-  return habitsApi.postHabit(habit)
+  try {
+    return habitsApi.postHabit(habit)
+  } catch (err) {
+    throw err
+  }
 })
 
 export const updateHabit = createAsyncThunk(
@@ -55,7 +58,7 @@ export const updateHabit = createAsyncThunk(
   },
 )
 
-export const deleteHabit = createAsyncThunk('deleteHabit', async (id: number) => {
+export const deleteHabit = createAsyncThunk('deleteHabit', async (id: string) => {
   return habitsApi.deleteHabit(id)
 })
 
@@ -70,7 +73,8 @@ export const habitSlice = createSlice({
     })
     builder.addCase(getHabits.fulfilled, (state, { payload }) => {
       state.isFetching = false
-      state.value = sortHabits(payload)
+      // @ts-ignore
+      state.value = payload.data
     })
     builder.addCase(getHabits.rejected, (state, action) => {
       state.isFetching = false
@@ -87,6 +91,7 @@ export const habitSlice = createSlice({
     builder.addCase(createHabit.rejected, (state, action) => {
       state.isFetching = false
       state.error = action.error
+      throw action.error
     })
 
     // * --- updateHabit ---

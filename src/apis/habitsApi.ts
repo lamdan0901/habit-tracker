@@ -19,13 +19,13 @@ const habitsApi = {
     })
   },
 
-  putHabit(id: number, habit: Habit): Promise<any> {
+  putHabit(id: string, habit: Habit): Promise<any> {
     return axiosClient.patch(`${habitPath}/${id}`, habit).catch((error) => {
       throw error.toJSON()
     })
   },
 
-  deleteHabit(id: number): Promise<any> {
+  deleteHabit(id: string): Promise<any> {
     return axiosClient.delete(`${habitPath}/${id}`).catch((error) => {
       throw error.toJSON()
     })

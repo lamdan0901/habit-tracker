@@ -35,7 +35,7 @@ export function AuthProvider({ children }: any) {
 
   async function register(user: User) {
     try {
-      await axiosClient.post(`${authPath}/register`, user)
+      await axiosClient.post(`${authPath}/signup`, user)
       dispatch({ type: types.REGISTER, payload: user })
       navigate('/verify-email')
     } catch (err) {
@@ -46,7 +46,10 @@ export function AuthProvider({ children }: any) {
   async function login(user: User, shouldKeepLogin: boolean) {
     try {
       const res = await axiosClient.post(`${authPath}/login`, user)
-      dispatch({ type: types.LOGIN, payload: { res, username: user.username, shouldKeepLogin } })
+      dispatch({
+        type: types.LOGIN,
+        payload: { res, username: user.username, shouldKeepLogin },
+      })
       navigate('/')
     } catch (err) {
       throw err
@@ -108,7 +111,7 @@ export function AuthProvider({ children }: any) {
   useEffect(() => {
     const ACCESS_TOKEN = TokenService.getLocalAccessToken()
     if (ACCESS_TOKEN) {
-      axiosClient.defaults.headers.common['Authorization'] = `Bearer ${ACCESS_TOKEN}`
+      axiosClient.defaults.headers.common['Authorization'] = ACCESS_TOKEN
       dispatch({ type: types.SET_USER, payload: localStorage.getItem('username') })
     }
 

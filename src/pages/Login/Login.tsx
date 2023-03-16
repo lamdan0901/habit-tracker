@@ -39,8 +39,9 @@ export default function Login() {
         )
       } else setLoading(false)
     } catch (error: any) {
+      console.log('error: ', error.response)
       if (error.response.data) {
-        const errorMsg = error.response.data.message
+        const errorMsg = error.response.data.error.message
         if (errorMsg === 'Please verify your email.') {
           setIsEmailNeedVerifying(true)
         } else {
@@ -52,20 +53,20 @@ export default function Login() {
         )
       }
 
-      if (passwordRef.current) passwordRef.current = ''
+      // if (passwordRef.current) passwordRef.current = ''
       setLoading(false)
     }
   }
 
   const allFieldsValid = () => {
-    if (!isAlphanumeric(usernameRef.current) || !isLength(usernameRef.current, { min: 6 })) {
-      setMessage('Username must be at least 6 characters')
-      return false
-    }
-    if (!isLength(passwordRef.current, { min: 8 })) {
-      setMessage('Password must be at least 8 characters')
-      return false
-    }
+    // if (!isAlphanumeric(usernameRef.current) || !isLength(usernameRef.current, { min: 6 })) {
+    //   setMessage('Username must be at least 6 characters')
+    //   return false
+    // }
+    // if (!isLength(passwordRef.current, { min: 8 })) {
+    //   setMessage('Password must be at least 8 characters')
+    //   return false
+    // }
     return true
   }
 
