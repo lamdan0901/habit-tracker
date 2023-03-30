@@ -71,7 +71,7 @@ export default function EmailVerification() {
           <AuthInput
             parentClass="username"
             inputClass="user-input"
-            inputType="number"
+            inputType="text"
             placeHolder="your code"
             icon={<PhoneIcon />}
             inputRef={codeRef}

@@ -64,7 +64,7 @@ export function AuthProvider({ children }: any) {
   async function sendVerificationCode() {
     try {
       const email = localStorage.getItem('email')
-      const res = await axiosClient.post(`${authPath}/send-token`, { email })
+      const res = await axiosClient.post(`${authPath}/resend-code`, { email })
       // @ts-ignore
       dispatch({ type: types.SEND_VERIFY_EMAIL, payload: res.message })
     } catch (err) {
@@ -72,10 +72,10 @@ export function AuthProvider({ children }: any) {
     }
   }
 
-  async function verifyUserInfo(code: string) {
+  async function verifyUserInfo(verificationCode: string) {
     try {
       const email = localStorage.getItem('email')
-      await axiosClient.post(`${authPath}/verify-token`, { email, code })
+      await axiosClient.post(`${authPath}/verify-email`, { email, verificationCode })
       dispatch({ type: types.VERIFY_USER })
       navigate('/login')
     } catch (err) {

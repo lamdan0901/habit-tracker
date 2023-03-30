@@ -19,10 +19,7 @@ import {
   updateHabit,
 } from '../../reducers/habitSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-
-export enum HabitActions {
-  CanUndoDelete,
-}
+import Pagination from '../../components/Pagination/Pagination'
 
 export default function Home() {
   document.title = 'Home - Habit App'
@@ -34,15 +31,14 @@ export default function Home() {
   const { username } = useAuth()
   const { sidebarOpen, windowWidth } = useUtilities()
 
+  const [currentPage, setCurrentPage] = useState(1)
   const [loadingState, setLoadingState] = useState('idle')
-  const [isSearching, setIsSearching] = useState(false)
+  const [searchText, setSearchText] = useState('')
 
-  const habits: Habit[] = useAppSelector((state) => state.habits.value)
+  const { data: habits, numOfPages } = useAppSelector((state) => state.habits.value)
   const [habitList, setHabitList] = useState(habits)
-  const [searchHabits, setSearchHabits] = useState(habits)
-  let deletedHabit: DeletedHabit
 
-  const [shouldDisplayAllHabits, setShouldDisplayAllHabits] = useState(false)
+  const [showTodaysHabits, setShowTodaysHabits] = useState(false)
 
   const currentHour = parseInt(new Date().toString().slice(16, 18))
   let greetingText = 'Good morning, '
@@ -53,40 +49,26 @@ export default function Home() {
   greetingText += username + '!'
 
   useEffect(() => {
-    dispatchHabits()
+    dispatchHabits({ search: searchText, page: currentPage, viewTodayHabits: showTodaysHabits })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [currentPage, searchText])
 
   function handleChangeHabitListDisplay() {
-    const shouldDisplayAll = !shouldDisplayAllHabits
-    setShouldDisplayAllHabits(shouldDisplayAll)
-
-    if (shouldDisplayAll) {
-      setHabitList(habits)
-    } else {
-      const habitsOfToday = setHabitsOfToday(habits)
-      setHabitList(habitsOfToday)
-    }
+    dispatchHabits({ search: searchText, page: 1, viewTodayHabits: !showTodaysHabits })
+    setCurrentPage(1)
+    setShowTodaysHabits(!showTodaysHabits)
   }
 
-  function setHabitsOfToday(habits: Habit[]) {
-    let habitsOfToday: Habit[] = []
-    const today = new Date().getDay()
-
-    try {
-      habits.forEach((habit: Habit) => {
-        if (habit.reminderDays.includes(today)) {
-          habitsOfToday.push(habit)
-        }
-      })
-    } catch (err) {
-      console.log('err: ', err)
-    }
-    return habitsOfToday
+  function handleSearchTextChange(text: string) {
+    setSearchText(text)
   }
 
-  function dispatchHabits() {
-    dispatch(getHabits())
+  function dispatchHabits(params?: GetHabitsParams) {
+    if (!params) {
+      params = { search: searchText, page: currentPage, viewTodayHabits: showTodaysHabits }
+    }
+
+    dispatch(getHabits(params))
       .then((actionResult) => {
         // @ts-ignore
         const habits = actionResult.payload.data
@@ -99,21 +81,24 @@ export default function Home() {
       })
   }
 
-  function handleAddHabit(habit: Habit | DeletedHabit, msg: string) {
+  function handleAddHabit(habit: Habit | DeletedHabit) {
     const notify = new Promise<void>((resolve, reject) =>
       dispatch(createHabit(habit))
+        .unwrap()
         .then(() => {
-          resolve()
+          console.log('here')
           dispatchHabits()
-          displayNotif(msg ?? 'Habit is saved', notify)
+          resolve()
         })
         .catch((err: any) => {
-          console.error(err)
-          displayNotif(msg ?? 'Habit is saved', notify)
+          console.error('err', err)
           reject()
         }),
     )
+
+    displayNotif('Add ', notify)
   }
+
   function handleEditHabit(id: string, habit: Habit) {
     const notify = new Promise<void>((resolve, reject) =>
       dispatch(updateHabit({ id, habit }))
@@ -123,10 +108,10 @@ export default function Home() {
         })
         .catch((err: any) => {
           reject()
-          console.error(err.message)
+          console.error(err.status)
         }),
     )
-    displayNotif('Habit is saved', notify)
+    displayNotif('Update ', notify)
   }
 
   function handleDeleteHabit(habit: Habit) {
@@ -142,34 +127,15 @@ export default function Home() {
         }),
     )
 
-    deletedHabit = {
-      title: habit.title,
-      description: habit.description,
-      reminderTime: habit.reminderTime,
-      reminderDays: habit.reminderDays,
-    }
-    displayNotif('Habit is deleted', notify, HabitActions.CanUndoDelete)
+    displayNotif('Delete ', notify)
   }
 
-  function displayNotif(msg: string, notify: Promise<void>, action?: HabitActions) {
+  function displayNotif(msg: string, notify: Promise<void>) {
     toast.promise(notify, {
       pending: 'Working on it...',
       success: {
         render() {
-          return (
-            <div>
-              <span>{msg}</span>
-              {action === HabitActions.CanUndoDelete && (
-                <button
-                  className="btn undo_delete-btn"
-                  onClick={() => {
-                    handleAddHabit(deletedHabit, 'Undo delete successfully!')
-                  }}>
-                  UNDO DELETE
-                </button>
-              )}
-            </div>
-          )
+          return msg + 'habit successfully!'
         },
         hideProgressBar: true,
         closeOnClick: true,
@@ -187,12 +153,7 @@ export default function Home() {
   }
 
   return (
-    <MainLayout
-      habits={habitList}
-      setIsSearching={setIsSearching}
-      onSetSearchHabits={(habits: Habit[]) => {
-        setSearchHabits(habits)
-      }}>
+    <MainLayout habits={habitList} onSearchTextChange={handleSearchTextChange}>
       {loadingState === 'resolved' ? (
         <div>
           <div className={clsx('header', sidebarOpen && windowWidth <= 480 && 'bigger-header')}>
@@ -202,13 +163,9 @@ export default function Home() {
             </span>
 
             <button
-              className={clsx(
-                'btn show-all-btn',
-                habits.length === 0 && 'disabled',
-                sidebarOpen && windowWidth <= 480 && 'left-zero',
-              )}
+              className={clsx('btn show-all-btn', sidebarOpen && windowWidth <= 480 && 'left-zero')}
               onClick={handleChangeHabitListDisplay}>
-              {!shouldDisplayAllHabits ? 'View all habits' : "View today's habits"}
+              {showTodaysHabits ? 'Show all habits' : "Show today's habits"}
             </button>
 
             <HabitModal
@@ -223,10 +180,16 @@ export default function Home() {
           </div>
 
           <HabitList
-            habitList={isSearching ? searchHabits : habitList}
+            habitList={habitList}
             onGetHabits={dispatchHabits}
             onEditHabit={handleEditHabit}
             onDeleteHabit={handleDeleteHabit}
+          />
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={numOfPages}
+            onPageChange={(pageNumber) => setCurrentPage(pageNumber)}
           />
         </div>
       ) : loadingState === 'rejected' ? (

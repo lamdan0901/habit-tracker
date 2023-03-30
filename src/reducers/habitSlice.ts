@@ -27,26 +27,37 @@ interface UpdateHabitPayload {
   habit: Habit
 }
 
+interface HabitResponse {
+  data: Habit[]
+  currentPage: number
+  numOfPages: number
+}
+
 export interface HabitState {
-  value: Habit[]
+  value: HabitResponse
   isFetching?: boolean
   error?: SerializedError
 }
 
 const initialState: HabitState = {
-  value: [],
+  value: { data: [], numOfPages: 1, currentPage: 1 },
   isFetching: false,
   error: undefined,
 }
 
-export const getHabits = createAsyncThunk('getHabits', async () => {
-  return habitsApi.getAllHabits() as unknown as Habit[]
+export const getHabits = createAsyncThunk('getHabits', async (params?: GetHabitsParams) => {
+  try {
+    return habitsApi.getAllHabits(params) as unknown as HabitResponse
+  } catch (err) {
+    throw err
+  }
 })
 
 export const createHabit = createAsyncThunk('postHabit', async (habit: Habit | DeletedHabit) => {
   try {
     return habitsApi.postHabit(habit)
   } catch (err) {
+    console.log('err: ', err)
     throw err
   }
 })
@@ -73,8 +84,7 @@ export const habitSlice = createSlice({
     })
     builder.addCase(getHabits.fulfilled, (state, { payload }) => {
       state.isFetching = false
-      // @ts-ignore
-      state.value = payload.data
+      state.value = payload
     })
     builder.addCase(getHabits.rejected, (state, action) => {
       state.isFetching = false
@@ -91,6 +101,7 @@ export const habitSlice = createSlice({
     builder.addCase(createHabit.rejected, (state, action) => {
       state.isFetching = false
       state.error = action.error
+      console.log('action.error: ', action)
       throw action.error
     })
 

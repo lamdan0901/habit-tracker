@@ -47,7 +47,10 @@ export default function HabitModal(props: HabitModalProps) {
   const [desError, setDesError] = useState('')
 
   function saveHabit() {
-    if (isHabitInputsInvalid()) return
+    if (!habit.title) {
+      setTitleError('Title is not left blank!')
+      return
+    }
 
     let newHabit = habit
     newHabit.reminderTime = formatTime()
@@ -106,17 +109,6 @@ export default function HabitModal(props: HabitModalProps) {
     setHabit(initialHabitValues)
     setTitleError('')
     setDesError('')
-  }
-
-  const isHabitInputsInvalid = () => {
-    setDesError('')
-    setTitleError('')
-
-    if (!habit.title) {
-      setTitleError('Title is not left blank!')
-      return true
-    }
-    return false
   }
 
   return (

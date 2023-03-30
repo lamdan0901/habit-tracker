@@ -10,7 +10,6 @@ import aibLogo from '../../assets/img/aib-logo.jpg'
 import HabitModal from '../../components/HabitModal/HabitModal'
 import { checkColor, expirationColor, normalColor } from '../../constants'
 import { useUtilities } from '../../contexts/UtilitiesProvider'
-import { HabitActions } from '../../pages/Home/Home'
 import { Habit, Performance } from '../../reducers/habitSlice'
 import { sendBrowserNotif } from '../../utils/utilityFunctions'
 import clsx from 'clsx'
@@ -19,7 +18,7 @@ type HabitMainColor = { backgroundColor: string; color: string }
 
 interface HabitListProps {
   habitList: Habit[]
-  onGetHabits(action?: HabitActions): void
+  onGetHabits(params?: GetHabitsParams): void
   onEditHabit(id: string, habit: Habit): void
   onDeleteHabit(habit: Habit): void
 }
@@ -119,8 +118,6 @@ export default function HabitList({
 
       setHabitsCheck(habitsCheck.filter((checked_ID) => checked_ID !== habit._id))
       setAllHabitsChecked(false)
-      setIsChecking(false)
-      onGetHabits()
     } else {
       if (
         inspectionId &&
@@ -145,9 +142,10 @@ export default function HabitList({
       habitsCheck.push(habit._id)
       setHabitsCheck([...habitsCheck])
       setAllHabitsChecked(habitsCheck.length === habitIds.length)
-      setIsChecking(false)
-      onGetHabits()
     }
+
+    setIsChecking(false)
+    onGetHabits()
   }
 
   //**---- handle change the habits list's grid layout according to its width ----**//
@@ -317,19 +315,17 @@ export default function HabitList({
       )}
 
       <div className="habits-view">
-        <div>
-          <Checkbox
-            color="primary"
-            className={clsx(
-              'all_done-checkbox',
-              windowWidth <= 480 && 'lower-1',
-              sidebarOpen && windowWidth <= 480 && 'lower-2',
-            )}
-            checked={allHabitsChecked}
-            style={allDoneColor}>
-            All done
-          </Checkbox>
-        </div>
+        <Checkbox
+          color="primary"
+          className={clsx(
+            'all_done-checkbox',
+            windowWidth <= 480 && 'lower-1',
+            sidebarOpen && windowWidth <= 480 && 'lower-2',
+          )}
+          checked={allHabitsChecked}
+          style={allDoneColor}>
+          All done
+        </Checkbox>
 
         <ul
           className="habits-list"

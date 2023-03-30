@@ -22,6 +22,7 @@ axiosClient.interceptors.request.use(
     return config
   },
   (error) => {
+    console.log('errorzzzzz: ', error)
     throw error
   },
 )
@@ -33,7 +34,6 @@ axiosClient.interceptors.response.use(
   async (error) => {
     const originalConfig = error.config
 
-    console.log('error.response: ', error.response)
     if (
       originalConfig.url !== '/auth/login' &&
       originalConfig.url !== '/auth/signup' &&
@@ -65,9 +65,13 @@ axiosClient.interceptors.response.use(
         localStorage.clear()
         localStorage.setItem('msg', 'Your session has expired. Please login again.')
         window.location.href = '/login'
+        return
       }
     }
-    throw error
+
+    console.log('error.response: ', error.response)
+
+    throw error.response.status
   },
 )
 
