@@ -1,9 +1,9 @@
 import { habitPath } from '../constants'
-import { DeletedHabit, Habit } from '../reducers/habitSlice'
 import axiosClient from '../utils/axiosClient'
 
 interface ListResponse<T> {
   data: T[]
+  numOfPages?: number
 }
 
 const habitsApi = {

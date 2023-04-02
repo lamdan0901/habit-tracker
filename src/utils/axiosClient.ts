@@ -29,7 +29,7 @@ axiosClient.interceptors.request.use(
 
 axiosClient.interceptors.response.use(
   (response) => {
-    if (response && response.data) return response.data
+    if (response?.data) return response.data
   },
   async (error) => {
     const originalConfig = error.config
@@ -68,8 +68,6 @@ axiosClient.interceptors.response.use(
         return
       }
     }
-
-    console.log('error.response: ', error.response)
 
     throw error.response.status
   },

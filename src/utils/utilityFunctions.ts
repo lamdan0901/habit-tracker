@@ -21,3 +21,15 @@ export const sendBrowserNotif = (title: string, body: string, icon: string) => {
     console.warn(`Failed, Notification Permission is ${Notification.permission}`)
   }
 }
+
+export const greetingText = (username: string) => {
+  const currentHour = parseInt(new Date().toString().slice(16, 18))
+  let greetingText = 'Good morning, '
+  if (currentHour >= 12) {
+    if (currentHour < 18) greetingText = 'Good afternoon, '
+    else greetingText = 'Good evening, '
+  }
+  greetingText += username + '!'
+
+  return greetingText
+}

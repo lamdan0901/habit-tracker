@@ -10,7 +10,6 @@ import aibLogo from '../../assets/img/aib-logo.jpg'
 import HabitModal from '../../components/HabitModal/HabitModal'
 import { checkColor, expirationColor, normalColor } from '../../constants'
 import { useUtilities } from '../../contexts/UtilitiesProvider'
-import { Habit, Performance } from '../../reducers/habitSlice'
 import { sendBrowserNotif } from '../../utils/utilityFunctions'
 import clsx from 'clsx'
 
@@ -304,12 +303,10 @@ export default function HabitList({
     <>
       {habitModalOpened && (
         <HabitModal
-          isEditMode={true}
           isEditModalOpened={habitModalOpened}
           habit={currentHabit as Habit}
           habitList={habitList}
           onEditHabit={onEditHabit}
-          onAddHabit={() => {}}
           onCloseModal={handleCloseHabitModal}
         />
       )}
@@ -371,7 +368,7 @@ export default function HabitList({
             ))
           ) : (
             <div className="no-habit-msg">
-              <p>You don't have any habits yet! Click</p>
+              <p>No habits found! Click</p>
               <span className="add-btn-icon">+</span>
               <p> to add one</p>
             </div>

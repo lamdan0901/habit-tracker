@@ -6,13 +6,6 @@ import { authReducer } from '../reducers/authReducer'
 import axiosClient from '../utils/axiosClient'
 import TokenService from '../utils/tokenService'
 
-interface User {
-  username: string
-  password: string
-  fullName?: string
-  email?: string
-}
-
 const AuthContext = createContext({
   username: '',
   signOut() {},
