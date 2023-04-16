@@ -7,9 +7,6 @@ package-lock.json
 # production
 /build
 /dist
-vite.config.ts
-favicon.ico
-index.html
 deploy.sh
 .env
 
