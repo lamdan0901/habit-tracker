@@ -13,9 +13,9 @@ export const expirationColor = {
 
 export const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
-export const habitPath = '/habit'
+export const habitPath = '/habits'
 export const authPath = '/auth'
-export const inspectionPath = '/inspection'
+export const inspectionPath = 'habits/inspection'
 
 export const types = {
   REGISTER: 'REGISTER',

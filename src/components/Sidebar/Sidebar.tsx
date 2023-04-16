@@ -13,8 +13,7 @@ import { Habit } from '../../reducers/habitSlice'
 
 interface SidebarProps {
   habits: Habit[]
-  setIsSearching(isSearching: boolean): void
-  onSetSearchHabits(habits: Habit[]): void
+  onSearchTextChange(search: string): void
 }
 
 const navLinkItems = [
@@ -35,18 +34,12 @@ const navLinkItems = [
   // },
 ]
 
-export default function Sidebar({ habits, setIsSearching, onSetSearchHabits }: SidebarProps) {
+export default function Sidebar({ onSearchTextChange }: SidebarProps) {
   const { sidebarOpen, toggleSidebar } = useUtilities()
   const debounced = useDebouncedCallback(handleTextChange, 500)
 
-  function handleTextChange(searchTextBox: string) {
-    if (searchTextBox) {
-      let filteredHabits = habits.filter((habit: Habit) =>
-        habit.title.toLowerCase().includes(searchTextBox.toLowerCase()),
-      )
-      setIsSearching(true)
-      onSetSearchHabits(filteredHabits)
-    } else setIsSearching(false)
+  function handleTextChange(search: string) {
+    onSearchTextChange(search)
   }
 
   return (

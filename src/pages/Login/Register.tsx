@@ -36,7 +36,8 @@ export default function Register() {
           email: emailRef.current,
           username: usernameRef.current,
           password: passwordRef.current,
-          fullName: fullNameRef.current,
+          firstName: fullNameRef.current,
+          lastName: fullNameRef.current,
         })
       } else setLoading(false)
     } catch (error: any) {

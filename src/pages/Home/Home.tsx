@@ -1,191 +1,78 @@
 import './Home.scss'
 
-import { Loading } from '@nextui-org/react'
-import { unwrapResult } from '@reduxjs/toolkit'
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { CircularProgress, Stack } from '@mui/material'
 
 import HabitList from '../../components/HabitList/HabitList'
 import HabitModal from '../../components/HabitModal/HabitModal'
 import { useAuth } from '../../contexts/AuthProvider'
 import { useUtilities } from '../../contexts/UtilitiesProvider'
 import MainLayout from '../../layouts/MainLayout'
-import {
-  createHabit,
-  DeletedHabit,
-  deleteHabit,
-  getHabits,
-  Habit,
-  updateHabit,
-} from '../../reducers/habitSlice'
+import { createHabit, deleteHabit, getHabits, updateHabit } from '../../reducers/habitSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { sortHabits } from '../../utils/utilityFunctions'
-
-export enum HabitActions {
-  DisplayAll,
-  CanUndoDelete,
-}
+import Pagination from '../../components/Pagination/Pagination'
+import { greetingText } from '../../utils/utilityFunctions'
 
 export default function Home() {
   document.title = 'Home - Habit App'
-
-  let today = new Date().toDateString()
-  today = today.slice(0, 3) + ', ' + today.slice(3)
+  const today = new Date().toDateString()
 
   const dispatch = useAppDispatch()
   const { username } = useAuth()
   const { sidebarOpen, windowWidth } = useUtilities()
+  const { data: habits, numOfPages } = useAppSelector((state) => state.habits.value)
 
+  const [currentPage, setCurrentPage] = useState(1)
   const [loadingState, setLoadingState] = useState('idle')
-  const [isSearching, setIsSearching] = useState(false)
-
-  const habits: Habit[] = useAppSelector((state) => state.habits.value)
-  const [habitList, setHabitList] = useState(habits)
-  const [searchHabits, setSearchHabits] = useState(habits)
-  let deletedHabit: DeletedHabit
-
-  const [shouldDisplayAllHabits, setShouldDisplayAllHabits] = useState(false)
-
-  const currentHour = parseInt(new Date().toString().slice(16, 18))
-  let greetingText = 'Good morning, '
-  if (currentHour >= 12) {
-    if (currentHour < 18) greetingText = 'Good afternoon, '
-    else greetingText = 'Good evening, '
-  }
-  greetingText += username + '!'
+  const [searchText, setSearchText] = useState('')
+  const [showTodaysHabits, setShowTodaysHabits] = useState(false)
 
   useEffect(() => {
-    dispatchHabits()
+    dispatchHabits({ search: searchText, page: currentPage, viewTodayHabits: showTodaysHabits })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [currentPage, searchText])
 
   function handleChangeHabitListDisplay() {
-    const shouldDisplayAll = !shouldDisplayAllHabits
-    setShouldDisplayAllHabits(shouldDisplayAll)
+    dispatchHabits({ search: searchText, page: 1, viewTodayHabits: !showTodaysHabits })
+    setCurrentPage(1)
+    setShowTodaysHabits(!showTodaysHabits)
+  }
 
-    if (shouldDisplayAll) {
-      setHabitList(habits)
-    } else {
-      const habitsOfToday = setHabitsOfToday(habits)
-      setHabitList(habitsOfToday)
+  function dispatchHabits(params?: GetHabitsParams) {
+    if (!params) {
+      params = { search: searchText, page: currentPage, viewTodayHabits: showTodaysHabits }
+    }
+
+    try {
+      dispatch(getHabits(params))
+      setLoadingState('resolved')
+    } catch (err: any) {
+      setLoadingState('rejected')
+      console.error(err.message)
     }
   }
 
-  function setHabitsOfToday(habits: Habit[]) {
-    let habitsOfToday: Habit[] = []
-    const today = new Date().getDay()
-
-    habits.forEach((habit: Habit) => {
-      if (habit.reminderDays.includes(today)) {
-        habitsOfToday.push(habit)
-      }
-    })
-    return habitsOfToday
+  function handleAddHabit(habit: Habit | DeletedHabit) {
+    handlePromise(dispatch(createHabit(habit)))
   }
 
-  function dispatchHabits(action?: HabitActions) {
-    dispatch(getHabits())
-      .then((actionResult) => {
-        const habits = sortHabits(unwrapResult(actionResult))
-        if (action === HabitActions.DisplayAll) {
-          setHabitList(habits)
-        } else {
-          const todayHabitList = setHabitsOfToday(habits)
-          setHabitList(todayHabitList)
-        }
-        setShouldDisplayAllHabits(false)
-        setLoadingState('resolved')
-      })
-      .catch((err: any) => {
-        setLoadingState('rejected')
-        console.error(err.message)
-      })
-  }
-
-  function handleAddHabit(habit: Habit | DeletedHabit, msg: string) {
-    const notify = new Promise<void>((resolve, reject) =>
-      dispatch(createHabit(habit))
-        .then(() => {
-          resolve()
-          if (!shouldDisplayAllHabits) {
-            dispatchHabits()
-          } else {
-            dispatchHabits(HabitActions.DisplayAll)
-          }
-        })
-        .catch((err: any) => {
-          reject()
-          console.error(err.message)
-        }),
-    )
-    displayNotif(msg ? msg : 'Habit is saved', notify)
-  }
-
-  function handleEditHabit(id: number, habit: Habit) {
-    const notify = new Promise<void>((resolve, reject) =>
-      dispatch(updateHabit({ id, habit }))
-        .then(() => {
-          resolve()
-          if (!shouldDisplayAllHabits) {
-            dispatchHabits()
-          } else {
-            dispatchHabits(HabitActions.DisplayAll)
-          }
-        })
-        .catch((err: any) => {
-          reject()
-          console.error(err.message)
-        }),
-    )
-    displayNotif('Habit is saved', notify)
+  function handleEditHabit(id: string, habit: Habit) {
+    handlePromise(dispatch(updateHabit({ id, habit })))
   }
 
   function handleDeleteHabit(habit: Habit) {
-    const notify = new Promise<void>((resolve, reject) =>
-      dispatch(deleteHabit(habit.id as number))
-        .then(() => {
-          resolve()
-          if (!shouldDisplayAllHabits) {
-            dispatchHabits()
-          } else {
-            dispatchHabits(HabitActions.DisplayAll)
-          }
-        })
-        .catch((err: any) => {
-          reject()
-          console.error(err.message)
-        }),
-    )
-
-    deletedHabit = {
-      title: habit.title,
-      description: habit.description,
-      reminderTime: habit.reminderTime,
-      reminderDays: habit.reminderDays,
-    }
-    displayNotif('Habit is deleted', notify, HabitActions.CanUndoDelete)
+    handlePromise(dispatch(deleteHabit(habit._id ?? '')))
   }
 
-  function displayNotif(msg: string, notify: Promise<void>, action?: HabitActions) {
-    toast.promise(notify, {
+  function handlePromise(promise: Promise<any>) {
+    toast.promise(promise, {
       pending: 'Working on it...',
       success: {
         render() {
-          return (
-            <div>
-              <span>{msg}</span>
-              {action === HabitActions.CanUndoDelete && (
-                <button
-                  className="btn undo_delete-btn"
-                  onClick={() => {
-                    handleAddHabit(deletedHabit, 'Undo delete successfully!')
-                  }}>
-                  UNDO DELETE
-                </button>
-              )}
-            </div>
-          )
+          dispatchHabits()
+          return 'Successfully!'
         },
         hideProgressBar: true,
         closeOnClick: true,
@@ -193,7 +80,7 @@ export default function Home() {
       },
       error: {
         render() {
-          return 'An error has occurred!'
+          return 'Something went wrong!'
         },
         hideProgressBar: true,
         closeOnClick: true,
@@ -203,57 +90,46 @@ export default function Home() {
   }
 
   return (
-    <MainLayout
-      habits={habitList}
-      setIsSearching={setIsSearching}
-      onSetSearchHabits={(habits: Habit[]) => {
-        setSearchHabits(habits)
-      }}>
+    <MainLayout habits={habits} onSearchTextChange={(text: string) => setSearchText(text)}>
       {loadingState === 'resolved' ? (
-        <div>
+        <>
           <div className={clsx('header', sidebarOpen && windowWidth <= 480 && 'bigger-header')}>
             <span>
               <h3>{today}</h3>
-              <h2>{greetingText}</h2>
+              <h2>{greetingText(username)}</h2>
             </span>
 
             <button
-              className={clsx(
-                'btn show-all-btn',
-                habits.length === 0 && 'disabled',
-                sidebarOpen && windowWidth <= 480 && 'left-zero',
-              )}
+              className={clsx('btn show-all-btn', sidebarOpen && windowWidth <= 480 && 'left-zero')}
               onClick={handleChangeHabitListDisplay}>
-              {!shouldDisplayAllHabits ? 'View all habits' : "View today's habits"}
+              {showTodaysHabits ? 'Show all habits' : "Show today's habits"}
             </button>
 
-            <HabitModal
-              isEditMode={false}
-              isEditModalOpened={false}
-              habit={habits[0]}
-              habitList={habits}
-              onAddHabit={handleAddHabit}
-              onEditHabit={() => {}}
-              onCloseModal={() => {}}
-            />
+            <HabitModal habit={habits[0]} habitList={habits} onAddHabit={handleAddHabit} />
           </div>
 
           <HabitList
-            habitList={isSearching ? searchHabits : habitList}
+            habitList={habits}
             onGetHabits={dispatchHabits}
             onEditHabit={handleEditHabit}
             onDeleteHabit={handleDeleteHabit}
           />
-        </div>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={numOfPages}
+            onPageChange={(pageNumber) => setCurrentPage(pageNumber)}
+          />
+        </>
       ) : loadingState === 'rejected' ? (
         <>
           <h2>Error occurred while fetching data...</h2>
           <p>Please try again later</p>
         </>
       ) : (
-        <Loading size="xlarge" color="warning" textColor="warning" className="loading-animation">
-          Loading...
-        </Loading>
+        <Stack justifyContent="center" alignItems="center" width="100%" height="100%">
+          <CircularProgress sx={{ color: '#ff7235' }} size={60} />
+        </Stack>
       )}
     </MainLayout>
   )

@@ -10,8 +10,6 @@ import aibLogo from '../../assets/img/aib-logo.jpg'
 import HabitModal from '../../components/HabitModal/HabitModal'
 import { checkColor, expirationColor, normalColor } from '../../constants'
 import { useUtilities } from '../../contexts/UtilitiesProvider'
-import { HabitActions } from '../../pages/Home/Home'
-import { Habit, Performance } from '../../reducers/habitSlice'
 import { sendBrowserNotif } from '../../utils/utilityFunctions'
 import clsx from 'clsx'
 
@@ -19,8 +17,8 @@ type HabitMainColor = { backgroundColor: string; color: string }
 
 interface HabitListProps {
   habitList: Habit[]
-  onGetHabits(action?: HabitActions): void
-  onEditHabit(id: number, habit: Habit): void
+  onGetHabits(params?: GetHabitsParams): void
+  onEditHabit(id: string, habit: Habit): void
   onDeleteHabit(habit: Habit): void
 }
 
@@ -66,16 +64,16 @@ export default function HabitList({
 
   //**---- handle update habit checkboxes and habit check----**//
 
-  const habitIds = habitList.map((habit: Habit) => habit.id)
-  const [habitsCheck, setHabitsCheck] = useState<number[]>([])
+  const habitIds = habitList.map((habit: Habit) => habit._id)
+  const [habitsCheck, setHabitsCheck] = useState<string[]>([])
   const [allHabitsChecked, setAllHabitsChecked] = useState(false)
 
   const updateHabitCheckBoxes = useCallback(() => {
-    let habitCheckList: number[] = []
+    let habitCheckList: string[] = []
 
     habitList.forEach((habit: Habit) => {
       if (isHabitCheckedToday(habit)) {
-        habitCheckList.push(habit.id as number)
+        habitCheckList.push(habit._id ?? '')
       }
     })
 
@@ -90,7 +88,7 @@ export default function HabitList({
   }, [updateHabitCheckBoxes])
 
   async function handleCheckHabit(habit: Habit) {
-    if (!habit.performances || !habit.id) {
+    if (!habit.performances || !habit._id) {
       return
     }
 
@@ -98,7 +96,7 @@ export default function HabitList({
     const todayPerformance = habit.performances.find((perf: Performance) => perf.time === today)
 
     if (todayPerformance) {
-      inspectionId = todayPerformance.id
+      inspectionId = todayPerformance._id
     }
 
     setIsChecking(true)
@@ -108,7 +106,7 @@ export default function HabitList({
     //***  if performances doesn't include today , we make a POST request
     //***  else we update by making a PATCH request
 
-    if (habitsCheck.includes(habit.id) && inspectionId) {
+    if (habitsCheck.includes(habit._id) && inspectionId) {
       await habitsInspectionApi.patchInspection(
         {
           time: today,
@@ -117,10 +115,8 @@ export default function HabitList({
         inspectionId,
       )
 
-      setHabitsCheck(habitsCheck.filter((checked_ID) => checked_ID !== habit.id))
+      setHabitsCheck(habitsCheck.filter((checked_ID) => checked_ID !== habit._id))
       setAllHabitsChecked(false)
-      setIsChecking(false)
-      onGetHabits()
     } else {
       if (
         inspectionId &&
@@ -138,16 +134,17 @@ export default function HabitList({
         await habitsInspectionApi.postInspection({
           time: today,
           isChecked: true,
-          habitId: habit.id,
+          habitId: habit._id,
         })
       }
 
-      habitsCheck.push(habit.id)
+      habitsCheck.push(habit._id)
       setHabitsCheck([...habitsCheck])
       setAllHabitsChecked(habitsCheck.length === habitIds.length)
-      setIsChecking(false)
-      onGetHabits()
     }
+
+    setIsChecking(false)
+    onGetHabits()
   }
 
   //**---- handle change the habits list's grid layout according to its width ----**//
@@ -250,7 +247,7 @@ export default function HabitList({
 
     const unCheckedHabitsOfToday = habitList.filter(
       (habit: Habit) =>
-        habit.reminderDays.includes(now.getDay()) && !habitsCheck.includes(habit.id as number),
+        habit.reminderDays.includes(now.getDay()) && !habitsCheck.includes(habit._id ?? ''),
     )
     unCheckedHabitsOfToday.forEach((habit: Habit) => {
       if ((habit.reminderTime as string).localeCompare(convertedClockState.current) === 0) {
@@ -306,30 +303,26 @@ export default function HabitList({
     <>
       {habitModalOpened && (
         <HabitModal
-          isEditMode={true}
           isEditModalOpened={habitModalOpened}
           habit={currentHabit as Habit}
           habitList={habitList}
           onEditHabit={onEditHabit}
-          onAddHabit={() => {}}
           onCloseModal={handleCloseHabitModal}
         />
       )}
 
       <div className="habits-view">
-        <div>
-          <Checkbox
-            color="primary"
-            className={clsx(
-              'all_done-checkbox',
-              windowWidth <= 480 && 'lower-1',
-              sidebarOpen && windowWidth <= 480 && 'lower-2',
-            )}
-            checked={allHabitsChecked}
-            style={allDoneColor}>
-            All done
-          </Checkbox>
-        </div>
+        <Checkbox
+          color="primary"
+          className={clsx(
+            'all_done-checkbox',
+            windowWidth <= 480 && 'lower-1',
+            sidebarOpen && windowWidth <= 480 && 'lower-2',
+          )}
+          checked={allHabitsChecked}
+          style={allDoneColor}>
+          All done
+        </Checkbox>
 
         <ul
           className="habits-list"
@@ -343,7 +336,7 @@ export default function HabitList({
                   color="success"
                   className="check-habit-box"
                   title="Click to check this habit"
-                  checked={habitsCheck.includes(habit.id as number)}
+                  checked={habitsCheck.includes(habit._id ?? '')}
                   onChange={() => {
                     handleCheckHabit(habit)
                   }}
@@ -375,7 +368,7 @@ export default function HabitList({
             ))
           ) : (
             <div className="no-habit-msg">
-              <p>You don't have any habits yet! Click</p>
+              <p>No habits found! Click</p>
               <span className="add-btn-icon">+</span>
               <p> to add one</p>
             </div>

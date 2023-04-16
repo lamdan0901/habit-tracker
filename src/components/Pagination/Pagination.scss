@@ -1,0 +1,45 @@
+@import '../../assets/scss/variables';
+
+.pagi {
+  &__wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 32px auto 24px auto;
+    width: min-content;
+  }
+
+  &__nav-btns {
+    display: inline-flex;
+    gap: 8px;
+  }
+
+  &__nav-btn {
+    height: 34px;
+    border-radius: 4px;
+    padding: 0 14px;
+    transition: all 0.2s;
+    color: #333;
+    cursor: pointer;
+    background-color: rgba(196, 196, 196, 0.642);
+
+    &.active {
+      background-color: $primary-color;
+      color: #fff;
+    }
+
+    &:not(.active):hover {
+      background-color: rgb(196, 196, 196);
+    }
+  }
+
+  &__btn {
+    padding: 8px 16px;
+    cursor: pointer;
+    background-color: transparent;
+
+    &.disabled {
+      pointer-events: none;
+    }
+  }
+}

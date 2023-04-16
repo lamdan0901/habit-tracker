@@ -11,7 +11,7 @@ export const authReducer = (state: string, action: any) => {
 
     case types.LOGIN: {
       const { res, username, shouldKeepLogin } = action.payload
-      axiosClient.defaults.headers.common['Authorization'] = `Bearer ${res.accessToken}`
+      axiosClient.defaults.headers.common['Authorization'] = res.accessToken
       localStorage.setItem('username', username)
       localStorage.removeItem('msg')
 

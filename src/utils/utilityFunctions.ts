@@ -1,5 +1,3 @@
-import { Habit } from '../reducers/habitSlice'
-
 export const sendBrowserNotif = (title: string, body: string, icon: string) => {
   if (!('Notification' in window)) {
     console.warn('Your Browser does not support Chrome Notifications :(')
@@ -24,14 +22,14 @@ export const sendBrowserNotif = (title: string, body: string, icon: string) => {
   }
 }
 
-export const sortHabits = (habits: Habit[]) => {
-  let sortedHabits = [...habits]
-  sortedHabits.sort((habit1: Habit, habit2: Habit) => {
-    return habit1.reminderTime > habit2.reminderTime
-      ? 1
-      : habit2.reminderTime > habit1.reminderTime
-      ? -1
-      : 0
-  })
-  return sortedHabits
+export const greetingText = (username: string) => {
+  const currentHour = parseInt(new Date().toString().slice(16, 18))
+  let greetingText = 'Good morning, '
+  if (currentHour >= 12) {
+    if (currentHour < 18) greetingText = 'Good afternoon, '
+    else greetingText = 'Good evening, '
+  }
+  greetingText += username + '!'
+
+  return greetingText
 }

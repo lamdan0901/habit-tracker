@@ -2,8 +2,7 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "target": "ESNext",
-    // "types": ["vite/client"],
-    "types": ["jest"],
+    "types": ["vite/client"],
     "module": "esnext",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
