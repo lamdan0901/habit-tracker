@@ -18,4 +18,4 @@
 
 ## Production site
 
-http://habit-trkr.pages.dev/
+https://habit-tracker-indol.vercel.app
