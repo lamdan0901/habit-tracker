@@ -41,44 +41,39 @@ export default function Register() {
         })
       } else setLoading(false)
     } catch (error: any) {
-      if (error.response.data) {
-        setMessage('Failed to create an account. ' + error.response.data.message)
+      if (error === 409) {
+        setMessage('Email or username already taken')
       } else {
         setMessage(
           'Failed to create an account. Server is busy or under maintenance, please come back in a few hours',
         )
       }
-
-      if (passwordRef.current && passwordConfirmRef.current) {
-        passwordRef.current = ''
-        passwordConfirmRef.current = ''
-      }
-
       setLoading(false)
     }
   }
 
   const allFieldsValid = () => {
-    if (!isEmail(emailRef.current)) {
+    if (!isEmail(emailRef.current.trim())) {
       setMessage('Invalid email')
       return false
     }
-    if (!isAlphanumeric(usernameRef.current) || !isLength(usernameRef.current, { min: 6 })) {
+    if (
+      !isAlphanumeric(usernameRef.current.trim()) ||
+      !isLength(usernameRef.current.trim(), { min: 6 })
+    ) {
       setMessage('Username must be at least 6 characters')
       return false
     }
-    if (isEmpty(fullNameRef.current)) {
+    if (isEmpty(fullNameRef.current.trim())) {
       setMessage('Full name not left blank')
       return false
     }
-    if (!isLength(passwordRef.current, { min: 8 })) {
-      setMessage('Password must be at least 8 characters')
+    if (!isLength(passwordRef.current.trim(), { min: 6 })) {
+      setMessage('Password must be at least 6 characters')
       return false
     }
-    if (passwordRef.current !== passwordConfirmRef.current) {
+    if (passwordRef.current.trim() !== passwordConfirmRef.current.trim()) {
       setMessage("Passwords don't match")
-      passwordRef.current = ''
-      passwordConfirmRef.current = ''
       return false
     }
     return true

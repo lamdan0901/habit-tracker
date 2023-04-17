@@ -12,12 +12,12 @@ interface PaginationProps {
 
 const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
   const pageNumbers = useMemo(
-    () => new Array(totalPages).fill(0).map((_, number) => number + 1),
+    () => [...Array(totalPages)].map((_, index) => index + 1),
     [totalPages],
   )
 
   const isStartPage = currentPage === 1
-  const isEndPage = currentPage === totalPages
+  const isEndPage = currentPage === totalPages || totalPages <= 1
 
   return (
     <div className="pagi__wrapper">

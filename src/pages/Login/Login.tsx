@@ -39,32 +39,30 @@ export default function Login() {
         )
       } else setLoading(false)
     } catch (error: any) {
-      console.log('error: ', error.response)
-      if (error.response.data) {
-        const errorMsg = error.response.data.error.message
-        if (errorMsg === 'Please verify your email.') {
-          setIsEmailNeedVerifying(true)
-        } else {
-          setMessage('Failed to login. ' + errorMsg)
-        }
+      if (error === 400) {
+        setMessage('Invalid credential')
+      } else if (error === 401) {
+        setIsEmailNeedVerifying(true)
+        setMessage('Email not verified')
       } else {
         setMessage(
           'Failed to login. Server is busy or under maintenance, please come back in a few hours',
         )
       }
-
-      if (passwordRef.current) passwordRef.current = ''
       setLoading(false)
     }
   }
 
   const allFieldsValid = () => {
-    if (!isAlphanumeric(usernameRef.current) || !isLength(usernameRef.current, { min: 6 })) {
+    if (
+      !isAlphanumeric(usernameRef.current.trim()) ||
+      !isLength(usernameRef.current.trim(), { min: 6 })
+    ) {
       setMessage('Username must be at least 6 characters')
       return false
     }
-    if (!isLength(passwordRef.current, { min: 6 })) {
-      setMessage('Password must be at least 8 characters')
+    if (!isLength(passwordRef.current.trim(), { min: 6 })) {
+      setMessage('Password must be at least 6 characters')
       return false
     }
     return true

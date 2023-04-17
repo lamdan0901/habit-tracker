@@ -105,7 +105,7 @@ export default function Home() {
               {showTodaysHabits ? 'Show all habits' : "Show today's habits"}
             </button>
 
-            <HabitModal habit={habits[0]} habitList={habits} onAddHabit={handleAddHabit} />
+            <HabitModal habitList={habits} onAddHabit={handleAddHabit} />
           </div>
 
           <HabitList

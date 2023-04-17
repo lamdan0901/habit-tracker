@@ -25,24 +25,26 @@ export default function EmailVerification() {
         await verifyUserInfo(codeRef.current)
       } else setLoading(false)
     } catch (error: any) {
-      setMessage('Failed to verify email. ' + error?.response?.data?.message)
+      if (error === 400) {
+        setMessage('Verification code expired')
+      } else {
+        setMessage('Invalid verification code or email not exist')
+      }
       setLoading(false)
     }
   }
 
   async function handleResendVerificationCode() {
     try {
+      setLoading(true)
       await sendVerificationCode()
       setMessage('Verification code has been resent to your email')
     } catch (error: any) {
-      if (error.response.data) {
-        setMessage('Failed to resend verification code. ' + error.response.data.message)
-      } else {
-        setMessage(
-          'Failed to resend verification code. Server is busy or under maintenance, please come back in a few hours',
-        )
-      }
+      setMessage(
+        'Failed to resend verification code. Server is busy or under maintenance, please come back in a few hours',
+      )
     }
+    setLoading(false)
   }
 
   function isCodeValid() {
@@ -85,7 +87,10 @@ export default function EmailVerification() {
             Don't receive the code or it's expired?
             <br />
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-            <a onClick={handleResendVerificationCode} style={{ cursor: 'pointer' }}>
+            <a
+              onClick={handleResendVerificationCode}
+              className={clsx(loading && 'disabled')}
+              style={{ cursor: 'pointer' }}>
               Resend code
             </a>
           </div>

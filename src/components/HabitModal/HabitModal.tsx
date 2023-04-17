@@ -9,7 +9,7 @@ import DayPicker from './DayPicker/DayPicker'
 import { IoAddSharp } from 'react-icons/io5'
 
 interface HabitModalProps {
-  habit: Habit
+  habit?: Habit
   habitList: Habit[]
   isEditModalOpened?: boolean
   onAddHabit?(newHabit: Habit): void
