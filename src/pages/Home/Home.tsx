@@ -1,6 +1,7 @@
 import './Home.scss'
 
 import clsx from 'clsx'
+import { IoAddSharp } from 'react-icons/io5'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { CircularProgress, Stack } from '@mui/material'
@@ -23,11 +24,13 @@ export default function Home() {
   const { username } = useAuth()
   const { sidebarOpen, windowWidth } = useUtilities()
   const { data: habits, numOfPages } = useAppSelector((state) => state.habits.value)
+  const [currentHabit, setCurrentHabit] = useState<Habit | null>(null)
 
   const [currentPage, setCurrentPage] = useState(1)
   const [loadingState, setLoadingState] = useState('idle')
   const [searchText, setSearchText] = useState('')
   const [showTodaysHabits, setShowTodaysHabits] = useState(false)
+  const [habitModalOpened, setHabitModalOpened] = useState(false)
 
   useEffect(() => {
     dispatchHabits({ search: searchText, page: currentPage, viewTodayHabits: showTodaysHabits })
@@ -105,14 +108,32 @@ export default function Home() {
               {showTodaysHabits ? 'Show all habits' : "Show today's habits"}
             </button>
 
-            <HabitModal habitList={habits} onAddHabit={handleAddHabit} />
+            <button
+              className="btn add-btn"
+              onClick={() => {
+                setHabitModalOpened(true)
+              }}>
+              <IoAddSharp />
+            </button>
+
+            <HabitModal
+              habitModalOpened={habitModalOpened}
+              onCloseModal={() => setHabitModalOpened(false)}
+              onChooseHabit={(habit: Habit) => setCurrentHabit(habit)}
+              habitList={habits}
+              habit={currentHabit}
+              onAddHabit={handleAddHabit}
+              onEditHabit={handleEditHabit}
+            />
           </div>
 
           <HabitList
             habitList={habits}
             onGetHabits={dispatchHabits}
-            onEditHabit={handleEditHabit}
+            onChooseHabit={(habit: Habit) => setCurrentHabit(habit)}
             onDeleteHabit={handleDeleteHabit}
+            habitModalOpened={habitModalOpened}
+            onHabitModelOpen={(value) => setHabitModalOpened(value)}
           />
 
           <Pagination

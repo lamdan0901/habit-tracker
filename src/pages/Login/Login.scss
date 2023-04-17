@@ -68,7 +68,7 @@
       & > input {
         border: none;
         outline: none;
-        max-width: 260px;
+        width: 75%;
         background: none;
         font-size: 18px;
         color: #555;
@@ -150,9 +150,5 @@
     flex-direction: column;
     align-items: flex-end;
     margin-bottom: 15px;
-  }
-
-  input {
-    max-width: 150px;
   }
 }

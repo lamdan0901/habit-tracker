@@ -7,10 +7,13 @@ import Modal from 'react-modal'
 
 import habitsInspectionApi from '../../apis/habitsInspectionApi'
 import aibLogo from '../../assets/img/aib-logo.jpg'
-import HabitModal from '../../components/HabitModal/HabitModal'
 import { checkColor, expirationColor, normalColor } from '../../constants'
 import { useUtilities } from '../../contexts/UtilitiesProvider'
-import { sendBrowserNotif } from '../../utils/utilityFunctions'
+import {
+  sendBrowserNotif,
+  convertTime12To24,
+  convertTime24To12,
+} from '../../utils/utilityFunctions'
 import clsx from 'clsx'
 
 type HabitMainColor = { backgroundColor: string; color: string }
@@ -18,15 +21,18 @@ type HabitMainColor = { backgroundColor: string; color: string }
 interface HabitListProps {
   habitList: Habit[]
   onGetHabits(params?: GetHabitsParams): void
-  onEditHabit(id: string, habit: Habit): void
   onDeleteHabit(habit: Habit): void
+  onChooseHabit(habit: Habit): void
+  onHabitModelOpen(value: boolean): void
+  habitModalOpened: boolean
 }
 
 export default function HabitList({
   habitList,
   onGetHabits,
-  onEditHabit,
   onDeleteHabit,
+  onChooseHabit,
+  onHabitModelOpen,
 }: HabitListProps) {
   const now = new Date()
   const convertedClockState = useRef('')
@@ -34,15 +40,13 @@ export default function HabitList({
   const { sidebarOpen, windowWidth } = useUtilities()
 
   const [isChecking, setIsChecking] = useState(false)
-  const [habitModalOpened, setHabitModalOpened] = useState(false)
   const [confirmDialogOpened, setConfirmDialogOpened] = useState(false)
 
-  const [currentHabit, setCurrentHabit] = useState<Habit>()
   const [tempHabit, setTempHabit] = useState<Habit>() //habit that is saved before being deleted
 
   function handleChooseHabit(habit: Habit) {
-    setCurrentHabit(habit)
-    setHabitModalOpened(true)
+    onChooseHabit(habit)
+    onHabitModelOpen(true)
   }
 
   function handleDeleteHabit() {
@@ -59,7 +63,7 @@ export default function HabitList({
   }
 
   function handleCloseHabitModal() {
-    setHabitModalOpened(false)
+    onHabitModelOpen(false)
   }
 
   //**---- handle update habit checkboxes and habit check----**//
@@ -257,7 +261,7 @@ export default function HabitList({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clockState, habitsCheck, habitList])
 
-  //**---- utility functions ----**//
+  //**---- utility ----**//
 
   const isHabitCheckedToday = (habit: Habit) => {
     return habit.performances?.find(
@@ -265,52 +269,8 @@ export default function HabitList({
     )
   }
 
-  function convertTime24To12(time24h: string) {
-    const hour = ~~time24h.slice(0, 2)
-    const minute = time24h.slice(3, 5)
-    const am = ' AM',
-      pm = ' PM'
-
-    if (hour === 0) {
-      return 12 + ':' + minute + am
-    }
-    if (hour < 12) {
-      if (hour < 10) return '0' + hour + ':' + minute + am
-      return hour + ':' + minute + am
-    }
-    if (hour === 12) {
-      return hour + ':' + minute + pm
-    }
-    if (hour - 12 < 10) return '0' + (hour - 12) + ':' + minute + pm
-    return hour - 12 + ':' + minute + pm
-  }
-
-  function convertTime12To24(time12h: string) {
-    const [time, modifier] = time12h.split(' ')
-    let [hours, minutes] = time.split(':')
-
-    if (hours === '12') {
-      hours = '00'
-    }
-    if (modifier === 'PM') {
-      hours = String(parseInt(hours, 10) + 12)
-    }
-
-    return `${hours}:${minutes}`
-  }
-
   return (
     <>
-      {habitModalOpened && (
-        <HabitModal
-          isEditModalOpened={habitModalOpened}
-          habit={currentHabit as Habit}
-          habitList={habitList}
-          onEditHabit={onEditHabit}
-          onCloseModal={handleCloseHabitModal}
-        />
-      )}
-
       <div className="habits-view">
         <Checkbox
           color="primary"
@@ -376,33 +336,31 @@ export default function HabitList({
         </ul>
       </div>
 
-      {confirmDialogOpened && (
-        <Modal
-          className="confirm-dialog"
-          overlayClassName="confirm-dialog-overlay"
-          isOpen={confirmDialogOpened}
-          onRequestClose={handleCloseConfirmDialog}
-          shouldCloseOnOverlayClick={false}
-          closeTimeoutMS={200}>
-          <div className="confirm-dialog-content">
-            <h3>Delete Habit</h3>
-            <p>Are you sure you want to delete this habit?</p>
-            <div className="delete-btn-group">
-              <button
-                className="btn cancel-btn"
-                onClick={() => {
-                  handleDeleteHabit()
-                  handleCloseConfirmDialog()
-                }}>
-                DELETE
-              </button>
-              <button className="btn confirm-btn" onClick={handleCloseConfirmDialog}>
-                CANCEL
-              </button>
-            </div>
+      <Modal
+        className="confirm-dialog"
+        overlayClassName="confirm-dialog-overlay"
+        isOpen={confirmDialogOpened}
+        onRequestClose={handleCloseConfirmDialog}
+        shouldCloseOnOverlayClick={false}
+        closeTimeoutMS={200}>
+        <div className="confirm-dialog-content">
+          <h3>Delete Habit</h3>
+          <p>Are you sure you want to delete this habit?</p>
+          <div className="delete-btn-group">
+            <button
+              className="btn cancel-btn"
+              onClick={() => {
+                handleDeleteHabit()
+                handleCloseConfirmDialog()
+              }}>
+              DELETE
+            </button>
+            <button className="btn confirm-btn" onClick={handleCloseConfirmDialog}>
+              CANCEL
+            </button>
           </div>
-        </Modal>
-      )}
+        </div>
+      </Modal>
     </>
   )
 }

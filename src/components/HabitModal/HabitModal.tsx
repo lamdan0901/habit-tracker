@@ -1,47 +1,50 @@
 import './HabitModal.scss'
 
 import { MobileTimePicker } from '@mui/x-date-pickers'
-import TextField, { TextFieldProps } from '@mui/material/TextField'
 import { useState } from 'react'
 import Modal from 'react-modal'
 
 import DayPicker from './DayPicker/DayPicker'
-import { IoAddSharp } from 'react-icons/io5'
 
 interface HabitModalProps {
-  habit?: Habit
+  habit: Habit | null
   habitList: Habit[]
-  isEditModalOpened?: boolean
+  habitModalOpened: boolean
+  onChooseHabit(habit: Habit | null): void
   onAddHabit?(newHabit: Habit): void
   onEditHabit?(id: string, habit: Habit): void
   onCloseModal?(): void
 }
 
+const initEmptyValue = {
+  title: '',
+  description: '',
+  reminderTime: new Date(),
+  reminderDays: [0, 1, 2, 3, 4, 5, 6],
+  performances: [],
+}
+
 export default function HabitModal(props: HabitModalProps) {
   const now = new Date()
 
-  const initialHabitValues: Habit = props.habit?._id
+  const initialHabitValue: Habit = props.habit?._id
     ? {
-        _id: props.habit._id,
-        title: props.habit.title,
-        description: props.habit.description,
+        ...props.habit,
         reminderTime: new Date(
           now.toString().slice(0, 16) + props.habit.reminderTime + now.toString().slice(21),
         ),
         reminderDays: [...props.habit.reminderDays],
-        performances: props.habit.performances,
       }
-    : {
-        title: '',
-        description: '',
-        reminderTime: now,
-        reminderDays: [0, 1, 2, 3, 4, 5, 6],
-        performances: [],
-      }
+    : initEmptyValue
 
-  const [habitModalOpened, setHabitModalOpened] = useState(!!props.isEditModalOpened)
-  const [habit, setHabit] = useState(initialHabitValues)
+  const [habit, setHabit] = useState(initialHabitValue)
   const [titleError, setTitleError] = useState('')
+
+  if (props.habit?._id !== habit._id) {
+    setHabit(initialHabitValue)
+  } else if (!props.habit?._id && habit._id) {
+    setHabit(initEmptyValue)
+  }
 
   function saveHabit() {
     if (!habit.title) {
@@ -96,29 +99,19 @@ export default function HabitModal(props: HabitModalProps) {
   }
 
   function handleCloseModal() {
-    props.onCloseModal?.()
-    setHabitModalOpened(false)
-    setHabit(initialHabitValues)
+    setHabit(initEmptyValue)
+    props.onChooseHabit(null)
     setTitleError('')
+    props.onCloseModal?.()
   }
 
   return (
     <div>
-      {!props.habit?._id ? (
-        <button
-          className="btn add-btn"
-          onClick={() => {
-            setHabitModalOpened(true)
-          }}>
-          <IoAddSharp />
-        </button>
-      ) : null}
-
       <Modal
         className="habit-modal"
         overlayClassName="habit-modal-overlay"
         closeTimeoutMS={200}
-        isOpen={habitModalOpened}
+        isOpen={props.habitModalOpened}
         onRequestClose={handleCloseModal}
         shouldCloseOnOverlayClick={false}>
         <div className="modal-content">
@@ -154,10 +147,8 @@ export default function HabitModal(props: HabitModalProps) {
                 orientation="portrait"
                 ampm
                 value={habit.reminderTime}
-                onChange={(newValue: any) => {
-                  setTime(newValue)
-                }}
-                renderInput={(params: TextFieldProps) => <TextField {...params} />}
+                onChange={(value: any) => setTime(value)}
+                componentsProps={{ textField: { variant: 'outlined' } }}
               />
             </div>
 
