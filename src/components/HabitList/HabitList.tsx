@@ -281,7 +281,7 @@ export default function HabitList({
           )}
           checked={allHabitsChecked}
           style={allDoneColor}>
-          All done
+          <span>All done</span>
         </Checkbox>
 
         <ul

@@ -97,16 +97,21 @@ export default function Home() {
       {loadingState === 'resolved' ? (
         <>
           <div className={clsx('header', sidebarOpen && windowWidth <= 480 && 'bigger-header')}>
-            <span>
-              <h3>{today}</h3>
-              <h2>{greetingText(username)}</h2>
-            </span>
+            <div>
+              <span>
+                <h3>{today}</h3>
+                <h2>{greetingText(username)}</h2>
+              </span>
 
-            <button
-              className={clsx('btn show-all-btn', sidebarOpen && windowWidth <= 480 && 'left-zero')}
-              onClick={handleChangeHabitListDisplay}>
-              {showTodaysHabits ? 'Show all habits' : "Show today's habits"}
-            </button>
+              <button
+                className={clsx(
+                  'btn show-all-btn',
+                  sidebarOpen && windowWidth <= 480 && 'left-zero',
+                )}
+                onClick={handleChangeHabitListDisplay}>
+                {showTodaysHabits ? 'Show all habits' : "Show today's habits"}
+              </button>
+            </div>
 
             <button
               className="btn add-btn"
@@ -115,16 +120,6 @@ export default function Home() {
               }}>
               <IoAddSharp />
             </button>
-
-            <HabitModal
-              habitModalOpened={habitModalOpened}
-              onCloseModal={() => setHabitModalOpened(false)}
-              onChooseHabit={(habit: Habit) => setCurrentHabit(habit)}
-              habitList={habits}
-              habit={currentHabit}
-              onAddHabit={handleAddHabit}
-              onEditHabit={handleEditHabit}
-            />
           </div>
 
           <HabitList
@@ -152,6 +147,16 @@ export default function Home() {
           <CircularProgress sx={{ color: '#ff7235' }} size={60} />
         </Stack>
       )}
+
+      <HabitModal
+        habitModalOpened={habitModalOpened}
+        onCloseModal={() => setHabitModalOpened(false)}
+        onChooseHabit={(habit: Habit) => setCurrentHabit(habit)}
+        habitList={habits}
+        habit={currentHabit}
+        onAddHabit={handleAddHabit}
+        onEditHabit={handleEditHabit}
+      />
     </MainLayout>
   )
 }
